@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Livro {
+  id                 Int      @id @default(autoincrement())
+  titulo             String   
+  autor              String   
+  codigodoLivro      String   
+  secao              String
+  sinopse            String
+  foto               String
+  genero             String
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  cliente              Cliente[]
+
+  reservas      Reserva[] 
+  renovacao     Renovar[]
+
+  comentarios     Comentario[]
+  
+  @@map("livros")
+}
+
+
+model Cliente {
+  id                  String   @id @db.VarChar(36) @default(uuid())
+  codigodoCliente     String   @db.VarChar(10) 
+  nome                String   @db.VarChar(60)
+  email               String   @db.VarChar(60) @unique
+  senha               String   @db.VarChar(60)   // senha deve ser varchar(60)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  livro              Livro[]
+
+  reservas            Reserva[]
+  renovacao           Renovar[]
+
+  comentarios       Comentario[]
+
+  @@map("clientes")
+  
+}
+
+model Reserva {
+  id                  String      @id  @db.VarChar(36) @default(uuid())
+  codigodoCliente     String      @db.VarChar(10)
+  codigodoLivro       String
+  datadaReserva       DateTime    
+  datadaEntrega       DateTime 
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt 
+
+  cliente              Cliente    @relation(fields: [clienteId], references: [id])
+  clienteId            String
+
+  livro               Livro       @relation(fields: [livroId], references: [id])
+  livroId             Int
+  
+  
+
+  @@map("reservas")
+}
+
+model Renovar {
+  id                    String         @id  @db.VarChar(36) @default(uuid())
+  codigodoCliente       String         @db.VarChar(10) 
+  codigodoLivro         String
+  datadaRenovacao       DateTime
+  datadaEntrega         DateTime
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt 
+
+  clienteId             String
+  cliente               Cliente        @relation(fields: [clienteId], references: [id])
+  livroId               Int
+  livro                 Livro          @relation(fields: [livroId], references: [id])
+
+  @@map("renovacao")
+}
+
+model Comentario {
+   id                  Int           @id @default(autoincrement())
+
+  livro                Livro         @relation(fields: [livroId], references: [id])
+  livroId              Int
+
+  cliente               Cliente        @relation(fields: [clienteId], references: [id])
+  clienteId             String       @db.VarChar(36) 
+  
+  descricao             String       @db.VarChar(255) 
+  resposta              String?      @db.VarChar(255)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+
+  @@map("comentarios")               
+}

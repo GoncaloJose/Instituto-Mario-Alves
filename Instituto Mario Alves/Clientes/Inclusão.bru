@@ -1,0 +1,20 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/clientes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "codigodoCliente": "Jos54321#",
+    "nome": "Goncalo Jose",
+    "email": "goncalojose_cafe@yahoo.com.br",
+    "senha": "Goncalojunior23#"
+  }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3004/comentarios
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "livroId": 12,
+    "clienteId": "7e39b722-e1be-4c9f-8bbd-41a08c3bdc76",
+    "descricao": "Livro me ajudou muito para pesquisa do doutorado da UFMS/Ufpel, uma excelente leitura"
+  }
+}

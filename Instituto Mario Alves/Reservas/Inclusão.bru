@@ -1,0 +1,23 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/reservas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "codigodoCliente": "Gon2376#",
+    "codigodoLivro": "Lit001",
+    "datadaReserva": "2024-10-01",
+    "datadaEntrega": "2024-10-06",
+    "clienteId": "320022bb-edec-433f-ac12-13f860866813",
+    "livroId": 12
+    
+  }
+}

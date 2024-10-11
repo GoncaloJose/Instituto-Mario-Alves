@@ -1,0 +1,19 @@
+meta {
+  name: LogReserva
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3004/reservas/logReserva
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "2cc40517-b873-4323-aba8-2bf5b42ad6c9",
+    "codigodoClinte": "Gon2376#",
+    "codigodoLivro": "Lit001"
+  }
+}

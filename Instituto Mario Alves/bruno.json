@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Instituto Mario Alves",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

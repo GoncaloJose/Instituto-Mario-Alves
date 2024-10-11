@@ -1,0 +1,23 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/livros
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "codigodoLivro": "Lit001",
+    "secao": "Literatura",
+    "sinopse": "A história é narrada em primeira pessoa por Bento Santiago, também conhecido como Dom Casmurro, que revisita sua juventude e seus relacionamentos, especialmente com Capitu, sua grande paixão.",
+    "foto": "https://images.tcdn.com.br/img/img_prod/1271663/dom_casmurro_edicao_de_luxo_almofadada_89_1_038fb70c564eb50f71ea49f6027e827a.jpg",
+    "genero": "Literatura"
+    }
+}
