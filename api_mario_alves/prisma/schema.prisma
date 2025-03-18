@@ -1,4 +1,4 @@
-// This is your Prisma schema file,
+ // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
@@ -25,82 +25,126 @@ model Livro {
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
-  cliente              Cliente[]
+  clientes            Cliente[]
 
-  reservas      Reserva[] 
-  renovacao     Renovar[]
+  admins              Admin[]
 
-  comentarios     Comentario[]
+  reservas           Reserva[] 
+  renovacoes         Renovacao[]
+
+  comentarios        Comentario[]
+
+  fotos              Foto[]
+  Historico         Historico[]
   
   @@map("livros")
+ 
 }
 
 
 model Cliente {
-  id                  String   @id @db.VarChar(36) @default(uuid())
-  codigodoCliente     String   @db.VarChar(10) 
-  nome                String   @db.VarChar(60)
+  id                  Int      @id @default(autoincrement())
+  nome                String   @db.VarChar(60) 
   email               String   @db.VarChar(60) @unique
   senha               String   @db.VarChar(60)   // senha deve ser varchar(60)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  livro              Livro[]
-
+  livros              Livro[]
   reservas            Reserva[]
-  renovacao           Renovar[]
-
-  comentarios       Comentario[]
+  renovacoes          Renovacao[]
+  comentarios         Comentario[]
+  historicos          Historico[]
+  cadastro            Cadastro[]
 
   @@map("clientes")
-  
 }
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  nome         String   @db.VarChar(60)
+  email        String   @db.VarChar(60) @unique
+  senha        String   @db.VarChar(60)   // senha deve ser varchar(60)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt  
+  livros       Livro[]
+  @@map("admins")
+}
+
+model Foto { 
+  id               Int           @id  @default(autoincrement())
+  autor            String        
+  codigoFoto       String        @db.LongText
+  livro            Livro         @relation(fields: [livroId], references: [id])
+  livroId             Int
+
+  @@map("fotos")
+} 
 
 model Reserva {
-  id                  String      @id  @db.VarChar(36) @default(uuid())
-  codigodoCliente     String      @db.VarChar(10)
-  codigodoLivro       String
-  datadaReserva       DateTime    
-  datadaEntrega       DateTime 
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt 
+  id                  Int          @id @default(autoincrement())
+
+   livro               Livro       @relation(fields: [livroId], references: [id])
+  livroId             Int
 
   cliente              Cliente    @relation(fields: [clienteId], references: [id])
-  clienteId            String
+  clienteId            Int       
 
-  livro               Livro       @relation(fields: [livroId], references: [id])
-  livroId             Int
-  
-  
+  datadaReserva       DateTime 
+  Historico           Historico[]
 
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt  
+ 
   @@map("reservas")
+  
 }
 
-model Renovar {
-  id                    String         @id  @db.VarChar(36) @default(uuid())
-  codigodoCliente       String         @db.VarChar(10) 
-  codigodoLivro         String
-  datadaRenovacao       DateTime
+model Cadastro {
+  id                   Int      @id @default(autoincrement())
+  email                String   @db.VarChar(60) @unique
+  senha                String   @db.VarChar(60) 
+  confirmaSenha        String   @db.VarChar(60)
+  nome                 String   @db.VarChar(60)
+  escolaridade         String   @db.VarChar(60) 
+  telefone             String   @db.VarChar(60)
+  instituicao          String   @db.VarChar(60)
+
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  cliente               Cliente[]        
+  @@map("cadastros") 
+}
+
+model Renovacao {
+  id                    Int         @id @default(autoincrement())
+  
   datadaEntrega         DateTime
+
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt 
 
-  clienteId             String
+  clienteId             Int
   cliente               Cliente        @relation(fields: [clienteId], references: [id])
+
   livroId               Int
   livro                 Livro          @relation(fields: [livroId], references: [id])
 
-  @@map("renovacao")
+   Historico             Historico[]
+
+  @@map("renovacoes")
+ 
 }
 
 model Comentario {
-   id                  Int           @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
 
   livro                Livro         @relation(fields: [livroId], references: [id])
   livroId              Int
 
   cliente               Cliente        @relation(fields: [clienteId], references: [id])
-  clienteId             String       @db.VarChar(36) 
+  clienteId             Int           
   
   descricao             String       @db.VarChar(255) 
   resposta              String?      @db.VarChar(255)
@@ -109,4 +153,25 @@ model Comentario {
 
 
   @@map("comentarios")               
+}
+
+model Historico { 
+  id                    Int           @id  @default(autoincrement())
+  titulo                String        
+  datadaReserva         DateTime  
+  status                String
+  datadaEntrega         DateTime
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  
+  clienteId             Int
+  cliente               Cliente        @relation(fields: [clienteId], references: [id]) 
+
+  livro                Livro         @relation(fields: [livroId], references: [id])
+  livroId              Int
+
+  reservas             Reserva[]
+  renovacoes           Renovacao[]
+
+  @@map("historicos")
 }

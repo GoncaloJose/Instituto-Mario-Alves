@@ -1,0 +1,19 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/renovacoes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "livroId": 2,
+    "clienteId": 2,
+    "datadaEntrega": "2024-11-26"
+  }
+}

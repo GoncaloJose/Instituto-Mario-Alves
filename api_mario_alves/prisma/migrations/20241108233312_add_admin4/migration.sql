@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `livros` MODIFY `adminId` INTEGER NOT NULL DEFAULT 1;

@@ -1,123 +1,132 @@
-import { PrismaClient } from "@prisma/client"
-import { Router } from "express"
-import bcrypt from 'bcrypt'
+import { PrismaClient } from "@prisma/client";
+import { Router } from "express";
+import express from 'express';
 
-const prisma = new PrismaClient()
-const router = Router()
+const prisma = new PrismaClient();
+const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const reservas = await prisma.reserva.findMany()
-    res.status(200).json(reservas)
+    const reservas = await prisma.reserva.findMany();
+    res.status(200).json(reservas);
   } catch (error) {
-    res.status(400).json(error)
+    res.status(400).json(error);
   }
-})
-
-function validaReserva(codigodoCliente: string) {
-  const mensa: string[] = []
-
-  if (codigodoCliente.length < 8) {
-    mensa.push("Erro... digite o código do cliente corretamente")
-  }
-
-  let pequenas = 0
-  let grandes = 0
-  let numeros = 0
-
-  for (const letra of codigodoCliente) {
-    if ((/[a-z]/).test(letra)) {
-      pequenas++
-    } else if ((/[A-Z]/).test(letra)) {
-      grandes++
-    } else if ((/[0-9]/).test(letra)) {
-      numeros++
-    }
-  }
-
-  if (pequenas == 0 || grandes == 0 || numeros == 0) {
-    mensa.push("Erro... código deve possuir letras e números!!")
-  }
-
-  return mensa
-}
+});
 
 router.post("/", async (req, res) => {
-  const { codigodoCliente, codigodoLivro, datadaReserva, datadaEntrega, clienteId, livroId } = req.body;
+  const { livroId, clienteId, datadaReserva, titulo } = req.body;
 
-  if (!codigodoCliente || !codigodoLivro || !datadaReserva || !datadaEntrega || !clienteId || !livroId) {
-    res.status(400).json({ erro: "Informe codigodoCliente, codigodoLivro, datadaReserva, datadaEntrega, clienteId, livroId" });
-    return;
-  }
-
-  const erros = validaReserva(codigodoCliente);
-  if (erros.length > 0) {
-    res.status(400).json({ erro: erros.join("; ") });
-    return;
-  }
-
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(codigodoCliente, salt);
-
-  let dataReservaFormatada = new Date(datadaReserva);
-  let dataEntregaFormatada = new Date(datadaEntrega);
-
-  if (isNaN(dataReservaFormatada.getTime()) || isNaN(dataEntregaFormatada.getTime())) {
-    res.status(400).json({ erro: "Data inválida" });
-    return;
+  if (!livroId || !clienteId || !datadaReserva || !titulo) {
+    return res.status(400).json({
+      erro: "Informe livroId, clienteId, datadaReserva e titulo"
+    });
   }
 
   try {
+    console.log("Dados recebidos:", { livroId, clienteId, datadaReserva });
+
+    // Verificar se o livro existe
+    const livroExistente = await prisma.livro.findUnique({
+      where: { id: Number(livroId) },
+    });
+    if (!livroExistente) {
+      return res.status(404).json({ erro: "Livro não encontrado" });
+    }
+
+    const dataReserva = new Date(datadaReserva);
+    const dataEntrega = new Date(dataReserva);
+    dataEntrega.setDate(dataReserva.getDate() + 5);
+
+    // Criar nova reserva
     const reserva = await prisma.reserva.create({
       data: {
-        codigodoCliente: hash,
-        codigodoLivro,
-        datadaReserva: dataReservaFormatada.toISOString(),
-        datadaEntrega: dataEntregaFormatada.toISOString(),
-        cliente: { connect: { id: clienteId } },
-        livro: { connect: { id: livroId } },
+        livroId: Number(livroId),
+        clienteId: Number(clienteId),
+        datadaReserva: dataReserva,
       },
     });
-    console.log("Reserva criada com sucesso:", reserva);
-    res.status(201).json(reserva);
+
+    // Criar histórico automaticamente
+    await prisma.historico.create({
+      data: {
+        livroId: Number(livroId),
+        clienteId: Number(clienteId),
+        titulo: titulo,
+        datadaReserva: dataReserva,
+        status: "Reservado",
+        datadaEntrega: dataEntrega
+
+      },
+    });
+
+    res.status(201).json({
+      mensagem: "Reserva feita com sucesso", reserva
+    });
   } catch (error) {
     console.error("Erro ao criar reserva:", error);
     res.status(400).json({ erro: "Erro ao criar reserva" });
   }
-})
+});
 
-// Defina a rota para login fora da outra rota
-router.post("/reserva/logReserva", async (req, res) => {
-  const { codigodoCliente, codigodoLivro } = req.body
-  const mensaPadrao = "Código do Cliente ou Código do Livro incorretos"
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
 
-  if (!codigodoCliente || !codigodoLivro) {
-    res.status(400).json({ erro: mensaPadrao })
-    return
+  try {
+    const reservas = await prisma.reserva.delete({
+      where: { id: Number(id) },
+    });
+    res.status(200).json(reservas);
+  } catch (error) {
+    console.error("Erro ao deletar reserva:", error);
+    res.status(400).json({ erro: "Erro ao deletar reserva" });
+  }
+});
+
+// Rota para cancelar uma reserva por ID
+router.delete("/reservas/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  // Verifica se o ID é válido
+  if (isNaN(id)) {
+    return res.status(400).json({ erro: "ID inválido." });
   }
 
   try {
-    const reserva = await prisma.reserva.findFirst({
-      where: { codigodoCliente }
-    })
+    console.log("Tentando cancelar a reserva com ID:", id);
 
-    if (reserva == null) {
-      res.status(400).json({ erro: mensaPadrao })
-      return
+    // Verifica se a reserva existe
+    const reservaExistente = await prisma.reserva.findUnique({
+      where: { id },
+    });
+
+    if (!reservaExistente) {
+      return res.status(404).json({ erro: "Reserva não encontrada." });
     }
 
-    if (bcrypt.compareSync(codigodoCliente, reserva.codigodoCliente)) {
-      res.status(200).json({
-        id: reserva.id,
-        codigodoCliente: reserva.codigodoCliente,
-        codigodoLivro: reserva.codigodoLivro
-      })
-    } else {
-      res.status(400).json({ erro: mensaPadrao })
-    }
-  } catch (error) {
-    res.status(400).json(error)
+    // Tenta deletar a reserva
+    const reservaCancelada = await prisma.reserva.delete({
+      where: { id },
+    });
+
+    console.log("Reserva cancelada:", reservaCancelada);
+
+    // Deleta o histórico correspondente
+    const historicoDeletado = await prisma.historico.deleteMany({
+      where: { livroId: reservaCancelada.livroId, clienteId: reservaCancelada.clienteId },
+    });
+
+    console.log("Histórico deletado:", historicoDeletado);
+
+    res.status(200).json({
+      mensagem: "Reserva e histórico cancelados com sucesso.",
+      reserva: reservaCancelada,
+    });
+  } catch (error: any) {
+    console.error("Erro ao cancelar reserva:", error);
+
+    res.status(500).json({ erro: "Erro ao cancelar reserva." });
   }
-})
+});
 
-export default router
+export default router;

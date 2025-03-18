@@ -1,0 +1,22 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/historicos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "clienteId": 2,
+      "livroId": 3,
+      "titulo": "A Casa do Dragão",
+      "datadaReserva": "2024-11-25",
+      "status": "Locado",
+      "datadaEntrega": "2024-11-30"
+  }
+}
