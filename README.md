@@ -238,7 +238,7 @@ Produção acadêmica (teses e dissertações) disponível para consulta.
 
 # Comparação:
 
-Entra print
+![UfPel x UcPel](<tela comparacao.PNG>)
 
 Nosso diferencial será a criação de uma experiência personalizada e acessível para os usuários, indo além do simples empréstimo de livros. Vamos combinar tecnologia, design e serviços exclusivos para transformar a interação dos usuários com a biblioteca. Aqui estão os principais pontos que nos destacam:
 
