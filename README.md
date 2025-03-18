@@ -2,6 +2,9 @@
 
 # Biblioteca IMA-Sobre:
 
+O Instituto Mário Alves é uma OSCIP, não partidária e sem fins lucrativos.
+
+É um espaço de construção e formação política, que tem na pluralidade e na justiça social seus valores principais. Ajuda a organizar e se faz presente nas lutas cotidianas em defesa desses valores.
 
 # Objetivo do Sistema:
 
@@ -14,15 +17,15 @@ No primeiro momento o público-alvo é de universitários, pesquisadores e profe
 
 # Usos do Sistema:
 
-Gerenciamento das Reservas: 
+* Gerenciamento das Reservas: O Gerenciamento das Reservas oferece aos usuários a possibilidade de reservar livros disponíveis ou entrar em uma fila de espera caso o item esteja emprestado. O sistema automatiza notificações, gerencia prazos para retirada, mantém um histórico de reservas e fornece relatórios administrativos para organização do acervo. Essa funcionalidade otimiza o uso dos recursos e melhora a experiência dos usuários. 
 
-Gerenciamento das Locações: 
+* Gerenciamento das Locações: O Gerenciamento das Locações controla o processo de empréstimo de livros, permitindo registrar e acompanhar itens emprestados e devolvidos. Inclui gerenciamento de prazos, notificações automáticas sobre vencimentos e relatórios administrativos para monitorar as locações. Essa funcionalidade organiza o acervo e garante uma experiência eficiente para os usuários 
 
-Gerenciamento dos Livros: 
+* Gerenciamento dos Livros: O Gerenciamento dos Livros engloba o controle completo do acervo, permitindo o cadastro, edição e exclusão de títulos. Inclui organização por categorias, monitoramento da disponibilidade e geração de relatórios para análise do acervo. Essa funcionalidade garante um acervo bem estruturado e acessível para os usuários.
 
-Gerenciamento dos Clientes:
+* Gerenciamento dos Clientes: O Gerenciamento dos Clientes permite o controle eficaz de informações dos usuários, como cadastro, histórico de empréstimos e status de reservas. Inclui funcionalidades para atualização de dados, monitoramento de atividades e geração de relatórios, promovendo uma interação personalizada e organizada com os clientes.
 
-Perfis de Usuários : 
+* Perfis de Usuários: O Perfis de Usuários define diferentes níveis de acesso ao sistema, como administradores, bibliotecários e clientes. Cada perfil possui permissões específicas, garantindo segurança e organização. Essa funcionalidade personaliza a experiência dos usuários e protege as operações do sistema. 
 
 # Monetização:
 
