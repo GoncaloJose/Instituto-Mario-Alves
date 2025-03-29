@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
-import express from 'express';
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -24,7 +23,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    console.log("Dados recebidos:", { livroId, clienteId, datadaReserva });
+    console.log("Dados recebidos:", { livroId, clienteId, datadaReserva, titulo });
 
     // Verificar se o livro existe
     const livroExistente = await prisma.livro.findUnique({
@@ -44,6 +43,7 @@ router.post("/", async (req, res) => {
         livroId: Number(livroId),
         clienteId: Number(clienteId),
         datadaReserva: dataReserva,
+        
       },
     });
 
@@ -85,47 +85,62 @@ router.delete("/:id", async (req, res) => {
 
 // Rota para cancelar uma reserva por ID
 router.delete("/reservas/:id", async (req, res) => {
-  const id = Number(req.params.id);
+  const { id } = req.params;
 
-  // Verifica se o ID é válido
-  if (isNaN(id)) {
-    return res.status(400).json({ erro: "ID inválido." });
+// Verifica se o ID é válido
+if (isNaN(Number(id))) {
+  return res.status(400).json({ erro: "ID inválido." });
+}
+
+try {
+  // Verifica se a reserva existe
+  const reservaExistente = await prisma.reserva.findUnique({
+    where: { id: Number(id) },
+  });
+
+  if (!reservaExistente) {
+    return res.status(404).json({ erro: "Reserva não encontrada." });
+  }
+
+  // Exclui a reserva
+  const reservaCancelada = await prisma.reserva.delete({
+    where: { id: Number(id) },
+  });
+
+  res.status(200).json({
+    mensagem: "Reserva cancelada com sucesso.",
+    reserva: reservaCancelada,
+  });
+} catch (error) {
+  console.error("Erro ao cancelar reserva:", error);
+  res.status(500).json({ erro: "Erro ao cancelar reserva." });
+}
+});
+
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const parsedId = parseInt(id, 10); // Convertendo o id para número
+
+  if (isNaN(parsedId)) {
+    return res.status(400).json({ erro: "Reserva inválida" });
   }
 
   try {
-    console.log("Tentando cancelar a reserva com ID:", id);
-
-    // Verifica se a reserva existe
-    const reservaExistente = await prisma.reserva.findUnique({
-      where: { id },
+    const reserva = await prisma.cliente.findUnique({
+      where: { id: parsedId }, // Usando parsedId
     });
 
-    if (!reservaExistente) {
-      return res.status(404).json({ erro: "Reserva não encontrada." });
+    if (reserva == null) {
+      res.status(400).json({ erro: "Não reservado!!" });
+      return;
+    } else {
+      res.status(200).json({
+        id: reserva.id,
+        
+      });
     }
-
-    // Tenta deletar a reserva
-    const reservaCancelada = await prisma.reserva.delete({
-      where: { id },
-    });
-
-    console.log("Reserva cancelada:", reservaCancelada);
-
-    // Deleta o histórico correspondente
-    const historicoDeletado = await prisma.historico.deleteMany({
-      where: { livroId: reservaCancelada.livroId, clienteId: reservaCancelada.clienteId },
-    });
-
-    console.log("Histórico deletado:", historicoDeletado);
-
-    res.status(200).json({
-      mensagem: "Reserva e histórico cancelados com sucesso.",
-      reserva: reservaCancelada,
-    });
-  } catch (error: any) {
-    console.error("Erro ao cancelar reserva:", error);
-
-    res.status(500).json({ erro: "Erro ao cancelar reserva." });
+  } catch (error) {
+    res.status(400).json(error);
   }
 });
 

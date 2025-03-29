@@ -12,12 +12,11 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
+ 
 model Livro {
   id                 Int      @id @default(autoincrement())
   titulo             String   
-  autor              String   
-  codigodoLivro      String   
+  autor              String    
   secao              String
   sinopse            String
   foto               String
@@ -82,23 +81,24 @@ model Foto {
 } 
 
 model Reserva {
-  id                  Int          @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
 
-   livro               Livro       @relation(fields: [livroId], references: [id])
-  livroId             Int
+  livro          Livro     @relation(fields: [livroId], references: [id])
+  livroId        Int
 
-  cliente              Cliente    @relation(fields: [clienteId], references: [id])
-  clienteId            Int       
+  cliente        Cliente   @relation(fields: [clienteId], references: [id])
+  clienteId      Int       
 
-  datadaReserva       DateTime 
-  Historico           Historico[]
+  datadaReserva  DateTime 
 
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt  
+  historico      Historico[] // Corrigido para camelCase
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt  
  
-  @@map("reservas")
-  
+  @@map("reservas") // Mapeamento correto, se a tabela no banco for "reservas"
 }
+
 
 model Cadastro {
   id                   Int      @id @default(autoincrement())

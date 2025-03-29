@@ -22,7 +22,7 @@ app.use(cors())
 
 
 app.use("/livros", livrosRoutes)
-app.use("/clientes", clientesRoutes)
+// app.use("/clientes", clientesRoutes)
 app.use("/reservas", reservasRoutes)
 app.use("/comentarios", comentariosRoutes)
 app.use("/fotos", fotosRoutes)

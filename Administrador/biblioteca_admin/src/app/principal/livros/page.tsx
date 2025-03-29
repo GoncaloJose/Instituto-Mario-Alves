@@ -47,7 +47,7 @@ function CadLivros() {
                 Autor
               </th>
               <th scope="col" className="px-6 py-3">
-                Ano
+                Seção
               </th>
               <th scope="col" className="px-6 py-3">
                 Gênero

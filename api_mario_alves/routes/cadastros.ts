@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
   // Valida campos obrigatórios
   if (!email || !senha || !confirmaSenha || !nome || !escolaridade || !telefone || !instituicao) {
-    return res.status(400).json({
+    return res.status(422).json({
       erro: "Informe email, senha, confirmaSenha, nome, escolaridade, telefone e instituicao.",
     });
   }
