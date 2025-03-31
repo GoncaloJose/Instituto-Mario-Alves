@@ -30,17 +30,17 @@ function validaRenovacao(id: string): string[] {
 }
 
 router.post("/", async (req, res) => {
-  const { livroId, clienteId, datadaEntrega } = req.body;
+  const { livroId, usuarioId, datadaEntrega } = req.body;
 
-  if (!livroId || !clienteId || !datadaEntrega) {
+  if (!livroId || !usuarioId || !datadaEntrega) {
     return res.status(400).json({
-      erro: "Informe livroId, clienteId e datadaEntrega"
+      erro: "Informe livroId, usuarioId e datadaEntrega"
     });
   }
 
 
   try {
-    console.log("Dados recebidos:", { livroId, clienteId, datadaEntrega });
+    console.log("Dados recebidos:", { livroId, usuarioId, datadaEntrega });
 
     // Verificar se o livro existe
     const livroExistente = await prisma.livro.findUnique({
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     const renovacao = await prisma.renovacao.create({
       data: {
         livroId: Number(livroId),
-        clienteId: Number(clienteId),
+        usuarioId: Number(usuarioId),
         datadaEntrega: new Date(datadaEntrega),
       },
     });
@@ -67,12 +67,12 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/logRenovacao", async (req, res) => {
-  const { livroId, clienteId, datadaEntrega } = req.body;
+  const { livroId, usuarioId, datadaEntrega } = req.body;
 
-  console.log("Dados recebidos:", { livroId, clienteId, datadaEntrega });
+  console.log("Dados recebidos:", { livroId, usuarioId, datadaEntrega });
 
-  const mensaPadrao = "DatadaEntrega, ClienteId e LivroId incorretos.";
-  if (!livroId || !clienteId || !datadaEntrega) {
+  const mensaPadrao = "DatadaEntrega, UsuarioId e LivroId incorretos.";
+  if (!livroId || !usuarioId || !datadaEntrega) {
     console.log("Erro: Dados ausentes");
     return res.status(400).json({ erro: mensaPadrao });
   }
@@ -87,7 +87,7 @@ router.post("/logRenovacao", async (req, res) => {
     const renovacoes = await prisma.renovacao.findFirst({
       where: {
         livroId,
-        clienteId,
+        usuarioId,
         datadaEntrega: datadaEntregaFormatada,
       }
     });
@@ -101,7 +101,7 @@ router.post("/logRenovacao", async (req, res) => {
       return res.status(200).json({
 
         livroId: renovacoes.livroId,
-        clienteId: renovacoes.clienteId,
+        clienteId: renovacoes.usuarioId,
         datadaEntrega: renovacoes.datadaEntrega
       });
     

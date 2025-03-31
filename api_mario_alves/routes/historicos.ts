@@ -41,10 +41,10 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { livroId, titulo, datadaReserva, status, datadaEntrega, clienteId, renovacoes } = req.body;
+  const { livroId, titulo, datadaReserva, status, datadaEntrega, usuarioId, renovacoes } = req.body;
 
-  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !clienteId || !renovacoes) {
-    res.status(400).json({ "erro": "Informe livro, titulo, datadaReserva, status, datadaEntrega e renovacoes" });
+  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !usuarioId || !renovacoes) {
+    res.status(400).json({ "erro": "Informe livro, título, usuário datadaReserva, status, datadaEntrega e renovacoes" });
     return;
   }
 
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
         datadaReserva: new Date(datadaReserva).toISOString(),
         status,
         datadaEntrega: new Date(datadaEntrega).toISOString(),
-        clienteId,
+        usuarioId,
         renovacoes
       }
     });
@@ -81,10 +81,10 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { livroId, titulo, datadaReserva, status, datadaEntrega, clienteId, renovacoes } = req.body;
+  const { livroId, titulo, datadaReserva, status, datadaEntrega, usuarioId, renovacoes } = req.body;
 
-  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !clienteId || !renovacoes) {
-    res.status(400).json({ "erro": "Informe livro, titulo, datadaReserva, status, datadaEntrega, clienteId e renovacoes" });
+  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !usuarioId || !renovacoes) {
+    res.status(400).json({ "erro": "Informe livro, titulo, datadaReserva, status, datadaEntrega, usuarioId e renovacoes" });
     return;
   }
 
@@ -92,7 +92,7 @@ router.put("/:id", async (req, res) => {
     const historicos = await prisma.historico.update({
       where: { id: Number(id) },
       data: {
-        clienteId,
+        usuarioId,
         livroId,
         titulo,
         datadaReserva: new Date(datadaReserva).toISOString(),

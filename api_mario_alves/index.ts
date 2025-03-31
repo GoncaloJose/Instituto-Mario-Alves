@@ -2,14 +2,11 @@ import express from 'express'
 import cors from 'cors'
 
 import livrosRoutes from './routes/livros'
-import clientesRoutes from './routes/clientes'
+import usuariosRoutes from './routes/usuarios'
 import reservasRoutes from './routes/reservas'
 import comentariosRoutes from './routes/comentarios'
-import fotosRoutes    from './routes/fotos'
 import historicosRoutes   from './routes/historicos'
-import adminsRoutes from './routes/admins'
 import dashboardRoutes from './routes/dashboard'
-import cadastrosRoutes from './routes/cadastros'
 import renovacoesRoutes from './routes/renovacoes'
 
 
@@ -22,14 +19,11 @@ app.use(cors())
 
 
 app.use("/livros", livrosRoutes)
-// app.use("/clientes", clientesRoutes)
+app.use("/usuarios", usuariosRoutes)
 app.use("/reservas", reservasRoutes)
 app.use("/comentarios", comentariosRoutes)
-app.use("/fotos", fotosRoutes)
 app.use("/historicos", historicosRoutes)
-app.use("/admins", adminsRoutes)
 app.use("/dashboard", dashboardRoutes)
-app.use("/cadastros", cadastrosRoutes)
 app.use("/renovacoes", renovacoesRoutes)
 
 app.get('/', (req, res) => {

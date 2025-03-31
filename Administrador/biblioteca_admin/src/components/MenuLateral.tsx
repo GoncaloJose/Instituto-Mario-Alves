@@ -42,15 +42,15 @@ export function MenuLateral() {
               <span className="h-5 text-gray-600 text-2xl">
               <FaBookReader />
               </span>
-              <span className="ms-2 mt-1">Cadastro de Livros</span>
+              <span className="ms-2 mt-1">Cadastrar Livros</span>
             </Link>
           </li>
           <li>
-          <Link href="/principal/clientes" className="flex items-center p-2">
+          <Link href="/principal/usuarios" className="flex items-center p-2">
               <span className="h-5 text-gray-600 text-2xl">
                 <FaUsers />
               </span>
-              <span className="ms-2 mt-1">Controle de Clientes</span>
+              <span className="ms-2 mt-1">Controle de Usuários</span>
             </Link>
           </li>
           <li>
@@ -58,7 +58,7 @@ export function MenuLateral() {
               <span className="h-5 text-gray-600 text-2xl">
               <FaBook />
               </span>
-              <span className="ms-2 mt-1">Cadastros de Clientes</span>
+              <span className="ms-2 mt-1">Cadastrar de Usuários</span>
             </Link>
           </li>
           <li>
@@ -66,7 +66,7 @@ export function MenuLateral() {
               <span className="h-5 text-gray-600 text-2xl">
               <FaAddressBook />
               </span>
-              <span className="ms-2 mt-1">Controle das Locações</span>
+              <span className="ms-2 mt-1">Gerenciar das Locações</span>
             </Link>
           </li>
           <li>

@@ -24,16 +24,13 @@ model Livro {
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
-  clientes            Cliente[]
-
-  admins              Admin[]
+  usuario            Usuario[]
 
   reservas           Reserva[] 
   renovacoes         Renovacao[]
 
   comentarios        Comentario[]
 
-  fotos              Foto[]
   Historico         Historico[]
   
   @@map("livros")
@@ -41,11 +38,12 @@ model Livro {
 }
 
 
-model Cliente {
+model Usuario {
   id                  Int      @id @default(autoincrement())
   nome                String   @db.VarChar(60) 
   email               String   @db.VarChar(60) @unique
   senha               String   @db.VarChar(60)   // senha deve ser varchar(60)
+  admin               String   @db.VarChar(60) @unique
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -54,30 +52,7 @@ model Cliente {
   renovacoes          Renovacao[]
   comentarios         Comentario[]
   historicos          Historico[]
-  cadastro            Cadastro[]
-
-  @@map("clientes")
-}
-
-model Admin {
-  id           Int      @id @default(autoincrement())
-  nome         String   @db.VarChar(60)
-  email        String   @db.VarChar(60) @unique
-  senha        String   @db.VarChar(60)   // senha deve ser varchar(60)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt  
-  livros       Livro[]
-  @@map("admins")
-}
-
-model Foto { 
-  id               Int           @id  @default(autoincrement())
-  autor            String        
-  codigoFoto       String        @db.LongText
-  livro            Livro         @relation(fields: [livroId], references: [id])
-  livroId             Int
-
-  @@map("fotos")
+  @@map("usuarios")
 } 
 
 model Reserva {
@@ -86,8 +61,8 @@ model Reserva {
   livro          Livro     @relation(fields: [livroId], references: [id])
   livroId        Int
 
-  cliente        Cliente   @relation(fields: [clienteId], references: [id])
-  clienteId      Int       
+  usuario        Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId      Int       
 
   datadaReserva  DateTime 
 
@@ -99,24 +74,6 @@ model Reserva {
   @@map("reservas") // Mapeamento correto, se a tabela no banco for "reservas"
 }
 
-
-model Cadastro {
-  id                   Int      @id @default(autoincrement())
-  email                String   @db.VarChar(60) @unique
-  senha                String   @db.VarChar(60) 
-  confirmaSenha        String   @db.VarChar(60)
-  nome                 String   @db.VarChar(60)
-  escolaridade         String   @db.VarChar(60) 
-  telefone             String   @db.VarChar(60)
-  instituicao          String   @db.VarChar(60)
-
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
-
-  cliente               Cliente[]        
-  @@map("cadastros") 
-}
-
 model Renovacao {
   id                    Int         @id @default(autoincrement())
   
@@ -125,8 +82,8 @@ model Renovacao {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt 
 
-  clienteId             Int
-  cliente               Cliente        @relation(fields: [clienteId], references: [id])
+  usuarioId             Int
+  usauaro              Usuario        @relation(fields: [usuarioId], references: [id])
 
   livroId               Int
   livro                 Livro          @relation(fields: [livroId], references: [id])
@@ -143,8 +100,8 @@ model Comentario {
   livro                Livro         @relation(fields: [livroId], references: [id])
   livroId              Int
 
-  cliente               Cliente        @relation(fields: [clienteId], references: [id])
-  clienteId             Int           
+  usuario               Usuario        @relation(fields: [usuarioId], references: [id])
+  usuarioId             Int           
   
   descricao             String       @db.VarChar(255) 
   resposta              String?      @db.VarChar(255)
@@ -164,8 +121,8 @@ model Historico {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
   
-  clienteId             Int
-  cliente               Cliente        @relation(fields: [clienteId], references: [id]) 
+  usuarioId             Int
+  usuario               Usuario        @relation(fields: [usuarioId], references: [id]) 
 
   livro                Livro         @relation(fields: [livroId], references: [id])
   livroId              Int

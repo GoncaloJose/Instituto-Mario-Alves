@@ -6,11 +6,11 @@ const router = Router();
 
 router.get("/gerais", async (req, res) => {
   try {
-    const clientes = await prisma.cliente.count();
+    const usuarios = await prisma.usuario.count();
     const livros = await prisma.livro.count();
     const reservas = await prisma.reserva.count();
     const comentarios = await prisma.comentario.count();
-    res.status(200).json({ clientes, livros, reservas, comentarios });
+    res.status(200).json({ usuarios, livros, reservas, comentarios });
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });

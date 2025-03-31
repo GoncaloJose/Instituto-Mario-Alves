@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { ClienteI } from "@/utils/types/clientes";
+import { UsuarioI } from "@/utils/types/usuarios";
 
 type Inputs = {
   nome: string;
@@ -13,58 +13,58 @@ type Inputs = {
 
 };
 
-function NovoCliente() {
-  const [clientes, setClientes] = useState<ClienteI[]>([]);
+function NovoUsuario() {
+  const [usuarios, setUsuarios] = useState<UsuarioI[]>([]);
   const { register, handleSubmit, reset, setFocus } = useForm<Inputs>();
 
   useEffect(() => {
-    async function getClientes() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/clientes`);
+    async function getUsuarios() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios`);
       const dados = await response.json();
-      setClientes(dados);
+      setUsuarios(dados);
     }
-    getClientes();
+    getUsuarios();
     setFocus("nome");
   }, [setFocus]);
 
-  const optionsCliente = clientes.map((cliente) => (
-    <option key={cliente.id} value={cliente.id}>
-      {cliente.nome}
+  const optionsUsuario = usuarios.map((usuario: { id: any; nome: any; }) => (
+    <option key={usuario.id} value={usuario.id}>
+      {usuario.nome}
     </option>
   ));
 
-  async function incluirCliente(data: Inputs) {
-    const novoCliente: Inputs = {
+  async function incluirUsuario(data: Inputs) {
+    const novoUsuario: Inputs = {
       nome: data.nome,
       email: data.email,
       senha: data.senha,
 
     };
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/clientes`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
         Authorization: "Bearer " + (Cookies.get("admin_logado_token") as string),
       },
-      body: JSON.stringify(novoCliente),
+      body: JSON.stringify(novoUsuario),
     });
 
     if (response.status == 201) {
-      toast.success("Ok! Cliente cadastrado com sucesso");
+      toast.success("Ok! Usuário cadastrado com sucesso");
       reset();
     } else {
-      toast.error("Erro no cadastro do Cliente...");
+      toast.error("Erro no cadastro do Usuário...");
     }
   }
 
   return (
     <>
       <h1 className="mb-4 mt-24 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white me-56">
-        Inclusão de Clientes
+        Inclusão de Usuários
       </h1>
 
-      <form className="max-w-xl mx-auto" onSubmit={handleSubmit(incluirCliente)}>
+      <form className="max-w-xl mx-auto" onSubmit={handleSubmit(incluirUsuario)}>
         <div className="mb-3">
           <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Nome
@@ -117,4 +117,4 @@ function NovoCliente() {
   );
 }
 
-export default NovoCliente;
+export default NovoUsuario;

@@ -1,0 +1,20 @@
+meta {
+  name: Inclusão
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3004/usuarios
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "Fernandes Paz",
+    "email": "paz@gmail.com",
+    "senha": "Paz12345#",
+    "admin": "nao"
+  }
+}

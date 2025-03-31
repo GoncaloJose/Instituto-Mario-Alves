@@ -1,4 +1,4 @@
-export interface ClienteI {
+export interface UsuarioI {
 
     id: number
     nome: string

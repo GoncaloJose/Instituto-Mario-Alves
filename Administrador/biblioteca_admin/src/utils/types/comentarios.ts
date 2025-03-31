@@ -1,10 +1,10 @@
 import { LivroI } from "./livros";
-import { ClienteI } from "./clientes"
+import { UsuarioI } from "./usuarios"
 
 export interface ComentarioI {
     id: number
-    clienteId: string
-    cliente: ClienteI
+    usuarioId: string
+    usuario: UsuarioI
     livroId: number
     livro: LivroI
     descricao: string

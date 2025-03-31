@@ -69,11 +69,6 @@ router.delete("/:id", async (req, res) => {
       where: { livroId: Number(id) },
     });
     
-    await prisma.foto.deleteMany({
-      where: { livroId: Number(id) },
-    });
-
-
     // Em seguida, exclua o livro
     const livros = await prisma.livro.delete({
       where: { id: Number(id) },
