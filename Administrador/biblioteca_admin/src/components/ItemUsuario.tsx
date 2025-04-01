@@ -5,7 +5,7 @@ import { FaRegStar } from "react-icons/fa"
 import Cookies from "js-cookie"
 import { UsuarioI } from "@/utils/types/usuarios"
 
-interface listaClienteProps {
+interface listaUsuarioProps {
   usuario: UsuarioI,
   usuarios: UsuarioI[],
   setUsuarios: Dispatch<SetStateAction<UsuarioI[]>>
@@ -16,7 +16,7 @@ function ItemUsuario({ usuario, usuarios, setUsuarios }: listaUsuarioProps) {
   async function excluirUsuario() {
 
     if (confirm(`Confirma a exclusão`)) {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/clientes/${usuario.id}`,
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios/${usuario.id}`,
         {
           method: "DELETE",
           headers: {

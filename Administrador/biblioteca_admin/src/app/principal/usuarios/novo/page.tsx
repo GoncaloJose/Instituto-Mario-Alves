@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { UsuarioI } from "@/utils/types/usuarios";
 
-type Inputs = {
+type Entradas = {
   nome: string;
   email: string;
   senha: string;
@@ -15,7 +15,7 @@ type Inputs = {
 
 function NovoUsuario() {
   const [usuarios, setUsuarios] = useState<UsuarioI[]>([]);
-  const { register, handleSubmit, reset, setFocus } = useForm<Inputs>();
+  const { register, handleSubmit, reset, setFocus } = useForm<Entradas>();
 
   useEffect(() => {
     async function getUsuarios() {
@@ -33,11 +33,11 @@ function NovoUsuario() {
     </option>
   ));
 
-  async function incluirUsuario(data: Inputs) {
-    const novoUsuario: Inputs = {
-      nome: data.nome,
-      email: data.email,
-      senha: data.senha,
+  async function incluirUsuario( dados : Entradas ) {
+    const novoUsuario : Entradas = {
+      nome: dados . nome,
+      email: dados . email,
+      senha: dados . senha,
 
     };
 

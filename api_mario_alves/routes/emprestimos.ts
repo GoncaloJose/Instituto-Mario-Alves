@@ -33,8 +33,8 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const historicos = await prisma.historico.findMany();
-    res.status(200).json(historicos);
+    const emprestimos = await prisma.emprestimo.findMany();
+    res.status(200).json(emprestimos);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const historico = await prisma.historico.create({
+    const emprestimo = await prisma.emprestimo.create({
       data: {
         livroId,
         titulo,
@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
         renovacoes
       }
     });
-    res.status(201).json(historico);
+    res.status(201).json(emprestimo);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -70,10 +70,10 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const historicos = await prisma.historico.delete({
+    const emprestimos = await prisma.emprestimo.delete({
       where: { id: Number(id) }
     });
-    res.status(200).json(historicos);
+    res.status(200).json(emprestimos);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -89,7 +89,7 @@ router.put("/:id", async (req, res) => {
   }
 
   try {
-    const historicos = await prisma.historico.update({
+    const emprestimos = await prisma.emprestimo.update({
       where: { id: Number(id) },
       data: {
         usuarioId,
@@ -101,16 +101,16 @@ router.put("/:id", async (req, res) => {
         renovacoes
       }
     });
-    res.status(200).json(historicos);
+    res.status(200).json(emprestimos);
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
-router.get("/historicos", async (req, res) => { 
+router.get("/emprestimos", async (req, res) => { 
   try { 
-    const historicos = await prisma.historico.findMany(); 
-    res.status(200).json(historicos); 
+    const emprestimos = await prisma.emprestimo.findMany(); 
+    res.status(200).json(emprestimos); 
   } catch (error) { 
     res.status(400).json(error); 
   } 

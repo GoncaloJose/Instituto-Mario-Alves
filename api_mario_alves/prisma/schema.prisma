@@ -31,7 +31,7 @@ model Livro {
 
   comentarios        Comentario[]
 
-  Historico         Historico[]
+  emprestimos         Emprestimo[]
   
   @@map("livros")
  
@@ -39,21 +39,22 @@ model Livro {
 
 
 model Usuario {
-  id                  Int      @id @default(autoincrement())
-  nome                String   @db.VarChar(60) 
-  email               String   @db.VarChar(60) @unique
-  senha               String   @db.VarChar(60)   // senha deve ser varchar(60)
-  admin               String   @db.VarChar(60) @unique
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  nome          String   @db.VarChar(60)
+  email         String   @db.VarChar(60) @unique
+  senha         String   @db.VarChar(60) // senha deve ser varchar(60)
+  admin         Boolean  @default(false) // Alterado para Boolean com default false
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  livros              Livro[]
-  reservas            Reserva[]
-  renovacoes          Renovacao[]
-  comentarios         Comentario[]
-  historicos          Historico[]
+  livros        Livro[]
+  reservas      Reserva[]
+  renovacoes    Renovacao[]
+  comentarios   Comentario[]
+  emprestimos   Emprestimo[]
+
   @@map("usuarios")
-} 
+}
 
 model Reserva {
   id             Int       @id @default(autoincrement())
@@ -66,7 +67,7 @@ model Reserva {
 
   datadaReserva  DateTime 
 
-  historico      Historico[] // Corrigido para camelCase
+  emprestimos      Emprestimo[] // Corrigido para camelCase
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt  
@@ -83,12 +84,12 @@ model Renovacao {
   updatedAt             DateTime       @updatedAt 
 
   usuarioId             Int
-  usauaro              Usuario        @relation(fields: [usuarioId], references: [id])
+  usuario              Usuario        @relation(fields: [usuarioId], references: [id])
 
   livroId               Int
   livro                 Livro          @relation(fields: [livroId], references: [id])
 
-   Historico             Historico[]
+  emprestimos           Emprestimo[]
 
   @@map("renovacoes")
  
@@ -112,7 +113,7 @@ model Comentario {
   @@map("comentarios")               
 }
 
-model Historico { 
+model Emprestimo { 
   id                    Int           @id  @default(autoincrement())
   titulo                String        
   datadaReserva         DateTime  
@@ -130,5 +131,5 @@ model Historico {
   reservas             Reserva[]
   renovacoes           Renovacao[]
 
-  @@map("historicos")
+  @@map("emprestimos")
 }

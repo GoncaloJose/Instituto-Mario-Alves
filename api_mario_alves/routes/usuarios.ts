@@ -175,12 +175,12 @@ router.delete("/:id", async (req, res) => {
 
     console.log("Reservas deletadas:", reservasDeletadas);
 
-    // Deleta todos os históricos associados ao cliente
-    const historicosDeletados = await prisma.historico.deleteMany({
+    // Deleta todos os empréstimos associados ao cliente
+    const emprestimosDeletados = await prisma.emprestimo.deleteMany({
       where: { usuarioId: Number(id) },
     });
 
-    console.log("Históricos deletados:", historicosDeletados);
+    console.log("Empréstimos deletados:", emprestimosDeletados);
 
     // Tenta deletar o usuário
     const usuarioDeletado = await prisma.usuario.delete({

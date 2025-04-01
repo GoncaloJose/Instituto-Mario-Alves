@@ -30,7 +30,9 @@ export default function Principal() {
     getDadosGerais();
 
     async function getDadosGrafico() {
-      const response = await fetch("http://localhost:3004/dashboard/livrosReserva");
+      const response = await fetch(
+        "http://localhost:3004/dashboard/livrosReserva"
+      );
       const dados = await response.json();
       setLivrosReserva(dados);
     }
@@ -41,7 +43,18 @@ export default function Principal() {
     ["Categoria", "Quantidade", { role: "style" }],
   ];
 
-  const cores = ["red", "blue", "violet", "green", "gold", "cyan", "chocolate", "purple", "brown", "orangered"];
+  const cores = [
+    "red",
+    "blue",
+    "violet",
+    "green",
+    "gold",
+    "cyan",
+    "chocolate",
+    "purple",
+    "brown",
+    "orangered",
+  ];
 
   // Adicione as categorias ao array data
   data.push(["Livros", dados.livros, cores[0]]);
@@ -95,8 +108,16 @@ export default function Principal() {
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold mt-4">Gráfico: Controle de Livros, Usuários, Reservas e Comentários</h2>
-      <Chart chartType="ColumnChart" width="95%" height="380px" data={data} options={options} />
+      <h2 className="text-2xl font-bold mt-4">
+        Gráfico: Controle de Livros, Usuários, Reservas e Comentários
+      </h2>
+      <Chart
+        chartType="ColumnChart"
+        width="95%"
+        height="380px"
+        data={data}
+        options={options}
+      />
     </div>
   );
 }

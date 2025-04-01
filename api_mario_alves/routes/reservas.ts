@@ -47,8 +47,8 @@ router.post("/", async (req, res) => {
       },
     });
 
-    // Criar histórico automaticamente
-    await prisma.historico.create({
+    // Criar empréstimos automaticamente
+    await prisma.emprestimo.create({
       data: {
         livroId: Number(livroId),
         usuarioId: Number(usuarioId),
