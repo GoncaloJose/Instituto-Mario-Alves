@@ -2,7 +2,7 @@
 
 # Biblioteca IMA-Sobre:
 
-O Instituto Mário Alves é uma OSCIP, não partidária e sem fins lucrativos.
+O Instituto Mário Alves é uma OSCIP, não partidária e sem fins lucrativos. IMA
 
 É um espaço de construção e formação política, que tem na pluralidade e na justiça social seus valores principais. Ajuda a organizar e se faz presente nas lutas cotidianas em defesa desses valores.
 
