@@ -14,16 +14,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { livroId, clienteId, datadaReserva, titulo } = req.body;
+  const { livroId, usuarioId, datadaReserva, titulo } = req.body;
 
-  if (!livroId || !clienteId || !datadaReserva || !titulo) {
+  if (!livroId || !usuarioId || !datadaReserva || !titulo) {
     return res.status(400).json({
-      erro: "Informe livroId, clienteId, datadaReserva e titulo"
+      erro: "Informe livroId, usuarioId, datadaReserva e titulo"
     });
   }
 
   try {
-    console.log("Dados recebidos:", { livroId, clienteId, datadaReserva, titulo });
+    console.log("Dados recebidos:", { livroId, usuarioId, datadaReserva, titulo });
 
     // Verificar se o livro existe
     const livroExistente = await prisma.livro.findUnique({
@@ -41,17 +41,17 @@ router.post("/", async (req, res) => {
     const reserva = await prisma.reserva.create({
       data: {
         livroId: Number(livroId),
-        clienteId: Number(clienteId),
+        usuarioId: Number(usuarioId),
         datadaReserva: dataReserva,
         
       },
     });
 
-    // Criar histórico automaticamente
-    await prisma.historico.create({
+    // Criar empréstimos automaticamente
+    await prisma.emprestimo.create({
       data: {
         livroId: Number(livroId),
-        clienteId: Number(clienteId),
+        usuarioId: Number(usuarioId),
         titulo: titulo,
         datadaReserva: dataReserva,
         status: "Reservado",
@@ -126,7 +126,7 @@ router.get("/:id", async (req, res) => {
   }
 
   try {
-    const reserva = await prisma.cliente.findUnique({
+    const reserva = await prisma.reserva.findUnique({
       where: { id: parsedId }, // Usando parsedId
     });
 

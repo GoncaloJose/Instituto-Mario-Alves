@@ -9,7 +9,7 @@ interface livrosReservaI {
 }
 
 interface geralDadosI {
-  clientes: number;
+  usuarios: number;
   livros: number;
   reservas: number;
   comentarios: number;
@@ -30,7 +30,9 @@ export default function Principal() {
     getDadosGerais();
 
     async function getDadosGrafico() {
-      const response = await fetch("http://localhost:3004/dashboard/livrosReserva");
+      const response = await fetch(
+        "http://localhost:3004/dashboard/livrosReserva"
+      );
       const dados = await response.json();
       setLivrosReserva(dados);
     }
@@ -41,17 +43,28 @@ export default function Principal() {
     ["Categoria", "Quantidade", { role: "style" }],
   ];
 
-  const cores = ["red", "blue", "violet", "green", "gold", "cyan", "chocolate", "purple", "brown", "orangered"];
+  const cores = [
+    "red",
+    "blue",
+    "violet",
+    "green",
+    "gold",
+    "cyan",
+    "chocolate",
+    "purple",
+    "brown",
+    "orangered",
+  ];
 
   // Adicione as categorias ao array data
   data.push(["Livros", dados.livros, cores[0]]);
-  data.push(["Clientes", dados.clientes, cores[1]]);
+  data.push(["Usuarios", dados.usuarios, cores[1]]);
   data.push(["Reservas", dados.reservas, cores[2]]);
   data.push(["Comentários", dados.comentarios, cores[3]]);
 
   const options = {
     is3D: true, // Ativando o modo 3D
-    title: "Controle de Livros, Clientes, Reservas e Comentários",
+    title: "Controle de Livros, Usuarios, Reservas e Comentários",
     chartArea: { width: "80%", height: "70%" },
     legend: {
       position: "bottom", // Colocando os nomes embaixo do gráfico
@@ -71,9 +84,9 @@ export default function Principal() {
       <div className="w-2/3 flex justify-between mx-auto mb-5">
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-blue-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-blue-300">
-            {dados.clientes}
+            {dados.usuarios}
           </span>
-          <p className="font-bold mt-2 text-center">Nº de Clientes</p>
+          <p className="font-bold mt-2 text-center">Nº de Usuários</p>
         </div>
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-red-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-red-300">
@@ -95,8 +108,16 @@ export default function Principal() {
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold mt-4">Gráfico: Controle de Livros, Clientes, Reservas e Comentários</h2>
-      <Chart chartType="ColumnChart" width="95%" height="380px" data={data} options={options} />
+      <h2 className="text-2xl font-bold mt-4">
+        Gráfico: Controle de Livros, Usuários, Reservas e Comentários
+      </h2>
+      <Chart
+        chartType="ColumnChart"
+        width="95%"
+        height="380px"
+        data={data}
+        options={options}
+      />
     </div>
   );
 }

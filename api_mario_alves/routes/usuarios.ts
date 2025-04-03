@@ -1,14 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const clientes = await prisma.cliente.findMany();
-    res.status(200).json(clientes);
+    const usuarios = await prisma.usuario.findMany();
+    res.status(200).json(usuarios);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -52,9 +53,9 @@ function validaSenha(senha: string) {
 }
 
 router.post("/", async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { nome, email, senha, admin } = req.body;
 
-  if (!nome || !email || !senha) {
+  if (!nome || !email || !senha ) {
     res.status(400).json({ erro: "Informe nome, email e senha" });
     return;
   }
@@ -72,12 +73,13 @@ router.post("/", async (req, res) => {
 
   // para o campo senha, atribui o hash gerado
   try {
-    const cliente = await prisma.cliente.create({
-      data: { nome, email, senha: hash },
+    const usuario = await prisma.usuario.create({
+      data: { nome, email, admin, senha: hash },
     });
-    res.status(201).json(cliente);
+    res.status(201).json(usuario);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json( error);
+      console.log( (error as Error).message);
   }
 });
 
@@ -94,22 +96,31 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const cliente = await prisma.cliente.findUnique({
+    const usuario = await prisma.usuario.findUnique({
       where: { email },
     });
 
-    if (cliente == null) {
+    if (usuario == null) {
       res.status(400).json({ erro: mensaPadrao });
       return;
     }
 
     // se o e-mail existe, faz-se a comparação dos hashs
-    if (bcrypt.compareSync(senha, cliente.senha)) {
+    if (bcrypt.compareSync(senha, usuario.senha)) {
       // se confere, gera e retorna o token
+      const token = jwt.sign({
+        admin_logado_id: usuario.id,
+        admin_logado_nome: usuario.nome
+      },
+      process.env.JWT_KEY as string,
+      { expiresIn: "1h"})
+
       res.status(200).json({
-        id: cliente.id,
-        nome: cliente.nome,
-        email: cliente.email,
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        admin: usuario.admin, 
+        token
       });
     } else {
       res.status(400).json({ erro: mensaPadrao });
@@ -128,18 +139,18 @@ router.get("/:id", async (req, res) => {
   }
 
   try {
-    const cliente = await prisma.cliente.findUnique({
+    const usuario = await prisma.usuario.findUnique({
       where: { id: parsedId }, // Usando parsedId
     });
 
-    if (cliente == null) {
+    if (usuario == null) {
       res.status(400).json({ erro: "Não cadastrado" });
       return;
     } else {
       res.status(200).json({
-        id: cliente.id,
-        nome: cliente.nome,
-        email: cliente.email,
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
       });
     }
   } catch (error) {
@@ -160,42 +171,43 @@ router.delete("/:id", async (req, res) => {
     console.log("Tentando deletar o cliente com ID:", id);
 
     // Verifica se o cliente existe
-    const clienteExistente = await prisma.cliente.findUnique({
+    const usuarioExistente = await prisma.usuario.findUnique({
       where: { id: Number(id) },
     });
 
-    if (!clienteExistente) {
-      return res.status(404).json({ erro: "Cliente não encontrado." });
+    if (!usuarioExistente) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
     // Deleta todas as reservas associadas ao cliente
     const reservasDeletadas = await prisma.reserva.deleteMany({
-      where: { clienteId: Number(id) },
+      where: { usuarioId: Number(id) },
     });
 
     console.log("Reservas deletadas:", reservasDeletadas);
 
-    // Deleta todos os históricos associados ao cliente
-    const historicosDeletados = await prisma.historico.deleteMany({
-      where: { clienteId: Number(id) },
+    // Deleta todos os empréstimos associados ao cliente
+    const emprestimosDeletados = await prisma.emprestimo.deleteMany({
+      where: { usuarioId: Number(id) },
     });
 
-    console.log("Históricos deletados:", historicosDeletados);
+    console.log("Empréstimos deletados:", emprestimosDeletados);
 
-    // Tenta deletar o cliente
-    const clienteDeletado = await prisma.cliente.delete({
+    // Tenta deletar o usuário
+    const usuarioDeletado = await prisma.usuario.delete({
       where: { id: Number(id) },
     });
 
-    console.log("Cliente deletado:", clienteDeletado);
-    res.status(200).json(clienteDeletado);
+    console.log("Usuário deletado:", usuarioDeletado);
+    res.status(200).json(usuarioDeletado);
   } catch (error: any) {
-    console.error("Erro ao deletar cliente:", error);
+    console.error("Erro ao deletar usuário:", error);
     if (error.code === "P2025") {
-      return res.status(404).json({ erro: "Cliente não encontrado." });
+      return res.status(404).json({ erro: "Usuário não encontrado." });
     }
-    res.status(500).json({ erro: "Erro ao deletar cliente." });
+    res.status(500).json({ erro: "Erro ao deletar usuário." });
   }
 });
+
 
 export default router;

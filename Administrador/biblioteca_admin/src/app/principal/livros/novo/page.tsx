@@ -8,11 +8,11 @@ import { LivroI } from "@/utils/types/livros"
 type Inputs = {
 
     titulo:           string   
-    autor:            string   
+    autor:            string 
+    foto:             string  
     codigodoLivro:    string   
     secao:            string
     sinopse:          string
-    foto:             string
     genero:           string
 
 }

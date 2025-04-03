@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   try {
     const comentarios = await prisma.comentario.findMany({
       include: {
-        cliente: true,
+        usuario: true,
         livro: true
       },
       orderBy: {id: 'desc'}
@@ -25,16 +25,16 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-  const { clienteId, livroId, descricao } = req.body
+  const { usuarioId, livroId, descricao } = req.body
 
-  if (!clienteId || !livroId || !descricao) {
-    res.status(400).json({ erro: "Informe clienteId, livroId, descricao" })
+  if (!usuarioId || !livroId || !descricao) {
+    res.status(400).json({ erro: "Informe usuarioId, livroId, descricao" })
     return
   }
 
   try {
     const comentario = await prisma.comentario.create({
-      data: { clienteId, livroId, descricao }
+      data: { usuarioId, livroId, descricao }
     })
     res.status(201).json(comentario)
   } catch (error) {
@@ -99,12 +99,12 @@ router.patch("/:id", async (req, res) => {
     const dados = await prisma.comentario.findUnique({
       where: { id: Number(id) },
       include: {
-        cliente: true
+        usuario: true
       }
     })
 
-    enviaEmail(dados?.cliente.nome as string,
-      dados?.cliente.email as string,
+    enviaEmail(dados?.usuario.nome as string,
+      dados?.usuario.email as string,
       dados?.descricao as string,
       resposta)
 
@@ -129,17 +129,17 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.get("/:clienteId", async (req, res) => {
-  const { clienteId } = req.params;
-  const parsedClienteId = parseInt(clienteId, 10); // Converte clienteId para número
+router.get("/:usuarioId", async (req, res) => {
+  const { usuarioId } = req.params;
+  const parsedUsuarioId = parseInt(usuarioId, 10); // Converte clienteId para número
 
-  if (isNaN(parsedClienteId)) {
+  if (isNaN(parsedUsuarioId)) {
     return res.status(400).json({ erro: "ID inválido" });
   }
 
   try {
     const comentarios = await prisma.comentario.findMany({
-      where: { clienteId: parsedClienteId }, // Usa parsedClienteId
+      where: { usuarioId: parsedUsuarioId }, // Usa parsedClienteId
       include: {
         livro: true,
       },

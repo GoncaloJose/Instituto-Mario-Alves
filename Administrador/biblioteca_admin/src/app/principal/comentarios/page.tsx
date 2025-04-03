@@ -19,7 +19,7 @@ function ControleComentarios() {
     getComentarios();
   }, []);
 
-  const listaComentarios = comentarios.map(comentario => (
+  const listaComentarios = comentarios.map((comentario: ComentarioI) => (
     <ItemComentario
       key={comentario.id}
       comentario={comentario}
@@ -51,7 +51,7 @@ function ControleComentarios() {
                 Gênero
               </th>
               <th scope="col" className="px-6 py-3">
-                Comentário do Cliente
+                Comentário do Usuário
               </th>
               <th scope="col" className="px-6 py-3">
                 Resposta do IMA
