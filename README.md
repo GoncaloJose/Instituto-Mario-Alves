@@ -1,4 +1,4 @@
-# Projeto-Desenvolvimeto
+# Projeto-Desenvolvimento.
 
 # Biblioteca IMA-Sobre:
 
