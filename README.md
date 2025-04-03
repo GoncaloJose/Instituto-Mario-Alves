@@ -1,4 +1,4 @@
-# Projeto-Desenvolvimento
+# Projeto-Desenvolvimento.
 
 # Biblioteca IMA-Sobre:
 
@@ -25,7 +25,7 @@ No primeiro momento o público-alvo é de universitários, pesquisadores e profe
 
 * Gerenciamento dos Clientes: O Gerenciamento dos Clientes permite o controle eficaz de informações dos usuários, como cadastro, histórico de empréstimos e status de reservas. Inclui funcionalidades para atualização de dados, monitoramento de atividades e geração de relatórios, promovendo uma interação personalizada e organizada com os clientes.
 
-* Perfis de Usuários: O Perfis de Usuários define diferentes níveis de acesso ao sistema, como administradores, bibliotecários e clientes. Cada perfil possui permissões específicas, garantindo segurança e organização. Essa funcionalidade personaliza a experiência dos usuários e protege as operações do sistema. 
+* Perfis de Usuários: O Perfis de Usuários define diferentes níveis de acesso ao sistema, como administradores e clientes. Cada perfil possui permissões específicas, garantindo segurança e organização. Essa funcionalidade personaliza a experiência dos usuários e protege as operações do sistema. 
 
 # Monetização:
 
@@ -45,7 +45,7 @@ Flora é pesquisadora na área da educação, tem 50 anos e busca sempre muita i
 
 1- Cadastro e Login de Usuários:
 
-Permitir o registro de novos usuários (incluindo dados pessoais, como nome, e-mail, senha e endereço).
+Permitir o registro de novos usuários (incluindo dados pessoais, como nome, e-mail, senha, endereço e se é ADM ou não).
 
 Sistema de autenticação para login e recuperação de senha.
 
@@ -57,45 +57,31 @@ Exibir detalhes dos livros (título, autor, descrição, disponibilidade e capa)
 
 3- Sistema de Empréstimo:
 
-Permitir que usuários reservem livros físicos ou façam o empréstimo.
+Permitir que usuários reservem livros físicos ou renovção.
 
 Limitar a quantidade de livros que podem ser emprestados por usuário.
 
 Controle de prazos de devolução e notificação de atraso.
 
-4- Catálogo Digital:
-
-Disponibilizar livros em formato digital (e-books) para leitura online ou download.
-
-5- Sistema de Gerenciamento de Livros:
+4- Sistema de Gerenciamento de Livros:
 
 Permitir que administradores adicionem, editem ou removam livros do acervo.
 
 Controle do estoque e atualizações de disponibilidade dos livros.
 
-6- Notificações:
+5- Notificações:
 
 Enviar lembretes de devolução de livros.
 
 Notificar usuários sobre a chegada de novos títulos ou promoções.
 
-7- Sistema de Assinaturas:
-
-Oferecer planos de assinatura para acesso ao acervo premium.
-
-Controle de pagamento e renovação de assinaturas.
-
-8- Relatórios e Estatísticas:
+6- Relatórios e Estatísticas:
 
 Gerar relatórios sobre os livros mais emprestados, usuários ativos e empréstimos pendentes.
 
 Monitorar o desempenho da biblioteca.
 
-9- Integração com Redes Sociais:
-
-Permitir o compartilhamento de livros ou listas de leitura diretamente nas redes sociais.
-
-10- Espaço de Avaliações e Recomendações:
+7- Espaço de Avaliações e Recomendações:
 
 Permitir que usuários avaliem e deixem comentários sobre os livros.
 
@@ -166,17 +152,13 @@ Para a biblioteca IMA, as telas foram criadas com base em um processo metodológ
 
 A definição da identidade visual foi o ponto de partida. A escolha cuidadosa das cores e logotipos visou transmitir calma, profissionalismo e modernidade, elementos essenciais para um ambiente dedicado à educação e cultura. A paleta de tons foi selecionada para proporcionar um design limpo, contemporâneo e acessível.
 
-Foram projetadas interfaces tanto para dispositivos móveis quanto desktop, assegurando acessibilidade e adaptabilidade. Essa abordagem Mobile First permite que a biblioteca ofereça uma experiência consistente e otimizada, independentemente da plataforma utilizada.
-
 A página inicial foi planejada para apresentar as principais funcionalidades da biblioteca IMA de maneira clara e objetiva. Isso inclui:
 
 Descrição do propósito da biblioteca.
 
 Público-alvo e benefícios oferecidos.
 
-Informações sobre a disponibilização de livros (digitais e físicos).
-
-Depoimentos e feedback de usuários para fortalecer a confiabilidade.
+Informações sobre a disponibilização de livros físicos.
 
 Além disso, foram desenvolvidas telas cruciais, como:
 
@@ -184,13 +166,9 @@ Login e Cadastro de Usuários: Para garantir uma entrada segura e personalizaç�
 
 Recuperação de Senha: Facilita o acesso em caso de problemas.
 
-Catálogo de Livros: Apresentação organizada de títulos disponíveis, com filtros intuitivos.
+Processo de Reserva e renovação: Interface simples para gerenciar a disponibilidade dos livros.
 
-Processo de Empréstimo/Reserva: Interface simples para gerenciar a retirada ou leitura online de livros.
-
-Escolha de Planos (se houver modelo de assinatura): Para integração de usuários ao acervo premium.
-
-Cada elemento foi criado visando atender aos padrões de design, reforçando a consistência e o alinhamento entre as telas, tanto na versão móvel quanto na desktop. Esses esforços asseguram que o sistema da biblioteca IMA não apenas funcione bem, mas também ofereça uma experiência visual e interativa memorável.
+Cada elemento foi criado visando atender aos padrões de design, reforçando a consistência e o alinhamento entre as telas. Esses esforços asseguram que o sistema da biblioteca IMA não apenas funcione bem, mas também ofereça uma experiência visual e interativa memorável.
 
 # Sistemas Semelhantes e Comparação:
 
