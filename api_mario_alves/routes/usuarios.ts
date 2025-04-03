@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -54,7 +55,7 @@ function validaSenha(senha: string) {
 router.post("/", async (req, res) => {
   const { nome, email, senha, admin } = req.body;
 
-  if (!nome || !email || !senha || !admin) {
+  if (!nome || !email || !senha ) {
     res.status(400).json({ erro: "Informe nome, email e senha" });
     return;
   }
@@ -77,7 +78,8 @@ router.post("/", async (req, res) => {
     });
     res.status(201).json(usuario);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json( error);
+      console.log( (error as Error).message);
   }
 });
 
@@ -106,10 +108,19 @@ router.post("/login", async (req, res) => {
     // se o e-mail existe, faz-se a comparação dos hashs
     if (bcrypt.compareSync(senha, usuario.senha)) {
       // se confere, gera e retorna o token
+      const token = jwt.sign({
+        admin_logado_id: usuario.id,
+        admin_logado_nome: usuario.nome
+      },
+      process.env.JWT_KEY as string,
+      { expiresIn: "1h"})
+
       res.status(200).json({
         id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
+        admin: usuario.admin, 
+        token
       });
     } else {
       res.status(400).json({ erro: mensaPadrao });
@@ -197,5 +208,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ erro: "Erro ao deletar usuário." });
   }
 });
+
 
 export default router;

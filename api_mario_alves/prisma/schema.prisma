@@ -39,13 +39,13 @@ model Livro {
 
 
 model Usuario {
-  id            Int      @id @default(autoincrement())
-  nome          String   @db.VarChar(60)
-  email         String   @db.VarChar(60) @unique
-  senha         String   @db.VarChar(60) // senha deve ser varchar(60)
-  admin         Boolean  @default(false) // Alterado para Boolean com default false
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            Int        @id @default(autoincrement())
+  nome          String     @db.VarChar(60)
+  email         String     @db.VarChar(60) @unique
+  senha         String     @db.VarChar(60) // senha deve ser varchar(60)
+  admin         Boolean    @default(false) // Alterado para Boolean com default false
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   livros        Livro[]
   reservas      Reserva[]

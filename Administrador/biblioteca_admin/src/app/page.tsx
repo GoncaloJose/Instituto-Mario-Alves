@@ -20,7 +20,7 @@ export default function Home() {
   }, []);
 
   async function verificaLogin(data: Inputs) {
-    const response = await fetch("http://localhost:3004/admins/login", {
+    const response = await fetch("http://localhost:3004/usuarios/login", {
       method: "POST",
       headers: { "Content-type": "Application/json" },
       body: JSON.stringify({ email: data.email, senha: data.senha }),
@@ -28,13 +28,21 @@ export default function Home() {
 
     // console.log(response)
     if (response.status == 200) {
-      const admin = await response.json();
+      
+      const usuario = await response.json();
 
-      Cookies.set("admin_logado_id", admin.id);
-      Cookies.set("admin_logado_nome", admin.nome);
-      Cookies.set("admin_logado_token", admin.token);
+      if ( usuario.admin ) {
 
-      router.push("/principal");
+        Cookies.set("admin_logado_id", usuario.id);
+        Cookies.set("admin_logado_nome", usuario.nome);
+        Cookies.set("admin_logado_token", usuario.token);
+
+        router.push("/principal");
+        
+      } else { 
+          toast.error("Erro...Acesso Restrito!!");
+      }
+
     } else if (response.status == 400) {
       toast.error("Erro... Login ou senha incorretos");
     }
