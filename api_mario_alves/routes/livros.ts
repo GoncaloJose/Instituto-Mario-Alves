@@ -40,16 +40,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { titulo, autor, secao, sinopse, foto, genero } = req.body;
+  const { titulo, foto } = req.body;
 
-  if (!titulo || !autor  || !secao || !sinopse || !foto || !genero) {
-    res.status(400).json({ erro: "Informe titulo, autor, secao, sinopse, foto e genero" });
+  if (!titulo  || !foto ) {
+    res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
 
   try {
     const livros = await prisma.livro.create({
-      data: { titulo, autor,  secao, sinopse, foto, genero },
+      data: { titulo, foto },
     });
     res.status(201).json(livros);
   } catch (error) {
@@ -80,17 +80,17 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { titulo, autor, secao, sinopse, foto, genero } = req.body;
+  const { titulo, foto } = req.body;
 
-  if (!titulo || !autor || !secao || !sinopse || !foto || !genero) {
-    res.status(400).json({ erro: "Informe titulo, autor, codigo, secao, sinopse, foto e genero" });
+  if (!titulo || !foto) {
+    res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
 
   try {
     const livros = await prisma.livro.update({
       where: { id: Number(id) },
-      data: { titulo, autor, secao, sinopse, foto, genero },
+      data: { titulo, foto },
     });
     res.status(200).json(livros);
   } catch (error) {
@@ -107,9 +107,8 @@ router.get("/pesquisa/:termo", async (req, res) => {
       const livros = await prisma.livro.findMany({
         where: {
           OR: [
-            { autor: { contains: termo } },
-            { genero: { contains: termo } },
             { titulo: { contains: termo } },
+            { foto:   { contains: termo } },
           ],
         },
       });
@@ -122,9 +121,8 @@ router.get("/pesquisa/:termo", async (req, res) => {
       const livros = await prisma.livro.findMany({
         where: {
           OR: [
-            { autor: { contains: termo } },
-            { genero: { contains: termo } },
             { titulo: { contains: termo } },
+            { foto:   { contains: termo } },
           ],
         },
       });

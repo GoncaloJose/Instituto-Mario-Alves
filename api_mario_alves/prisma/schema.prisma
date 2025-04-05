@@ -15,12 +15,9 @@ datasource db {
  
 model Livro {
   id                 Int      @id @default(autoincrement())
-  titulo             String   
-  autor              String    
-  secao              String
-  sinopse            String
-  foto               String
-  genero             String
+  titulo             String   @db.VarChar(255)
+  foto               String   @db.VarChar(1024) // Novo limite de 1024 caracteres
+
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
@@ -32,18 +29,97 @@ model Livro {
   comentarios        Comentario[]
 
   emprestimos         Emprestimo[]
+
+  autores             Autor[]
+  generos             Genero[]
+  editoras            Editora[]
   
   @@map("livros")
  
 }
 
+model Autor {
+  id                 Int      @id @default(autoincrement())
+  nome               String
+  pais               String
+
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  usuario            Usuario[]
+
+  reservas           Reserva[] 
+  renovacoes         Renovacao[]
+
+  comentarios        Comentario[]
+
+  emprestimos         Emprestimo[]
+
+  livros              Livro[]
+  generos             Genero[]
+  editoras            Editora[]
+
+  @@map("autores")
+}
+
+model Genero {
+  id                 Int      @id @default(autoincrement())
+  tipo               String
+
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  usuario            Usuario[]
+
+  reservas           Reserva[] 
+  renovacoes         Renovacao[]
+
+  comentarios        Comentario[]
+
+  emprestimos         Emprestimo[]
+
+  livros               Livro[]
+  autores               Autor[]
+  editoras             Editora[]
+
+  @@map("generos")
+}
+
+model Editora {
+  id                      Int      @id @default(autoincrement())
+  nome                    String
+  cnpj                    String?
+  ano                     String
+  edicao                  String
+  descricao               String    @db.VarChar(1024)
+
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  usuario            Usuario[]
+
+  reservas           Reserva[] 
+  renovacoes         Renovacao[]
+
+  comentarios        Comentario[]
+
+  emprestimos         Emprestimo[]
+
+  autores       Autor[]
+  generos       Genero[]
+  livros        Livro[]
+  
+  @@map("editoras")
+
+}
 
 model Usuario {
   id            Int        @id @default(autoincrement())
   nome          String     @db.VarChar(60)
   email         String     @db.VarChar(60) @unique
   senha         String     @db.VarChar(60) // senha deve ser varchar(60)
-  admin         Boolean    @default(false) // Alterado para Boolean com default false
+  admin         Boolean    @default(false)
+   // Alterado para Boolean com default false
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
@@ -52,6 +128,9 @@ model Usuario {
   renovacoes    Renovacao[]
   comentarios   Comentario[]
   emprestimos   Emprestimo[]
+  autores       Autor[]
+  generos       Genero[]
+  editoras      Editora[]
 
   @@map("usuarios")
 }
@@ -70,9 +149,14 @@ model Reserva {
   emprestimos      Emprestimo[] // Corrigido para camelCase
 
   createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt  
+  updatedAt      DateTime  @updatedAt 
+
+  autores               Autor[]
+  generos               Genero[]
+  Editoras              Editora[] 
  
-  @@map("reservas") // Mapeamento correto, se a tabela no banco for "reservas"
+  @@map("reservas") 
+
 }
 
 model Renovacao {
@@ -90,6 +174,10 @@ model Renovacao {
   livro                 Livro          @relation(fields: [livroId], references: [id])
 
   emprestimos           Emprestimo[]
+
+  autores               Autor[]
+  generos               Genero[]
+  Editoras              Editora[]
 
   @@map("renovacoes")
  
@@ -109,8 +197,13 @@ model Comentario {
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
 
+  autores               Autor[]
+  generos               Genero[]
+  Editoras              Editora[]
+
 
   @@map("comentarios")               
+
 }
 
 model Emprestimo { 
@@ -125,11 +218,16 @@ model Emprestimo {
   usuarioId             Int
   usuario               Usuario        @relation(fields: [usuarioId], references: [id]) 
 
-  livro                Livro         @relation(fields: [livroId], references: [id])
-  livroId              Int
+  livro                 Livro         @relation(fields: [livroId], references: [id])
+  livroId               Int
 
-  reservas             Reserva[]
-  renovacoes           Renovacao[]
+  reservas              Reserva[]
+  renovacoes            Renovacao[]
+
+  autores               Autor[]
+  generos               Genero[]
+  Editoras              Editora[]
 
   @@map("emprestimos")
+
 }

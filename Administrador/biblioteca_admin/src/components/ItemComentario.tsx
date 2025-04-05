@@ -74,9 +74,6 @@ function ItemComentario({ comentario, comentarios, setComentarios }: listaComent
       <td className={"px-6 py-4"}>
         {comentario.livro.titulo}
       </td>
-      <td className={"px-6 py-4"}>
-        {comentario.livro.autor}
-      </td>
       <td className={`px-6 py-4`}>
         {comentario.usuario.id}
       </td>

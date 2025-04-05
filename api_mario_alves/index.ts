@@ -8,6 +8,9 @@ import comentariosRoutes from './routes/comentarios'
 import emprestimosRoutes   from './routes/emprestimos'
 import dashboardRoutes from './routes/dashboard'
 import renovacoesRoutes from './routes/renovacoes'
+import autoresRoutes from './routes/autores'
+import generosRoutes from './routes/generos'
+import editorasRoutes from './routes/editoras'
 
 
 const app = express()
@@ -25,6 +28,9 @@ app.use("/comentarios", comentariosRoutes)
 app.use("/emprestimos", emprestimosRoutes)
 app.use("/dashboard", dashboardRoutes)
 app.use("/renovacoes", renovacoesRoutes)
+app.use("/autores", autoresRoutes)
+app.use("/generos", generosRoutes)
+app.use("/editoras", editorasRoutes)
 
 app.get('/', (req, res) => {
   res.send('API: Biblioteca IMA')

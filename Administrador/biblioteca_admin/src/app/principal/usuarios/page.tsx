@@ -17,8 +17,14 @@ function CadUsuarios() {
     getUsuarios()
   }, [])
 
-  const listaUsuarios = usuarios.map((usuario: { id: any }) => (
-    <ItemUsuario key={usuario.id} usuario={usuario} usuarios={usuarios} setUsuarios={setUsuarios} />
+  const listaUsuarios = usuarios.map((usuario: UsuarioI) => (
+    <ItemUsuario
+      key={usuario.id}
+      usuario={usuario}
+      usuarios={usuarios}
+      setUsuarios={setUsuarios}
+    />
+  
   ))
 
   return (

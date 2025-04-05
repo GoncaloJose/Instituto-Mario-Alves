@@ -68,15 +68,6 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
       <td className={`px-6 py-4 ${livro.destaque ? "font-extrabold" : ""}`}>
         {livro.titulo}
       </td>
-      <td className={`px-6 py-4 ${livro.destaque ? "font-extrabold" : ""}`}>
-        {livro.autor}
-      </td>
-      <td className={`px-6 py-4 ${livro.destaque ? "font-extrabold" : ""}`}>
-        {livro.codigodoLivro}
-      </td>
-      <td className={`px-6 py-4 ${livro.destaque ? "font-extrabold" : ""}`}>
-        {livro.secao}
-      </td>
       <td className="px-6 py-4">
         <TiDeleteOutline className="text-3xl text-red-600 inline-block cursor-pointer" title="Excluir"
           onClick={excluirLivro} />&nbsp;
