@@ -43,61 +43,71 @@ Flora é pesquisadora na área da educação, tem 50 anos e busca sempre muita i
 
 * Requisitos Funcionais:
 
-1- Cadastro e Login de Usuários:
+RF:001- Cadastro e Login de Usuários:
 
-Permitir o registro de novos usuários (incluindo dados pessoais, como nome, e-mail, senha, endereço e se é ADM ou não).
+RN= Permitir o registro de novos usuários (incluindo dados pessoais, como nome, e-mail, senha, endereço e se é ADM ou não).
 
 Sistema de autenticação para login e recuperação de senha.
 
-2- Busca e Visualização de Livros:
+RF:002- Busca e Visualização de Livros:
 
-Permitir a pesquisa de livros por título, autor, gênero ou palavras-chave.
+RN= Permitir a pesquisa de livros por título, autor, gênero ou palavras-chave.
 
 Exibir detalhes dos livros (título, autor, descrição, disponibilidade e capa).
 
-3- Sistema de Empréstimo:
+RF:003- Sistema de Empréstimo:
 
-Permitir que usuários reservem livros físicos ou renovção.
+RN= Permitir que usuários reservem livros físicos ou renovção.
 
 Limitar a quantidade de livros que podem ser emprestados por usuário.
 
 Controle de prazos de devolução e notificação de atraso.
 
-4- Sistema de Gerenciamento de Livros:
+RF:004- Sistema de Gerenciamento de Livros:
 
-Permitir que administradores adicionem, editem ou removam livros do acervo.
+RN= Permitir que administradores adicionem, editem ou removam livros do acervo.
 
 Controle do estoque e atualizações de disponibilidade dos livros.
 
-5- Notificações:
+RF:005- Notificações:
 
-Enviar lembretes de devolução de livros.
+RN= Enviar lembretes de devolução de livros.
 
 Notificar usuários sobre a chegada de novos títulos ou promoções.
 
-6- Relatórios e Estatísticas:
+RF:006- Relatórios e Estatísticas:
 
-Gerar relatórios sobre os livros mais emprestados, usuários ativos e empréstimos pendentes.
+RN= Gerar relatórios sobre os livros mais emprestados, usuários ativos e empréstimos pendentes.
 
 Monitorar o desempenho da biblioteca.
 
-7- Espaço de Avaliações e Recomendações:
+RF:007- Espaço de Avaliações e Recomendações:
 
-Permitir que usuários avaliem e deixem comentários sobre os livros.
+RN= Permitir que usuários avaliem e deixem comentários sobre os livros.
 
 Sistema de recomendação baseado no histórico de leituras do usuário.
 
 * Requisitos Não Funcionais:
 
-Segurança dos dados e informações: Proteção das informações dos usuários e do acervo contra acessos não autorizados, utilizando criptografia e autenticação robusta.
+RF:001- Segurança dos dados e informações: 
 
-Sistema de recuperação de dados: Implementação de backups automáticos e regulares, permitindo a restauração de dados em caso de falhas ou perdas.
+RN= Proteção das informações dos usuários e do acervo contra acessos não autorizados, utilizando criptografia e autenticação robusta.
 
-Interface intuitiva e de fácil acesso: Design responsivo e amigável que facilita a navegação e uso do sistema, independentemente do dispositivo utilizado.
+RF:002- Sistema de recuperação de dados: 
 
-Sistema escalável: Capacidade de suportar um número crescente de usuários e volumes de dados sem comprometer o desempenho.
+RN= Implementação de backups automáticos e regulares, permitindo a restauração de dados em caso de falhas ou perdas.
 
-Documentação atualizada: Manuais técnicos e guias do sistema sempre atualizados, facilitando a manutenção e expansão futura.
+RF:003- Interface intuitiva e de fácil acesso: 
+
+RN= Design responsivo e amigável que facilita a navegação e uso do sistema, independentemente do dispositivo utilizado.
+
+RF:004- Sistema escalável: 
+
+RN= Capacidade de suportar um número crescente de usuários e volumes de dados sem comprometer o desempenho.
+
+RF:005- Documentação atualizada: 
+
+RN= Manuais técnicos e guias do sistema sempre atualizados, facilitando a manutenção e expansão futura.
 
 # Diagrama de Casos de Uso:
 
