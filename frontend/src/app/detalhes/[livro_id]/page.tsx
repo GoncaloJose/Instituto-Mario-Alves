@@ -64,22 +64,19 @@ export default function Detalhes() {
       <div className="mt-10 mb-10 mx-auto flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-5xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
         <a href="#">
           <img
-            className="rounded-t-lg md:h-3/4 md:w-3/4"
+            className="mt-10 object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg"
             src={livro?.foto}
             alt="Imagem do Livro"
           />
         </a>
-        <div className="p-5">
+        <div className="flex flex-col justify-between p-4 leading-normal">
           <a>
             <h5 className="mb-2 text-2xl font-inter tracking-tight text-gray-900 dark:text-white">
               {livro?.titulo}
             </h5>
           </a>
           <p className="mb-3 font-inter text-gray-700 dark:text-gray-400">
-            {livro?.autor}
-          </p>
-          <p className="mb-3 font-inter text-gray-700 dark:text-gray-400">
-            {livro?.sinopse}
+            {livro?.foto}
           </p>
           {usuario.id ? (
             <>

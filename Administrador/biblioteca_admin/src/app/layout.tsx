@@ -1,22 +1,22 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Toaster } from 'sonner'
+'use client';
 
-export const metadata: Metadata = {
-  title: "Admin: Biblioteca IMA",
-  description: "área administrativa da Biblioteca IMA",
-};
+import './globals.css';
+import { Toaster } from 'sonner';
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt-br">
+      <head>
+        {/* Metadados adicionais podem ser inseridos aqui */}
+        <title>Admin: Biblioteca IMA</title>
+      </head>
       <body>
-        {children}
         <Toaster richColors position="top-center" />
+        {children}
       </body>
     </html>
   );
