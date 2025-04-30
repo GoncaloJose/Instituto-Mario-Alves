@@ -40,18 +40,21 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { titulo, foto } = req.body;
+  const { titulo, foto, generosId, editoraId, autorId } = req.body;
 
   if (!titulo  || !foto ) {
     res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
+const generos = await prisma.genero.findUnique({
+  where: { id: generosId },
+})
 
   try {
-    const livros = await prisma.livro.create({
-      data: { titulo, foto },
-    });
-    res.status(201).json(livros);
+    //const livros = await prisma.livro.create({
+    //  data: { titulo, foto, autorId, editoraId },
+    //});
+    res.status(201).json({});
   } catch (error) {
     res.status(400).json(error);
   }
