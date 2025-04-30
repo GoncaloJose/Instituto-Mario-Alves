@@ -32,7 +32,8 @@ model Livro {
 
   autores             Autor[]
   generos             Genero[]
-  editoras            Editora[]
+  editora             Editora   @relation(fields: [editoraId], references: [id])
+  editoraId           Int
   
   @@map("livros")
  
