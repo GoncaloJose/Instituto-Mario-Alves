@@ -33,7 +33,7 @@ export default function Cadastrar() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/cadastros`,
+        `${process.env.NEXT_PUBLIC_URL_API}/usuarios`,
         {
           headers: {
             "Content-Type": "application/json",
