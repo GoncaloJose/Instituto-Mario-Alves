@@ -4,16 +4,19 @@ import Cookies from "js-cookie"
 import { toast } from "sonner"
 import { useState, useEffect } from "react"
 import { LivroI } from "@/utils/types/livros"
+import { AutorI } from "@/utils/types/autores"
 
 type Inputs = {
 
     titulo:           string   
-    foto:             string  
+    foto:             string 
+    autorId:          number 
 
 }
 
 function NovoLivro() {
   const [livros, setLivros] = useState<LivroI[]>([])
+  const [autores, setAutores] = useState<AutorI[]>([])
   const {
     register,
     handleSubmit,
@@ -22,17 +25,19 @@ function NovoLivro() {
   } = useForm<Inputs>()
 
   useEffect(() => {
-    async function getLivros() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`)
+    async function getAutores() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/autores`)
       const dados = await response.json()
-      setLivros(dados)
+      setAutores(dados)
     }
-    getLivros()
+    getAutores()
+    // getGenero()
+    // getEditora()
     setFocus("titulo")
   }, [])
 
-  const optionsLivro = livros.map(livro => (
-    <option key={livro.id} value={livro.id}>{livro.titulo}</option>
+  const optionsAutores = autores.map(autor => (
+    <option key={autor.id} value={autor.id}>{autor.nome}</option>
   ))
 
   async function incluirLivro(data: Inputs) {
@@ -40,6 +45,7 @@ function NovoLivro() {
     const novoLivro: Inputs = {
       titulo: data.titulo,
       foto: data.foto,
+      autorId: data.autorId
 
     }
 
@@ -65,7 +71,7 @@ function NovoLivro() {
   return (
     <>
       <h1 className="mb-4 mt-24 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white me-56">
-        Inclusão de Livros
+        Cadastro de Livros
       </h1>
 
       <form className="max-w-xl mx-auto" onSubmit={handleSubmit(incluirLivro)}>
@@ -76,6 +82,13 @@ function NovoLivro() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" required
             {...register("titulo")}
           />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Autor</label>
+          <select id="autorId" className="block" {...register("autorId")}>
+            {optionsAutores}
+          </select>
         </div>
         <div className="grid gap-6 mb-3 md:grid-cols-2">
           <div className="mb-3">
