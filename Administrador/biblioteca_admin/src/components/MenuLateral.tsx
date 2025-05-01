@@ -42,7 +42,7 @@ export function MenuLateral() {
               <span className="h-5 text-gray-600 text-2xl">
               <FaBookReader />
               </span>
-              <span className="ms-2 mt-1">Cadastrar Livros</span>
+              <span className="ms-2 mt-1">Livros</span>
             </Link>
           </li>
           <li>
