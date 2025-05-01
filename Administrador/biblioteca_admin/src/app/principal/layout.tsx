@@ -34,7 +34,7 @@ export default function RootLayout({
           </div>
         ) : (
           <div>
-            <p>Haja paciência pra esperar essa merda...</p>
+            <p>Haja paciência pra esperar essa merda... 💩💩💩</p>
           </div>
         )}
       </body>
