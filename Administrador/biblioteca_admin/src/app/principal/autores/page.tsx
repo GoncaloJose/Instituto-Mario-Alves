@@ -1,10 +1,23 @@
 'use client'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
+import { AutorI } from "@/utils/types/autores"
+import { userAgent } from "next/server"
 
 
 
 function Autores() {
+  const [autores, setAutores] = useState<AutorI[]>([])
+
+  useEffect(() => {
+    async function getAutores() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/autores`)
+      const dados = await response.json()
+      setAutores(dados)
+    }
+    getAutores()
+    
+  }, [])
     return (
         <div className='m-4 mt-24'>
         <div className='flex justify-between'>
@@ -30,6 +43,17 @@ function Autores() {
               </tr>
             </thead>
             <tbody>
+              {autores.map((autor) => (
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {autor.nome}
+                  </th>
+                  <td className="px-6 py-4">{autor.pais}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
