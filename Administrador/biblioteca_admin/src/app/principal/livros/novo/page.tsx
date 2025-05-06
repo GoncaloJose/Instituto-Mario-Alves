@@ -1,70 +1,64 @@
-'use client'
-import { useForm } from "react-hook-form"
-import Cookies from "js-cookie"
-import { toast } from "sonner"
-import { useState, useEffect } from "react"
-import { LivroI } from "@/utils/types/livros"
-import { AutorI } from "@/utils/types/autores"
+"use client";
+import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { useState, useEffect } from "react";
+import { LivroI } from "@/utils/types/livros";
+import { AutorI } from "@/utils/types/autores";
 
 type Inputs = {
-
-    titulo:           string   
-    foto:             string 
-    autorId:          number 
-
-}
+  titulo: string;
+  foto: string;
+  autorId: number;
+};
 
 function NovoLivro() {
-  const [livros, setLivros] = useState<LivroI[]>([])
-  const [autores, setAutores] = useState<AutorI[]>([])
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setFocus
-  } = useForm<Inputs>()
+  const [livros, setLivros] = useState<LivroI[]>([]);
+  const [autores, setAutores] = useState<AutorI[]>([]);
+  const { register, handleSubmit, reset, setFocus } = useForm<Inputs>();
 
   useEffect(() => {
     async function getAutores() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/autores`)
-      const dados = await response.json()
-      setAutores(dados)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/autores`
+      );
+      const dados = await response.json();
+      setAutores(dados);
     }
-    getAutores()
+    getAutores();
     // getGenero()
     // getEditora()
-    setFocus("titulo")
-  }, [])
+    setFocus("titulo");
+  }, []);
 
-  const optionsAutores = autores.map(autor => (
-    <option key={autor.id} value={autor.id}>{autor.nome}</option>
-  ))
+  const optionsAutores = autores.map((autor) => (
+    <option key={autor.id} value={autor.id}>
+      {autor.nome}
+    </option>
+  ));
 
   async function incluirLivro(data: Inputs) {
-
     const novoLivro: Inputs = {
       titulo: data.titulo,
       foto: data.foto,
-      autorId: data.autorId
+      autorId: data.autorId,
+    };
 
-    }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: "Bearer " + Cookies.get("admin_logado_token") as string
-        },
-        body: JSON.stringify(novoLivro)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: ("Bearer " +
+          Cookies.get("admin_logado_token")) as string,
       },
-    )
+      body: JSON.stringify(novoLivro),
+    });
 
     if (response.status == 201) {
-      toast.success("Ok! Livro cadastrado com sucesso!!")
-      reset()
+      toast.success("Ok! Livro cadastrado com sucesso!!");
+      reset();
     } else {
-      toast.error("Erro no cadastro do Livro...")
+      toast.error("Erro no cadastro do Livro...");
     }
   }
 
@@ -76,36 +70,64 @@ function NovoLivro() {
 
       <form className="max-w-xl mx-auto" onSubmit={handleSubmit(incluirLivro)}>
         <div className="mb-3">
-          <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Título</label>
-          <input type="text" id="titulo"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" required
+          <label
+            htmlFor="autorId"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Título
+          </label>
+          <select
+            id="titulo"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
             {...register("titulo")}
-          />
+          >
+            <option value=""></option> {/* Opção fixa */}
+          </select>
         </div>
         <div className="mb-3">
-          <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Autor</label>
-          <select id="autorId" className="block" {...register("autorId")}>
-            {optionsAutores}
+          <label
+            htmlFor="autorId"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Autor
+          </label>
+          <select
+            id="autorId"
+            className="block border border-gray-500 rounded-md p-2"
+            {...register("autorId")}
+          >
+            <option value="" className="border border-gray-700"></option>{" "}
+            {/* Opção fixa com contorno */}
+            {optionsAutores} {/* Lista dinâmica de autores cadastrados */}
           </select>
         </div>
         <div className="grid gap-6 mb-3 md:grid-cols-2">
           <div className="mb-3">
-            <label htmlFor="foto" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              URL da Foto</label>
-            <input type="text" id="foto"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" required
+            <label
+              htmlFor="foto"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              URL da Foto
+            </label>
+            <select
+              id="foto"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
               {...register("foto")}
-            />
+            >
+              <option value=""></option> {/* Opção fixa */}
+            </select>
           </div>
         </div>
 
-        <button type="submit" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-          Incluir</button>
+        <button
+          type="submit"
+          className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        >
+          Incluir
+        </button>
       </form>
     </>
-  )
+  );
 }
 
-export default NovoLivro
+export default NovoLivro;
