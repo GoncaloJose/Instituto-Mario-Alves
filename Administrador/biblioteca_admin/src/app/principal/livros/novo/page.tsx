@@ -2,21 +2,29 @@
 import { useForm } from "react-hook-form"
 import Cookies from "js-cookie"
 import { toast } from "sonner"
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { LivroI } from "@/utils/types/livros"
 import { AutorI } from "@/utils/types/autores"
+import { GeneroI } from "@/utils/types/generos" 
+import { EditoraI } from "@/utils/types/editoras"
 
 type Inputs = {
 
     titulo:           string   
     foto:             string 
     autorId:          number 
+    generoId:         number 
+    editoraId:        number
+  
 
 }
 
 function NovoLivro() {
   const [livros, setLivros] = useState<LivroI[]>([])
   const [autores, setAutores] = useState<AutorI[]>([])
+  const [generos, setGeneros] = useState<GeneroI[]>([])
+  const [editoras, setEditoras] = useState<EditoraI[]>([])
+
   const {
     register,
     handleSubmit,
@@ -30,9 +38,22 @@ function NovoLivro() {
       const dados = await response.json()
       setAutores(dados)
     }
+
+    async function getGenero() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/generos`)
+      const dados = await response.json()
+      setGeneros(dados)
+    }
+
+    async function getEditora() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/editoras`)
+      const dados = await response.json()
+      setEditoras(dados)
+    }
+
     getAutores()
-    // getGenero()
-    // getEditora()
+    getGenero()
+    getEditora()
     setFocus("titulo")
   }, [])
 
@@ -40,13 +61,22 @@ function NovoLivro() {
     <option key={autor.id} value={autor.id}>{autor.nome}</option>
   ))
 
+  const optionsGeneros = generos.map(genero => (
+    <option key={genero.id} value={genero.id}>{genero.tipo}</option>
+  ))
+
+  const optionsEditoras = editoras.map(editora => (
+    <option key={editora.id} value={editora.id}>{editora.nome}</option>
+  ))
+
   async function incluirLivro(data: Inputs) {
 
     const novoLivro: Inputs = {
       titulo: data.titulo,
       foto: data.foto,
-      autorId: data.autorId
-
+      autorId: data.autorId,
+      generoId: data.generoId,
+      editoraId: data.editoraId
     }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`,
@@ -88,6 +118,20 @@ function NovoLivro() {
             Autor</label>
           <select id="autorId" className="block" {...register("autorId")}>
             {optionsAutores}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Gênero</label>
+          <select id="generoId" className="block" {...register("generoId")}>
+            {optionsGeneros}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="titulo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Editora</label>
+          <select id="editoraId" className="block" {...register("editoraId")}>
+            {optionsEditoras}
           </select>
         </div>
         <div className="grid gap-6 mb-3 md:grid-cols-2">

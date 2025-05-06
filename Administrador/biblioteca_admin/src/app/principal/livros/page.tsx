@@ -35,37 +35,30 @@ function CadLivros() {
           className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
           Novo Autor
         </Link>
-        <Link href="livros/novo" 
+        <Link href="editoras/novo" 
           className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
           Nova Editora
         </Link>
-        <Link href="livros/novo" 
+        <Link href="generos/novo" 
           className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
-          Novo Genero
+          Novo Gênero
         </Link>
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xl text-gray-700 uppercase bg-red-500 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Foto
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Título
+                Nome
               </th>
               <th scope="col" className="px-6 py-3">
                 Autor
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Seção
+              </th><th scope="col" className="px-6 py-3">
+                Editora
               </th>
               <th scope="col" className="px-6 py-3">
                 Gênero
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Destacar
               </th>
             </tr>
           </thead>
