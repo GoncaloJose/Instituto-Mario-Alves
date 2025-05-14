@@ -40,21 +40,22 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { titulo, foto, generoId, editoraId, autorId } = req.body;
+  const { titulo, foto } = req.body;
 
-  if (!titulo  || !foto ) {
+  if (!titulo  || !foto) { // aqui falta editora autor e genero?
     res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
 const generos = await prisma.genero.findUnique({
-  where: { id: generoId },
-  
+  where: {id: 2}, //???????????????????????????? é o numero 2 ou generoId e não tem que ter a const de editora e autor tbm??
+  // aqui falta uma const de editora e autor?
 })
 
+
   try {
-    //const livros = await prisma.livro.create({
-    //  data: { titulo, foto, autorId, editoraId, generoId },
-    //});
+   // const livros = await prisma.livro.create({
+   //  data: { titulo, foto, generoId, editoraId, autorId },
+   // });
     res.status(201).json({});
   } catch (error) {
     res.status(400).json(error);
@@ -84,9 +85,9 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { titulo, foto } = req.body;
+  const { titulo, foto } = req.body; // aqui falta editora autor e genero?
 
-  if (!titulo || !foto) {
+  if (!titulo || !foto) { // aqui falta editora autor e genero?
     res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
@@ -113,6 +114,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+             // aqui falta editora autor e genero?
           ],
         },
       });
@@ -127,6 +129,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+            // aqui falta editora autor e genero?
           ],
         },
       });
