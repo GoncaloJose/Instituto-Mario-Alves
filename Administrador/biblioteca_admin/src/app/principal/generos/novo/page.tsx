@@ -8,7 +8,7 @@ import { GeneroI } from "@/utils/types/generos"
 
 type CamposGenero = {
 
-    nome:           string   
+    tipo:           string   
 
 }
 
@@ -22,15 +22,16 @@ function NovoGenero() {
        } = useForm<CamposGenero>()
      
        useEffect(() => {
-         setFocus("nome")
+         setFocus("tipo")
        }, [])
      
        async function incluirGenero(data: CamposGenero) {
      
          const novoGenero: CamposGenero = {
-           nome: data.nome,
+           tipo: data.tipo,
      
          }
+      
      
          const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/generos`,
            {
@@ -63,7 +64,7 @@ function NovoGenero() {
                  Nome</label>
                <input type="text" id="titulo"
                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" required
-                 {...register("nome")}
+                 {...register("tipo")}
                />
              </div>
      
