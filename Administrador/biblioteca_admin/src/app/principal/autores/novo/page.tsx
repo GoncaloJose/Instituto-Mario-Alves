@@ -9,7 +9,7 @@ import { AutorI } from "@/utils/types/autores"
 type CamposAutor = {
 
     nome:           string   
-    pais:             string  
+    pais:           string  
 
 }
 

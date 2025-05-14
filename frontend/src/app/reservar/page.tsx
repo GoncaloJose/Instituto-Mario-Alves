@@ -165,10 +165,10 @@ export default function Reservar() {
             </div>
 
             <Link
-              href="/"
+              href="/emprestimo"
               className="align-middle inline-flex items-center justify-center text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-inter rounded-lg text-semibold px-5 py-2.5"
             >
-              Reservar
+              Confirmar Reservar
             </Link>
           </form>
         </div>
