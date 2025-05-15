@@ -226,9 +226,7 @@ Produção acadêmica (teses e dissertações) disponível para consulta.
 
 # Comparação:
 
-![UfPel x UcPel](Atualização da documentação no gitlab;
-![image](https://github.com/user-attachments/assets/ea55828e-d8e4-45ba-ab16-4ee8ffd143d1)
-)
+![comparação](https://github.com/user-attachments/assets/ea55828e-d8e4-45ba-ab16-4ee8ffd143d1))
 
 Nosso diferencial será a criação de uma experiência personalizada e acessível para os usuários, indo além do simples empréstimo de livros. Vamos combinar tecnologia, design e serviços exclusivos para transformar a interação dos usuários com a biblioteca. Aqui estão os principais pontos que nos destacam:
 
