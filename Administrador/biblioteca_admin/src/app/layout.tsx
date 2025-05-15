@@ -12,7 +12,7 @@ export default function RootLayout({
     <html lang="pt-br">
       <head>
         {/* Metadados adicionais podem ser inseridos aqui */}
-        <title>Admin: Biblioteca IMA</title>
+        <title>Administrador: Subversivo</title>
       </head>
       <body>
         <Toaster richColors position="top-center" />
