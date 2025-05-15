@@ -141,8 +141,9 @@ model Reserva {
 
   usuario        Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId      Int       
-
+  titulo         String
   datadaReserva  DateTime 
+
 
   emprestimos      Emprestimo[] // Corrigido para camelCase
 
