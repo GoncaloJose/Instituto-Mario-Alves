@@ -40,16 +40,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { nome, cnpj, ano, edicao, descricao } = req.body;
+  const { nome } = req.body;
 
-  if (!nome || !cnpj || !ano || !edicao || !descricao) {
-    res.status(400).json({ erro: "Informe nome, cnpj, ano, edicao e descricao!!" });
+  if (!nome) {
+    res.status(400).json({ erro: "Informe nome!!" });
     return;
   }
 
   try {
     const editoras = await prisma.editora.create({
-      data: { nome, cnpj, ano, edicao, descricao },
+      data: { nome },
     });
     res.status(201).json(editoras);
   } catch (error) {
@@ -73,17 +73,17 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { nome, cnpj, ano, edicao, descricao } = req.body;
+  const { nome } = req.body;
 
-  if (!nome || !cnpj || !ano || !edicao || !descricao) {
-    res.status(400).json({ erro: "Informe nome, cnpj, ano, edicao e descricao!!" });
+  if (!nome) {
+    res.status(400).json({ erro: "Informe!!" });
     return;
   }
 
   try {
     const editoras = await prisma.editora.update({
       where: { id: Number(id) },
-      data: { nome, cnpj, ano, edicao, descricao },
+      data: { nome },
     });
     res.status(200).json(editoras);
   } catch (error) {

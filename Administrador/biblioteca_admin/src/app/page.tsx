@@ -56,7 +56,7 @@ export default function Home() {
         className="d-block"
       />
       <div className="max-w-sm">
-        <h1 className="text-3xl font-bold my-8">Admin: Biblioteca IMA</h1>
+        <h1 className="text-3xl font-bold my-8">Administrador: Subversivo</h1>
         <form
           className="max-w-sm mx-auto"
           onSubmit={handleSubmit(verificaLogin)}

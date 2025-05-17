@@ -42,6 +42,7 @@ router.post("/", async (req, res) => {
       data: {
         livroId: Number(livroId),
         usuarioId: Number(usuarioId),
+        titulo: livroExistente.titulo,
         datadaReserva: dataReserva,
         
       },

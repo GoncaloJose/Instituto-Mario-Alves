@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
+import { parse } from "path";
 
 const prisma = new PrismaClient({
   log: [
@@ -40,20 +41,34 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { titulo, foto, generosId, editoraId, autorId } = req.body;
+  const { titulo, foto, generoId, editoraId, autorId } = req.body;
 
-  if (!titulo  || !foto ) {
-    res.status(400).json({ erro: "Informe titulo e foto" });
+  if (!titulo  || !foto || !generoId || !editoraId || !autorId) { // aqui falta editora autor e genero?
+    res.status(400).json({ erro: "Informe titulo, foto, genero, editora e autor!!" });
     return;
   }
 const generos = await prisma.genero.findUnique({
-  where: { id: generosId },
+  where: { id: parseInt("1") },// generoId },//???????????????????????????? é o numero 2 ou generoId e não tem que ter a const de editora e autor tbm??
+  // aqui falta uma const de editora e autor?
+})
+const editoras = await prisma.editora.findUnique({
+  where: { id: parseInt(editoraId) },
+})
+const autores = await prisma.autor.findUnique({
+  where: { id: parseInt(autorId) },
 })
 
+
   try {
-    //const livros = await prisma.livro.create({
-    //  data: { titulo, foto, autorId, editoraId },
-    //});
+  const livros = await prisma.livro.create({
+  data: { 
+    titulo, 
+    foto, 
+    generos: { connect: { id: 2 } }, 
+    editoras: { connect: { id: 1 } }, 
+    autores: { connect: { id: 1 } } 
+  },
+});
     res.status(201).json({});
   } catch (error) {
     res.status(400).json(error);
@@ -83,9 +98,9 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { titulo, foto } = req.body;
+  const { titulo, foto } = req.body; // aqui falta editora autor e genero?
 
-  if (!titulo || !foto) {
+  if (!titulo || !foto) { // aqui falta editora autor e genero?
     res.status(400).json({ erro: "Informe titulo e foto" });
     return;
   }
@@ -112,6 +127,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+             // aqui falta editora autor e genero?
           ],
         },
       });
@@ -126,6 +142,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+            // aqui falta editora autor e genero?
           ],
         },
       });

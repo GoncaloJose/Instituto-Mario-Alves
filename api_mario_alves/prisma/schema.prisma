@@ -18,6 +18,7 @@ model Livro {
   titulo             String   @db.VarChar(255)
   foto               String   @db.VarChar(1024) // Novo limite de 1024 caracteres
 
+
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
@@ -32,7 +33,7 @@ model Livro {
 
   autores             Autor[]
   generos             Genero[]
-  editora             Editora   @relation(fields: [editoraId], references: [id])
+  editoras            Editora   @relation(fields: [editoraId], references: [id])
   editoraId           Int
   
   @@map("livros")
@@ -89,11 +90,7 @@ model Genero {
 model Editora {
   id                      Int      @id @default(autoincrement())
   nome                    String
-  cnpj                    String?
-  ano                     String
-  edicao                  String
-  descricao               String    @db.VarChar(1024)
-
+  
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
@@ -144,8 +141,9 @@ model Reserva {
 
   usuario        Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId      Int       
-
+  titulo         String
   datadaReserva  DateTime 
+
 
   emprestimos      Emprestimo[] // Corrigido para camelCase
 
