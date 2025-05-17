@@ -108,7 +108,7 @@ router.put("/:id", async (req, res) => {
   try {
     const livros = await prisma.livro.update({
       where: { id: Number(id) },
-      data: { titulo, foto },
+      data: { titulo, foto }, // editora genero
     });
     res.status(200).json(livros);
   } catch (error) {
