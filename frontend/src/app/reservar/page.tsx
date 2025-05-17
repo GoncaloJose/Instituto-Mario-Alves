@@ -67,7 +67,7 @@ export default function Reservar() {
         setTimeout(() => {
           setMensagemSucesso(null);
           router.push(
-            `/emprestimo?livroId=${data.livroId}&titulo=${encodeURIComponent(
+            `/minha_pagina?livroId=${data.livroId}&titulo=${encodeURIComponent(
               data.titulo
             )}&usuarioId=${data.usuarioId}&datadaReserva=${data.datadaReserva}`
           );

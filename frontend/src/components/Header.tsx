@@ -35,7 +35,7 @@ export function Header() {
                 </p>
 
                 <Link
-                  href="/emprestimo"
+                  href="/minha_pagina"
                   className="text-sm font-inter text-white bg-vermelho hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Minha&nbsp;Página
