@@ -1,6 +1,7 @@
 import { LivroI } from "@/utils/types/livros";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation"
 
 type Inputs = {
   termo: string;
@@ -11,6 +12,7 @@ type InputsPesquisaProps = {
 };
 
 export function InputPesquisa({ setLivros }: InputsPesquisaProps) {
+  const router = useRouter()
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   async function enviaPesquisa(data: Inputs) {
@@ -20,28 +22,11 @@ export function InputPesquisa({ setLivros }: InputsPesquisaProps) {
       alert("Informe, no mínimo, 2 caracteres ou mais para pesquisar");
       return;
     }
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/livros/pesquisa/${data.termo}`
-    );
-
-    const dados = await response.json();
-
-    if (dados.length == 0) {
-      alert("Não há livros, autor com esse nome");
-      reset({ termo: "" });
-      return;
-    }
-
-    setLivros(dados);
+    // criando uma rota pra pesquisa
+    const pesquisaUrl = `/resultado_pesquisa?termo=${data.termo}`
+    router.push(pesquisaUrl)
   }
 
-  async function mostraDestaques() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`);
-    const dados = await response.json();
-    setLivros(dados);
-    reset({ termo: "" });
-  }
 
   return (
     <section className="flex max-w-3xl mx-auto mt-3">
