@@ -62,11 +62,11 @@ export function MenuLateral() {
             </Link>
           </li>
           <li>
-          <Link href="/principal/locacao" className="flex items-center p-2  text-white">
+          <Link href="/principal/emprestimos" className="flex items-center p-2  text-white">
               <span className="h-5 text-white text-2xl">
               <FaAddressBook />
               </span>
-              <span className="ms-2 mt-1">Gerenciar das Locações</span>
+              <span className="ms-2 mt-1">Emprestimos</span>
             </Link>
           </li>
           <li>
