@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res) => { // remover titulo e renvação
   const { livroId, titulo, datadaReserva, status, datadaEntrega, usuarioId, renovacoes } = req.body;
 
   if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !usuarioId || !renovacoes) {

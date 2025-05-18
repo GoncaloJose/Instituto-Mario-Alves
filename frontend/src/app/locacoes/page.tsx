@@ -54,8 +54,8 @@ export default function Locacoes() {
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {locacoes.map((locacao) => (
               <li key={locacao.id} className="p-4">
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Id do Usuário: {locacao.usuarioId}
+                <p className="text-lg font-semibold text-gray-900 dark:text-white"> 
+                  Id do Usuário: {locacao.usuarioId} 
                 </p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
                   Id do Livro: {locacao.livroId}
