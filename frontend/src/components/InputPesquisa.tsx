@@ -19,7 +19,7 @@ export function InputPesquisa({ setLivros }: InputsPesquisaProps) {
     //alert(data.termo);
 
     if (data.termo.length < 2) {
-      alert("Informe, no mínimo, 2 caracteres ou mais para pesquisar");
+      alert("Informe, no mínimo, 2 caracteres para pesquisar");
       return;
     }
     // criando uma rota pra pesquisa
