@@ -26,7 +26,7 @@ function ResultadoPesquisa() {
         </h1>
              <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {livrosEncontrados.map((livro) => (
-                 <ItemLivros data={livro} key={livro.id} />
+                 <ItemLivros data={livro} key={livro} />
                 ))}
             </section>
 
