@@ -49,17 +49,17 @@ router.post("/", async (req, res) => {
     });
 
     // Criar empréstimos automaticamente
-    await prisma.emprestimo.create({
-      data: {
-        livroId: Number(livroId),
-        usuarioId: Number(usuarioId),
-        titulo: titulo,
-        datadaReserva: dataReserva,
-        status: "Reservado",
-        datadaEntrega: dataEntrega
+   // await prisma.emprestimo.create({
+     // data: {
+      //  livroId: Number(livroId),
+      //  usuarioId: Number(usuarioId),
+      // titulo: titulo,
+      //  datadaReserva: dataReserva,
+      //  status: "Reservado",
+      //  datadaEntrega: dataEntrega
 
-      },
-    });
+    //  },
+  //  });
 
     res.status(201).json({
       mensagem: "Reserva feita com sucesso", reserva
