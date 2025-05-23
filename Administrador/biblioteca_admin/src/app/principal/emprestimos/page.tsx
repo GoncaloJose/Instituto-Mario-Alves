@@ -40,11 +40,11 @@ function Emprestimos() {
 
     setFocus("usuarioId");
 
-    // Definir datas automaticamente
+  
     const hoje = new Date();
-    const retirada = hoje.toISOString().split("T")[0];
+    const retirada = hoje.toISOString().split("T")[0]; 
     const entrega = new Date(hoje);
-    entrega.setDate(hoje.getDate() + 7);
+    entrega.setDate(hoje.getDate() + 7); 
     const entregaFormatada = entrega.toISOString().split("T")[0];
 
     setValue("dataRetirada", retirada);
@@ -76,8 +76,10 @@ function Emprestimos() {
           </label>
           <select id="usuarioId" className="block border border-gray-500 rounded-md p-2" {...register("usuarioId")}>
             <option value="">Selecione um usuário</option>
-            {usuarios.map(usuario => (
-              <option key={usuario.id} value={usuario.id}>{usuario.nome}</option>
+            {usuarios.map((usuario) => (
+              <option key={usuario.id} value={usuario.id}>
+                {usuario.nome}
+              </option>
             ))}
           </select>
         </div>
@@ -88,36 +90,26 @@ function Emprestimos() {
           </label>
           <select id="livroId" className="block border border-gray-500 rounded-md p-2 text-black" {...register("livroId")}>
             <option value="">Selecione um livro</option>
-            {livros.map(livro => (
-              <option key={livro.id} value={livro.id}>{livro.titulo}</option>
+            {livros.map((livro) => (
+              <option key={livro.id} value={livro.id}>
+                {livro.titulo}
+              </option>
             ))}
           </select>
         </div>
 
         <div className="mb-3">
           <label htmlFor="dataRetirada" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Data de Retirada
+            Data da Retirada
           </label>
-          <input
-            type="date"
-            id="dataRetirada"
-            className="block border border-gray-500 rounded-md p-2"
-            {...register("dataRetirada")}
-            readOnly
-          />
+          <input type="date" id="dataRetirada" className="block border border-gray-500 rounded-md p-2" {...register("dataRetirada")} readOnly />
         </div>
 
         <div className="mb-3">
           <label htmlFor="dataEntrega" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Data de Entrega
+            Data da Entrega
           </label>
-          <input
-            type="date"
-            id="dataEntrega"
-            className="block border border-gray-500 rounded-md p-2"
-            {...register("dataEntrega")}
-            readOnly
-          />
+          <input type="date" id="dataEntrega" className="block border border-gray-500 rounded-md p-2" {...register("dataEntrega")} readOnly />
         </div>
 
         <button type="submit" className="bg-vermelho hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

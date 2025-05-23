@@ -1,33 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 
-// const prisma = new PrismaClient()
-const prisma = new PrismaClient({
-  log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-    {
-      emit: 'stdout',
-      level: 'error',
-    },
-    {
-      emit: 'stdout',
-      level: 'info',
-    },
-    {
-      emit: 'stdout',
-      level: 'warn',
-    },
-  ],
-});
-
-prisma.$on('query', (e) => {
-  console.log('Query: ' + e.query);
-  console.log('Params: ' + e.params);
-  console.log('Duration: ' + e.duration + 'ms');
-});
+const prisma = new PrismaClient();
 
 const router = Router();
 
@@ -36,33 +10,41 @@ router.get("/", async (req, res) => {
     const emprestimos = await prisma.emprestimo.findMany();
     res.status(200).json(emprestimos);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({ erro: "Erro ao buscar empréstimos." });
   }
 });
 
-router.post("/", async (req, res) => { // remover titulo e renvação
-  const { livroId, titulo, datadaReserva, status, datadaEntrega, usuarioId, renovacoes } = req.body;
+router.post("/", async (req, res) => {
+  const { livroId, dataRetirada, dataEntrega, usuarioId } = req.body;
 
-  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !usuarioId || !renovacoes) {
-    res.status(400).json({ "erro": "Informe livro, título, usuário datadaReserva, status, datadaEntrega e renovacoes" });
-    return;
+  if (!livroId || !dataRetirada || !dataEntrega || !usuarioId) {
+    return res.status(400).json({ erro: "Dados incompletos." });
   }
 
   try {
+    const livro = await prisma.livro.findUnique({
+      where: { id: parseInt(livroId) },
+      select: { titulo: true },
+    });
+
+    if (!livro) {
+      return res.status(404).json({ erro: "Livro não encontrado." });
+    }
+
     const emprestimo = await prisma.emprestimo.create({
       data: {
-        livroId,
-        titulo,
-        datadaReserva: new Date(datadaReserva).toISOString(),
-        status,
-        datadaEntrega: new Date(datadaEntrega).toISOString(),
-        usuarioId,
-        renovacoes
-      }
+        livroId: parseInt(livroId),
+        titulo: livro.titulo,
+        datadaReserva: new Date(dataRetirada).toISOString(),
+        status: "Locado",
+        datadaEntrega: new Date(dataEntrega).toISOString(),
+        usuarioId: parseInt(usuarioId),
+      },
     });
+
     res.status(201).json(emprestimo);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(500).json({ erro: "Erro interno ao processar o empréstimo." });
   }
 });
 
@@ -70,50 +52,11 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const emprestimos = await prisma.emprestimo.delete({
-      where: { id: Number(id) }
-    });
-    res.status(200).json(emprestimos);
+    await prisma.emprestimo.delete({ where: { id: Number(id) } });
+    res.status(200).json({ mensagem: "Empréstimo excluído com sucesso." });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({ erro: "Erro ao excluir empréstimo." });
   }
-});
-
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { livroId, titulo, datadaReserva, status, datadaEntrega, usuarioId, renovacoes } = req.body;
-
-  if (!livroId || !titulo || !datadaReserva || !status || !datadaEntrega || !usuarioId || !renovacoes) {
-    res.status(400).json({ "erro": "Informe livro, titulo, datadaReserva, status, datadaEntrega, usuarioId e renovacoes" });
-    return;
-  }
-
-  try {
-    const emprestimos = await prisma.emprestimo.update({
-      where: { id: Number(id) },
-      data: {
-        usuarioId,
-        livroId,
-        titulo,
-        datadaReserva: new Date(datadaReserva).toISOString(),
-        status,
-        datadaEntrega: new Date(datadaEntrega).toISOString(),
-        renovacoes
-      }
-    });
-    res.status(200).json(emprestimos);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
-
-router.get("/emprestimos", async (req, res) => { 
-  try { 
-    const emprestimos = await prisma.emprestimo.findMany(); 
-    res.status(200).json(emprestimos); 
-  } catch (error) { 
-    res.status(400).json(error); 
-  } 
 });
 
 export default router;

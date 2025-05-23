@@ -222,7 +222,6 @@ model Emprestimo {
 
   reservas              Reserva[]
   renovacoes            Renovacao[]
-
   autores               Autor[]
   generos               Genero[]
   Editoras              Editora[]

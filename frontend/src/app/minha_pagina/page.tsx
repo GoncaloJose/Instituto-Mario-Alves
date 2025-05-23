@@ -8,7 +8,8 @@ type Emprestimo = {
   livroId: number;
   usuarioId: number;
   titulo: string;
-  datadaReserva: string;
+  datadaRetirada: string;
+  dataEntrega: string;
   renovacoes: number;
   status: string;
 };
@@ -18,35 +19,34 @@ export default function Emprestimo() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    async function getReservas() {
+    async function getEmprestimos() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos`);
         const dados = await response.json();
         setEmprestimos(dados);
-        
       } catch (error) {
-        console.error("Erro ao buscar reservas:", error);
+        console.error("Erro ao buscar empréstimos:", error);
       }
     }
 
-    getReservas();
+    getEmprestimos();
   }, []);
 
-  
-  async function excluirReserva(id: number) {
+  async function excluirEmprestimo(id: number) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         setEmprestimos((emprestimos) => emprestimos.filter((emprestimo) => emprestimo.id !== id));
+        alert("Empréstimo excluído com sucesso!");
       } else {
-        alert("Erro ao excluir a reserva.");
+        alert("Erro ao excluir o empréstimo.");
       }
     } catch (error) {
-      console.error("Erro ao excluir reserva:", error);
-      alert("Erro ao excluir reserva.");
+      console.error("Erro ao excluir empréstimo:", error);
+      alert("Erro ao excluir empréstimo.");
     }
   }
 
@@ -62,11 +62,10 @@ export default function Emprestimo() {
             <p className="text-lg font-semibold text-left ml-10">📖 Título: {emprestimo.titulo}</p>
             <p className="text-lg font-semibold text-left ml-10">🆔 ID do Livro: {emprestimo.livroId}</p>
             <p className="text-lg font-semibold text-left ml-10">👤 ID do Usuário: {emprestimo.usuarioId}</p>
-            <p className="text-lg font-semibold text-left ml-10">📅 Data da Reserva: {emprestimo.datadaReserva}</p>
-
-       
+            <p className="text-lg font-semibold text-left ml-10">📅 Data de Retirada: {emprestimo.datadaRetirada}</p>
+            <p className="text-lg font-semibold text-left ml-10">📅 Data da Entrega: {emprestimo.dataEntrega}</p>
             <button
-              onClick={() => excluirReserva(emprestimo.id)}
+              onClick={() => excluirEmprestimo(emprestimo.id)}
               className="absolute bottom-4 right-4 bg-vermelho text-white text-sm px-3 py-2 rounded-lg hover:bg-red-800"
             >
               Excluir
@@ -74,7 +73,7 @@ export default function Emprestimo() {
           </div>
         ))
       ) : (
-        <p className="text-lg font-semibold text-center text-gray-700">Nenhuma reserva encontrada.</p>
+        <p className="text-lg font-semibold text-center text-gray-700">Nenhum empréstimo encontrado.</p>
       )}
     </section>
   );
