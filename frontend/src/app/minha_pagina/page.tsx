@@ -8,14 +8,22 @@ type Emprestimo = {
   livroId: number;
   usuarioId: number;
   titulo: string;
-  datadaRetirada: string;
-  dataEntrega: string;
-  renovacoes: number;
+  datadaReserva: string;
+  datadaEntrega: string;
   status: string;
 };
 
-export default function Emprestimo() {
+type Reserva = {
+  id: number;
+  livroId: number;
+  usuarioId: number;
+  titulo: string;
+  datadaReserva: string;
+};
+
+export default function MinhaPagina() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
+  const [reservas, setReservas] = useState<Reserva[]>([]);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -29,7 +37,18 @@ export default function Emprestimo() {
       }
     }
 
+    async function getReservas() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas`);
+        const dados = await response.json();
+        setReservas(dados);
+      } catch (error) {
+        console.error("Erro ao buscar reservas:", error);
+      }
+    }
+
     getEmprestimos();
+    getReservas();
   }, []);
 
   async function excluirEmprestimo(id: number) {
@@ -50,31 +69,80 @@ export default function Emprestimo() {
     }
   }
 
-  return (
-    <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-        Detalhes do Empréstimo
-      </h1>
+  async function excluirReserva(id: number) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`, {
+        method: "DELETE",
+      });
 
-      {emprestimos.length > 0 ? (
-        emprestimos.map((emprestimo) => (
-          <div key={emprestimo.id} className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg relative">
-            <p className="text-lg font-semibold text-left ml-10">📖 Título: {emprestimo.titulo}</p>
-            <p className="text-lg font-semibold text-left ml-10">🆔 ID do Livro: {emprestimo.livroId}</p>
-            <p className="text-lg font-semibold text-left ml-10">👤 ID do Usuário: {emprestimo.usuarioId}</p>
-            <p className="text-lg font-semibold text-left ml-10">📅 Data de Retirada: {emprestimo.datadaRetirada}</p>
-            <p className="text-lg font-semibold text-left ml-10">📅 Data da Entrega: {emprestimo.dataEntrega}</p>
-            <button
-              onClick={() => excluirEmprestimo(emprestimo.id)}
-              className="absolute bottom-4 right-4 bg-vermelho text-white text-sm px-3 py-2 rounded-lg hover:bg-red-800"
-            >
-              Excluir
-            </button>
-          </div>
-        ))
-      ) : (
-        <p className="text-lg font-semibold text-center text-gray-700">Nenhum empréstimo encontrado.</p>
-      )}
+      if (response.ok) {
+        setReservas((reservas) => reservas.filter((reserva) => reserva.id !== id));
+        alert("Reserva excluída com sucesso!");
+      } else {
+        alert("Erro ao excluir a reserva.");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir reserva:", error);
+      alert("Erro ao excluir reserva.");
+    }
+  }
+
+  return (
+    <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen flex gap-6">
+      
+      <div className="w-1/2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Empréstimos</h1>
+        {emprestimos.length > 0 ? (
+          emprestimos.map((emprestimo) => (
+            <div key={emprestimo.id} className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+              <p className="text-lg font-semibold">📖 {emprestimo.titulo}</p>
+              <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
+              <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
+              <p className="text-lg">📅 Retirada: {new Date(emprestimo.datadaReserva).toLocaleDateString("pt-BR")}</p>
+              <p className="text-lg">📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}</p>
+
+              
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => excluirEmprestimo(emprestimo.id)}
+                  className="bg-vermelho text-white px-4 py-2 rounded hover:bg-red-800"
+                >
+                  Excluir Empréstimo
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-lg font-semibold text-gray-700">Nenhum empréstimo encontrado.</p>
+        )}
+      </div>
+
+      
+      <div className="w-1/2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reservas</h1>
+        {reservas.length > 0 ? (
+          reservas.map((reserva) => (
+            <div key={reserva.id} className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+              <p className="text-lg font-semibold">📖 {reserva.titulo}</p>
+              <p className="text-lg">🆔 Livro ID: {reserva.livroId}</p>
+              <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
+              <p className="text-lg">📅 Reserva: {new Date(reserva.datadaReserva).toLocaleDateString("pt-BR")}</p>
+
+              
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => excluirReserva(reserva.id)}
+                  className="bg-vermelho text-white px-4 py-2 rounded hover:bg-red-800"
+                >
+                  Excluir Reserva
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-lg font-semibold text-gray-700">Nenhuma reserva encontrada.</p>
+        )}
+      </div>
     </section>
   );
 }
