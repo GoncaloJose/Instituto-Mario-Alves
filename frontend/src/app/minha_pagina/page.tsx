@@ -107,7 +107,7 @@ export default function MinhaPagina() {
                   onClick={() => excluirEmprestimo(emprestimo.id)}
                   className="bg-vermelho text-white px-4 py-2 rounded hover:bg-red-800"
                 >
-                  Excluir Empréstimo
+                  Excluir Empré
                 </button>
               </div>
             </div>
