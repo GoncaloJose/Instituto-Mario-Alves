@@ -25,12 +25,12 @@ export function ItemLivros({ data }: { data: LivroI }) {
         </h5>
 
         <p className="mb-3 text-sm font-inter text-gray-700 dark:text-gray-400">
-          {data.foto}
+          {data.autor} 
         </p>
         <Link
           href={`/detalhes/${data.id}`}
           type="button"
-          className="px-3 py-2 font-inter text-sm text-white bg-vermelho rounded-lg hover:bg-yallow-500 focus:ring-4 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
+         className="px-3 py-2 font-inter text-sm text-white bg-vermelho rounded-lg hover:bg-yallow-500 focus:ring-4 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
         >
           Sinopse
         </Link>

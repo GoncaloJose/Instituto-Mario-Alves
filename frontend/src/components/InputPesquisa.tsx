@@ -19,7 +19,7 @@ export function InputPesquisa({ setLivros }: InputsPesquisaProps) {
     //alert(data.termo);
 
     if (data.termo.length < 2) {
-      alert("Informe, no mínimo, 2 caracteres ou mais para pesquisar");
+      alert("Informe, no mínimo, 2 caracteres para pesquisar");
       return;
     }
     // criando uma rota pra pesquisa
@@ -44,8 +44,8 @@ export function InputPesquisa({ setLivros }: InputsPesquisaProps) {
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 20 20"
-            >
+              viewBox="0 0 20 20">
+
               <path
                 stroke="currentColor"
                 strokeLinecap="round"

@@ -43,7 +43,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const { titulo, foto, generoId, editoraId, autorId } = req.body;
 
-  if (!titulo  || !foto || !generoId || !editoraId || !autorId) { // aqui falta editora autor e genero?
+  if (!titulo  || !foto || !generoId || !editoraId || !autorId) { 
     res.status(400).json({ erro: "Informe titulo, foto, genero, editora e autor!!" });
     return;
   }
@@ -127,9 +127,16 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
-             // aqui falta editora autor e genero?
+            { generos: { some: { tipo: { contains: termo } } } },
+            { autores: { some: { nome: { contains: termo } } } },
+            { editoras: { nome: { contains: termo } }}
           ],
         },
+        include: {
+          generos: true,
+          autores: true,
+          editoras: true
+        }
       });
       res.status(200).json(livros);
     } catch (error) {

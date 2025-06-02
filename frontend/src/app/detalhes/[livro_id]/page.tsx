@@ -75,14 +75,9 @@ export default function Detalhes() {
               {livro?.titulo}
             </h5>
           </a>
-          <p className="mb-3 font-inter text-gray-700 dark:text-gray-400">
-            {livro?.foto}
-          </p>
+
           {usuario.id ? (
             <>
-              <h3 className="text-xl font-inter tracking-tight text-gray-900 dark:text-white">
-                O que achou do Livro?
-              </h3>
               <form onSubmit={handleSubmit(enviaComentario)}>
                 <input
                   type="text"
@@ -127,8 +122,11 @@ export default function Detalhes() {
             </h3>
           )}
 
-          <Link href={`/reservar?livroId=${livro?.id}&titulo=${livro?.titulo ? encodeURIComponent(livro.titulo) : ''}`}
-            className="inline-flex items-center ms-5 px-3 py-2 text-sm font-inter text-center text-white bg-vermelho rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          <Link
+            href={`/reservar?livroId=${livro?.id}&titulo=${
+              livro?.titulo ? encodeURIComponent(livro.titulo) : ""
+            }`}
+            className="ms-5 mt-5 flex items-center px-5 py-4 text-sm font-inter text-center text-white bg-vermelho rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           >
             Reservar
             <svg
