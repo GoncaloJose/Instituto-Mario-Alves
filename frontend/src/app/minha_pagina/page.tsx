@@ -87,9 +87,35 @@ export default function MinhaPagina() {
     }
   }
 
+  async function renovarEmprestimo(id: number, datadaEntrega: string) {
+  try {
+    const novaData = new Date(datadaEntrega);
+    novaData.setDate(novaData.getDate() + 7);
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ datadaEntrega: novaData.toISOString() }),
+    });
+
+    if (response.ok) {
+      setEmprestimos((emprestimos) =>
+        emprestimos.map((emprestimo) =>
+          emprestimo.id === id ? { ...emprestimo, datadaEntrega: novaData.toISOString() } : emprestimo
+        )
+      );
+      alert("Empréstimo renovado com sucesso!");
+    } else {
+      alert("Erro ao renovar o empréstimo.");
+    }
+  } catch (error) {
+    console.error("Erro ao renovar empréstimo:", error);
+    alert("Erro ao renovar empréstimo.");
+  }
+}
+
   return (
     <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen flex gap-6">
-      
       <div className="w-1/2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Empréstimos</h1>
         {emprestimos.length > 0 ? (
@@ -101,11 +127,17 @@ export default function MinhaPagina() {
               <p className="text-lg">📅 Retirada: {new Date(emprestimo.datadaReserva).toLocaleDateString("pt-BR")}</p>
               <p className="text-lg">📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}</p>
 
-              
-              <div className="mt-4 flex justify-end">
+              <div className="mt-4 flex justify-end gap-4">
+                <button
+                  onClick={() => renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
+                >
+                  Renovar Empréstimo
+                </button>
+
                 <button
                   onClick={() => excluirEmprestimo(emprestimo.id)}
-                  className="bg-vermelho text-white px-4 py-2 rounded hover:bg-red-800"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
                 >
                   Excluir Empréstimo
                 </button>
@@ -117,7 +149,6 @@ export default function MinhaPagina() {
         )}
       </div>
 
-      
       <div className="w-1/2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reservas</h1>
         {reservas.length > 0 ? (
@@ -128,11 +159,10 @@ export default function MinhaPagina() {
               <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
               <p className="text-lg">📅 Reserva: {new Date(reserva.datadaReserva).toLocaleDateString("pt-BR")}</p>
 
-              
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => excluirReserva(reserva.id)}
-                  className="bg-vermelho text-white px-4 py-2 rounded hover:bg-red-800"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800"
                 >
                   Excluir Reserva
                 </button>
