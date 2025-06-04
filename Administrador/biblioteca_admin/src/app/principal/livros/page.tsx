@@ -50,7 +50,10 @@ function CadLivros() {
           <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Nome
+                Livro
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Nome do Livro
               </th>
               <th scope="col" className="px-6 py-3">
                 Autor
@@ -59,6 +62,12 @@ function CadLivros() {
               </th>
               <th scope="col" className="px-6 py-3">
                 Gênero
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Sinopse
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Destacar & Excluir
               </th>
             </tr>
           </thead>

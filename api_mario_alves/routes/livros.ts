@@ -41,9 +41,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { titulo, foto, generoId, editoraId, autorId } = req.body;
+  const { titulo, foto, sinopse, generoId, editoraId, autorId } = req.body;
 
-  if (!titulo  || !foto || !generoId || !editoraId || !autorId) { 
+  if (!titulo  || !foto || !sinopse || !generoId || !editoraId || !autorId) { 
     res.status(400).json({ erro: "Informe titulo, foto, genero, editora e autor!!" });
     return;
   }
@@ -64,6 +64,7 @@ const autores = await prisma.autor.findUnique({
   data: { 
     titulo, 
     foto, 
+    sinopse,
     generos: { connect: { id: 2 } }, 
     editoras: { connect: { id: 1 } }, 
     autores: { connect: { id: 1 } } 
@@ -83,6 +84,18 @@ router.delete("/:id", async (req, res) => {
       where: { livroId: Number(id) },
     });
 
+    await prisma.autor.deleteMany({
+      where: { id: Number(id) },
+    });
+
+    await prisma.genero.deleteMany({
+      where: { id: Number(id) },
+    });
+
+    await prisma.editora.deleteMany({
+      where: { id: Number(id) },
+    });
+    
     await prisma.comentario.deleteMany({
       where: { livroId: Number(id) },
     });
@@ -98,17 +111,24 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { titulo, foto } = req.body; // aqui falta editora autor e genero?
+  const { titulo, foto, sinopse, editoraId, autorId, generoId } = req.body; // aqui falta editora autor e genero?
 
-  if (!titulo || !foto) { // aqui falta editora autor e genero?
-    res.status(400).json({ erro: "Informe titulo e foto" });
+  if (!titulo || !foto || !sinopse || !editoraId || !autorId || !generoId) { // aqui falta editora autor e genero?
+    res.status(400).json({ erro: "Informe titulo, foto, editora, autor ou gênero!!" });
     return;
   }
 
   try {
     const livros = await prisma.livro.update({
       where: { id: Number(id) },
-      data: { titulo, foto }, // editora genero
+      data: { 
+        titulo, 
+        foto, 
+        sinopse, 
+        editoras: { connect: { id: Number(editoraId) } }, 
+        autores: { connect: { id: Number(autorId) } }, 
+        generos: { connect: { id: Number(generoId) } } 
+      }, // editora genero
     });
     res.status(200).json(livros);
   } catch (error) {
@@ -127,6 +147,7 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+            { sinopse:   { contains: termo } },
             { generos: { some: { tipo: { contains: termo } } } },
             { autores: { some: { nome: { contains: termo } } } },
             { editoras: { nome: { contains: termo } }}
@@ -149,6 +170,11 @@ router.get("/pesquisa/:termo", async (req, res) => {
           OR: [
             { titulo: { contains: termo } },
             { foto:   { contains: termo } },
+            { sinopse: { contains: termo } },
+            { generos: { some: { tipo: { contains: termo } } } },
+            { autores: { some: { nome: { contains: termo } } } },
+            { editoras: { nome: { contains: termo } }}
+
             // aqui falta editora autor e genero?
           ],
         },

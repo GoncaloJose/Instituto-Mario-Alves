@@ -1,9 +1,15 @@
+
 export interface LivroI {
-    destaque: any
+
+    destaque:         boolean
 
     id:               number
     titulo:           string   
     foto:             string
+    sinopse:          string
+    generoId:         string
+    editora:          string
+    autorId:          string
     createdAt:        Date
     updatedAt:        Date
 }
