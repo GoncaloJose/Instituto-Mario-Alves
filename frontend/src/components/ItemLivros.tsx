@@ -27,6 +27,9 @@ export function ItemLivros({ data }: { data: LivroI }) {
         <p className="mb-3 text-sm font-inter text-gray-700 dark:text-gray-400">
           {data.autor} 
         </p>
+        <p className="mb-3 text-sm font-inter text-gray-700 dark:text-gray-400">
+          {data.sinopse} 
+        </p>
         <Link
           href={`/detalhes/${data.id}`}
           type="button"

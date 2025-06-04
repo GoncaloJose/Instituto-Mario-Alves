@@ -17,7 +17,7 @@ model Livro {
   id                 Int      @id @default(autoincrement())
   titulo             String   @db.VarChar(255)
   foto               String   @db.VarChar(1024) // Novo limite de 1024 caracteres
-
+  sinopse            String?  @db.VarChar(255)
 
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
