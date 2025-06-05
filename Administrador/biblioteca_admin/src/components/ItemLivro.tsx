@@ -69,6 +69,18 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
         {livro.titulo}
       </td>
       <td className="px-6 py-4">
+        {livro.autorId}
+      </td>
+      <td className="px-6 py-4">
+        {livro.editora}
+      </td>
+      <td className="px-6 py-4">
+        {livro.generoId}
+      </td>
+      <td className="px-6 py-4">
+        {livro.sinopse}
+      </td>
+      <td className="px-6 py-4">
         <TiDeleteOutline className="text-3xl text-red-600 inline-block cursor-pointer" title="Excluir"
           onClick={excluirLivro} />&nbsp;
         <FaRegStar className="text-3xl text-yellow-600 inline-block cursor-pointer" title="Destacar"
