@@ -76,10 +76,10 @@ function NovoLivro() {
 
         <div className="mb-3">
           <label htmlFor="autorId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Autor
+            Autor(a)
           </label>
           <select id="autorId" className="block border border-gray-500 rounded-md p-2" {...register("autorId")}>
-            <option value="">Selecione um autor</option>
+            <option value="">Selecione um autor(a)</option>
             {autores.map(autor => (
               <option key={autor.id} value={autor.id}>{autor.nome}</option>
             ))}
@@ -91,7 +91,7 @@ function NovoLivro() {
             Gênero
           </label>
           <select id="generoId" className="block border border-gray-500 rounded-md p-2" {...register("generoId")}>
-            <option value="">Selecione um gênero</option>
+            <option value="">Selecionar gênero</option>
             {generos.map(genero => (
               <option key={genero.id} value={genero.id}>{genero.tipo}</option>
             ))}
@@ -99,11 +99,11 @@ function NovoLivro() {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="editoraId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          <label htmlFor="editora" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Editora
           </label>
-          <select id="editoraId" className="block border border-gray-500 rounded-md p-2" {...register("editoraId")}>
-            <option value="">Selecione uma editora</option>
+          <select id="editora" className="block border border-gray-500 rounded-md p-2" {...register("editoraId")}>
+            <option value="">Selecionar editora</option>
             {editoras.map(editora => (
               <option key={editora.id} value={editora.id}>{editora.nome}</option>
             ))}
