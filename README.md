@@ -72,5 +72,3 @@ git push origin minha-melhoria
 
 Este projeto está sob a licença MIT, permitindo seu uso e modificação livremente.
 
-Se precisar de ajustes ou quiser adicionar mais detalhes, me avise! 🚀😊
-: Biblioteca IMA - UFRJ
