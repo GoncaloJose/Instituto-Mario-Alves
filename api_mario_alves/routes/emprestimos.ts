@@ -69,7 +69,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Rota: renovar empréstimo (adiciona +7 dias à entrega atual)
-router.put("/renovar/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
