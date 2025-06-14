@@ -2,22 +2,24 @@ import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 
 const prisma = new PrismaClient();
-
 const router = Router();
 
+// Rota: listar todos os empréstimos
 router.get("/", async (req, res) => {
   try {
     const emprestimos = await prisma.emprestimo.findMany();
     res.status(200).json(emprestimos);
   } catch (error) {
+    console.error("Erro ao buscar empréstimos:", error);
     res.status(400).json({ erro: "Erro ao buscar empréstimos." });
   }
 });
 
+// Rota: criar novo empréstimo com data atual e +7 dias
 router.post("/", async (req, res) => {
-  const { livroId, dataRetirada, dataEntrega, usuarioId } = req.body;
+  const { livroId, usuarioId } = req.body;
 
-  if (!livroId || !dataRetirada || !dataEntrega || !usuarioId) {
+  if (!livroId || !usuarioId) {
     return res.status(400).json({ erro: "Dados incompletos." });
   }
 
@@ -31,23 +33,29 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ erro: "Livro não encontrado." });
     }
 
+    const hoje = new Date();
+    const dataEntrega = new Date(hoje);
+    dataEntrega.setDate(dataEntrega.getDate() + 7);
+
     const emprestimo = await prisma.emprestimo.create({
       data: {
         livroId: parseInt(livroId),
         titulo: livro.titulo,
-        datadaReserva: new Date(dataRetirada).toISOString(),
+        datadaReserva: hoje,
+        datadaEntrega: dataEntrega,
         status: "Locado",
-        datadaEntrega: new Date(dataEntrega).toISOString(),
         usuarioId: parseInt(usuarioId),
       },
     });
 
     res.status(201).json(emprestimo);
   } catch (error) {
+    console.error("Erro ao criar empréstimo:", error);
     res.status(500).json({ erro: "Erro interno ao processar o empréstimo." });
   }
 });
 
+// Rota: excluir empréstimo
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -55,7 +63,39 @@ router.delete("/:id", async (req, res) => {
     await prisma.emprestimo.delete({ where: { id: Number(id) } });
     res.status(200).json({ mensagem: "Empréstimo excluído com sucesso." });
   } catch (error) {
+    console.error("Erro ao excluir empréstimo:", error);
     res.status(400).json({ erro: "Erro ao excluir empréstimo." });
+  }
+});
+
+// Rota: renovar empréstimo (adiciona +7 dias à entrega atual)
+router.put("/renovar/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const emprestimoExistente = await prisma.emprestimo.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!emprestimoExistente || !emprestimoExistente.datadaEntrega) {
+      return res.status(404).json({ erro: "Empréstimo não encontrado ou data inválida." });
+    }
+
+    const novaDataEntrega = new Date(emprestimoExistente.datadaEntrega);
+    novaDataEntrega.setDate(novaDataEntrega.getDate() + 7);
+
+    const emprestimoAtualizado = await prisma.emprestimo.update({
+      where: { id: Number(id) },
+      data: { datadaEntrega: novaDataEntrega },
+    });
+
+    res.status(200).json({
+      mensagem: "Empréstimo renovado com sucesso!",
+      emprestimo: emprestimoAtualizado,
+    });
+  } catch (error) {
+    console.error("Erro ao renovar empréstimo:", error);
+    res.status(500).json({ erro: "Erro ao renovar empréstimo." });
   }
 });
 

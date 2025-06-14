@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ erro: "Livro não encontrado" });
     }
 
+    const hoje = new Date();
     const dataReserva = new Date(datadaReserva);
     const dataEntrega = new Date(dataReserva);
     dataEntrega.setDate(dataReserva.getDate() + 5);
