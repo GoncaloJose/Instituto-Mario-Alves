@@ -15,7 +15,7 @@ export function ItemLivros({ data }: { data: LivroI }) {
         <img
           className="rounded-t-lg w-1/2 h-auto"
           src={data.foto}
-          alt={`Imagem do Livro ${data.titulo}`}
+          alt={`Imagem do Livro`}
         />
       </div>
 
@@ -23,19 +23,19 @@ export function ItemLivros({ data }: { data: LivroI }) {
         <h5 className="mb-2 text-2xl font-inter tracking-tight text-gray-900 dark:text-white">
           {data.titulo}
         </h5>
-
-        <p className="mb-3 text-sm font-inter text-gray-700 dark:text-gray-400">
-          {data.autor} 
-        </p>
+        <h5 className="mb-2 text-2xl font-inter tracking-tight text-gray-900 dark:text-white">
+          {data.autor}
+        </h5>       
         <p className="mb-3 text-sm font-inter text-gray-700 dark:text-gray-400">
           {data.sinopse} 
         </p>
+
         <Link
           href={`/detalhes/${data.id}`}
           type="button"
          className="px-3 py-2 font-inter text-sm text-white bg-vermelho rounded-lg hover:bg-yallow-500 focus:ring-4 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
         >
-          Sinopse
+          Ver Sinopse
         </Link>
 
         <div className="flex items-center mt-4">
