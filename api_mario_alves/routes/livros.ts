@@ -33,7 +33,14 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const livros = await prisma.livro.findMany();
+    const livros = await prisma.livro.findMany({
+      include: {
+        generos: true,
+        autores: true,
+        editoras: true
+      },
+    });
+    
     res.status(200).json(livros);
   } catch (error) {
     res.status(400).json(error);
@@ -65,9 +72,9 @@ const autores = await prisma.autor.findUnique({
     titulo, 
     foto, 
     sinopse,
-    generos: { connect: { id: 2 } }, 
-    editoras: { connect: { id: 1 } }, 
-    autores: { connect: { id: 1 } } 
+    generos: { connect: { id: parseInt(generoId) } }, 
+    editoras: { connect: { id: parseInt(editoraId) } }, 
+    autores: { connect: { id: parseInt(autorId) } } 
   },
 });
     res.status(201).json({});

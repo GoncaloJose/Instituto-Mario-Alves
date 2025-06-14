@@ -69,13 +69,16 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
         {livro.titulo}
       </td>
       <td className="px-6 py-4">
-        {livro.autorId}
+        {livro.autores.map(autor => (
+          <span key={autor.id} className="block">{autor.nome}</span>))}
       </td>
       <td className="px-6 py-4">
-        {livro.editora}
+        {(
+          <span key={livro.editoras.id} className="block">{livro.editoras.nome}</span>)}
       </td>
       <td className="px-6 py-4">
-        {livro.generoId}
+        {livro.generos.map(genero => (
+          <span key={genero.id} className="block">{genero.tipo}</span>))}
       </td>
       <td className="px-6 py-4">
         {livro.sinopse}
