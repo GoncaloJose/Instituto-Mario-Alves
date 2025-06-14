@@ -65,7 +65,7 @@ const autores = await prisma.autor.findUnique({
     titulo, 
     foto, 
     sinopse,
-    generos: { connect: { id: 1 } }, 
+    generos: { connect: { id: 2 } }, 
     editoras: { connect: { id: 1 } }, 
     autores: { connect: { id: 1 } } 
   },
