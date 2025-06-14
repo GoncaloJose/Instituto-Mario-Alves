@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { formataData } from "@/utils/formataData";
+import { isToday } from "date-fns";
 
 type Emprestimo = {
   id: number;
   livroId: number;
-  usuarioId: number;
+  usuarioId: number; 
   titulo: string;
   datadaReserva: string;
   datadaEntrega: string;
@@ -162,10 +163,13 @@ export default function MinhaPagina() {
 
               <div className="mt-4 flex justify-end gap-4">
                 <button
+                  disabled={isToday(
+                    new Date(emprestimo.datadaEntrega)
+                  )}
                   onClick={() =>
                     renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)
                   }
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
+                  className={`${isToday(emprestimo.datadaEntrega) ? 'bg-gray-300' : 'bg-red-500 hover:bg-vermelho'} text-white px-4 py-2 rounded`}
                 >
                   Renovar Empréstimo
                 </button>
