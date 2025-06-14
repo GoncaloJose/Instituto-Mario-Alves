@@ -142,7 +142,7 @@ model Reserva {
   usuario        Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId      Int       
   titulo         String
-  datadaReserva  DateTime 
+  datadaReserva  DateTime  @db.Date // dever se somente Date
 
 
   emprestimos      Emprestimo[] // Corrigido para camelCase
