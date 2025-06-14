@@ -2,9 +2,10 @@
 import { useSearchParams} from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ItemLivros } from "@/components/ItemLivros"
+import { LivroI } from '@/utils/types/livros'
 
 function ResultadoPesquisa() { 
-    const [livrosEncontrados, setLivrosEncontrados] = useState([])
+    const [livrosEncontrados, setLivrosEncontrados] = useState<LivroI[]>([]);
     const searchParams = useSearchParams() 
     const termoPesquisa = searchParams.get('termo') 
 
@@ -26,7 +27,7 @@ function ResultadoPesquisa() {
         </h1>
              <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {livrosEncontrados.map((livro) => (
-                 <ItemLivros data={livro} key={livro} />
+                 <ItemLivros data={livro} key={livro.id} />
                 ))}
             </section>
 
