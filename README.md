@@ -24,7 +24,6 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - Next.js – Framework para React que melhora a performance e a experiência do usuário.
 - GitHub – Plataforma de versionamento e colaboração no desenvolvimento do sistema.
 - JavaScript – Linguagem principal para a implementação das funcionalidades interativas.
-- Python – Utilizado para automação e manipulação de dados.
 - Tailwind CSS – Framework de estilização para interfaces modernas e responsivas.
 - MySQL – Banco de dados relacional para armazenamento e gerenciamento das informações.
 
