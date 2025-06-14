@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useUsuarioStore } from "@/context/usuario";
 import Link from "next/link";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 type Inputs = {
   email: string;
@@ -15,10 +17,9 @@ export default function Login() {
   const { register, handleSubmit } = useForm<Inputs>();
   const router = useRouter();
   const { logaUsuario } = useUsuarioStore();
+  const [showPassword, setShowPassword] = useState(false);
 
   async function verificaLogin(data: Inputs) {
-    // console.log(data)
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/usuarios/login`,
       {
@@ -29,21 +30,15 @@ export default function Login() {
         body: JSON.stringify({ email: data.email, senha: data.senha }),
       }
     );
-    // console.log(response)
+
     if (response.status == 200) {
       const dados = await response.json();
-      //alert("Ok")
       logaUsuario(dados);
-      router.push("/");
-
       if (data.continuar) {
         localStorage.setItem("client_key", dados.id);
       } else {
-        if (localStorage.getItem("client_key")) {
-          localStorage.removeItem("client_key");
-        }
+        localStorage.removeItem("client_key");
       }
-
       router.push("/");
     } else {
       alert("Erro... Login ou Senha incorretos");
@@ -86,24 +81,32 @@ export default function Login() {
                   >
                     Senha
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required
-                    {...register("senha")}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      placeholder="••••••••"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      required
+                      {...register("senha")}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 dark:text-gray-300"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
-                    <div className="flex items-center h-5"></div>
                     <label className="inline-flex items-center mb-5 cursor-pointer">
                       <input
                         type="checkbox"
                         value=""
                         className="sr-only peer"
-                        required
                         {...register("continuar")}
                       />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-500 dark:peer-focus:ring-red-800 rounded-full peer dark:bg-red-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-red-600 peer-checked:bg-red-600"></div>
