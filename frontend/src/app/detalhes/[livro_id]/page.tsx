@@ -78,7 +78,7 @@ export default function Detalhes() {
             </h5>
           </a>
           <a>
-          <h5 className="mb-2 text-xl font-inter tracking-tight text-gray-900 dark:text-white">
+          <h5 className="mb-2 text-2xl font-inter tracking-tight text-gray-900 dark:text-white">
             <strong>Sinopse:</strong> {" "}
               {livro?.sinopse}
             </h5>
@@ -131,13 +131,10 @@ export default function Detalhes() {
           )}
           <div className="ms-5 mt-5">
           <Link
-            href={`/reservar?livroId=${livro?.id}&titulo=${
-              livro?.titulo ? encodeURIComponent(livro.titulo) : ""
-            }`}
+            href='/login'
             className="ms-5 mt-5 px-5 py-2 text-sm font-inter text-center text-white bg-vermelho rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           >
-            Reservar
-
+            Login
           </Link>
           </div>
         </div>
