@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { formataData } from "@/utils/formataData";
 
 type Emprestimo = {
   id: number;
@@ -29,7 +30,9 @@ export default function MinhaPagina() {
   useEffect(() => {
     async function getEmprestimos() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`
+        );
         const dados = await response.json();
         setEmprestimos(dados);
       } catch (error) {
@@ -39,7 +42,9 @@ export default function MinhaPagina() {
 
     async function getReservas() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/reservas`
+        );
         const dados = await response.json();
         setReservas(dados);
       } catch (error) {
@@ -53,12 +58,17 @@ export default function MinhaPagina() {
 
   async function excluirEmprestimo(id: number) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
-        setEmprestimos((emprestimos) => emprestimos.filter((emprestimo) => emprestimo.id !== id));
+        setEmprestimos((emprestimos) =>
+          emprestimos.filter((emprestimo) => emprestimo.id !== id)
+        );
         alert("Empréstimo excluído com sucesso!");
       } else {
         alert("Erro ao excluir o empréstimo.");
@@ -71,12 +81,17 @@ export default function MinhaPagina() {
 
   async function excluirReserva(id: number) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
-        setReservas((reservas) => reservas.filter((reserva) => reserva.id !== id));
+        setReservas((reservas) =>
+          reservas.filter((reserva) => reserva.id !== id)
+        );
         alert("Reserva excluída com sucesso!");
       } else {
         alert("Erro ao excluir a reserva.");
@@ -88,48 +103,68 @@ export default function MinhaPagina() {
   }
 
   async function renovarEmprestimo(id: number, datadaEntrega: string) {
-  try {
-    const novaData = new Date(datadaEntrega);
-    novaData.setDate(novaData.getDate() + 7);
+    try {
+      const novaData = new Date(datadaEntrega);
+      novaData.setDate(novaData.getDate() + 7);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ datadaEntrega: novaData.toISOString() }),
-    });
-
-    if (response.ok) {
-      setEmprestimos((emprestimos) =>
-        emprestimos.map((emprestimo) =>
-          emprestimo.id === id ? { ...emprestimo, datadaEntrega: novaData.toISOString() } : emprestimo
-        )
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ datadaEntrega: novaData.toISOString() }),
+        }
       );
-      alert("Empréstimo renovado com sucesso!");
-    } else {
-      alert("Erro ao renovar o empréstimo.");
+
+      if (response.ok) {
+        setEmprestimos((emprestimos) =>
+          emprestimos.map((emprestimo) =>
+            emprestimo.id === id
+              ? { ...emprestimo, datadaEntrega: novaData.toISOString() }
+              : emprestimo
+          )
+        );
+        alert("Empréstimo renovado com sucesso!");
+      } else {
+        alert("Erro ao renovar o empréstimo.");
+      }
+    } catch (error) {
+      console.error("Erro ao renovar empréstimo:", error);
+      alert("Erro ao renovar empréstimo.");
     }
-  } catch (error) {
-    console.error("Erro ao renovar empréstimo:", error);
-    alert("Erro ao renovar empréstimo.");
   }
-}
 
   return (
     <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen flex gap-6">
       <div className="w-1/2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Empréstimos</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Empréstimos
+        </h1>
         {emprestimos.length > 0 ? (
           emprestimos.map((emprestimo) => (
-            <div key={emprestimo.id} className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+            <div
+              key={emprestimo.id}
+              className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
+            >
               <p className="text-lg font-semibold">📖 {emprestimo.titulo}</p>
               <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
               <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
-              <p className="text-lg">📅 Retirada: {new Date(emprestimo.datadaReserva).toLocaleDateString("pt-BR")}</p>
-              <p className="text-lg">📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}</p>
+              <p className="text-lg">
+                📅 Retirada:{" "}
+                {formataData(
+                  emprestimo.datadaReserva.split("T")[0]
+                )}
+              </p>
+              <p className="text-lg">
+                📅 Entrega:{" "}
+                {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}
+              </p>
 
               <div className="mt-4 flex justify-end gap-4">
                 <button
-                  onClick={() => renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)}
+                  onClick={() =>
+                    renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)
+                  }
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
                 >
                   Renovar Empréstimo
@@ -145,19 +180,33 @@ export default function MinhaPagina() {
             </div>
           ))
         ) : (
-          <p className="text-lg font-semibold text-gray-700">Nenhum empréstimo encontrado.</p>
+          <p className="text-lg font-semibold text-gray-700">
+            Nenhum empréstimo encontrado.
+          </p>
         )}
       </div>
 
       <div className="w-1/2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reservas</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Reservas
+        </h1>
         {reservas.length > 0 ? (
           reservas.map((reserva) => (
-            <div key={reserva.id} className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+            <div
+              key={reserva.id}
+              className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
+            >
               <p className="text-lg font-semibold">📖 {reserva.titulo}</p>
               <p className="text-lg">🆔 Livro ID: {reserva.livroId}</p>
               <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
-              <p className="text-lg">📅 Reserva: {new Date(reserva.datadaReserva).toLocaleDateString("pt-BR")}</p>
+              <p
+                className="text-lg"
+                data-date={
+                  formataData(reserva.datadaReserva)
+                }
+              >
+                📅 Reserva: {formataData(reserva.datadaReserva)}
+              </p>
 
               <div className="mt-4 flex justify-end">
                 <button
@@ -170,7 +219,9 @@ export default function MinhaPagina() {
             </div>
           ))
         ) : (
-          <p className="text-lg font-semibold text-gray-700">Nenhuma reserva encontrada.</p>
+          <p className="text-lg font-semibold text-gray-700">
+            Nenhuma reserva encontrada.
+          </p>
         )}
       </div>
     </section>

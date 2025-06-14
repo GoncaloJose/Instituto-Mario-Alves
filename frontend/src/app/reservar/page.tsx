@@ -47,8 +47,7 @@ export default function Reservar() {
   async function verificaReserva(data: Inputs) {
     data.usuarioId = usuario?.id || 0;
     data.datadaReserva = new Date(data.datadaReserva)
-      .toISOString()
-      .split("T")[0];
+      .toUTCString();
 
     try {
       const response = await fetch(
