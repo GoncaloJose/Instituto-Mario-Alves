@@ -12,4 +12,7 @@ export interface LivroI {
     autorId:          string
     createdAt:        Date
     updatedAt:        Date
+    autores:          Array<{ id: number, nome: string }>
+    generos:          Array<{ id: number, tipo: string }>
+    editoras:         { id: number, nome: string }
 }
