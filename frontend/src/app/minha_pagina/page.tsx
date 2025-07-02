@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { formataData } from "@/utils/formataData";
 import { isToday } from "date-fns";
 import { Tooltip } from 'react-tooltip';
@@ -9,7 +8,7 @@ import { Tooltip } from 'react-tooltip';
 type Emprestimo = {
   id: number;
   livroId: number;
-  usuarioId: number; 
+  usuarioId: number;
   titulo: string;
   datadaReserva: string;
   datadaEntrega: string;
@@ -27,16 +26,16 @@ type Reserva = {
 export default function MinhaPagina() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
   const [reservas, setReservas] = useState<Reserva[]>([]);
-  const searchParams = useSearchParams();
 
   useEffect(() => {
+    const usuarioId = Number(localStorage.getItem("client_key")); // 👈 ID do usuário logado
+
     async function getEmprestimos() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`
-        );
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos`);
         const dados = await response.json();
-        setEmprestimos(dados);
+        const filtrados = dados.filter((item: Emprestimo) => item.usuarioId === usuarioId);
+        setEmprestimos(filtrados);
       } catch (error) {
         console.error("Erro ao buscar empréstimos:", error);
       }
@@ -44,11 +43,10 @@ export default function MinhaPagina() {
 
     async function getReservas() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/reservas`
-        );
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas`);
         const dados = await response.json();
-        setReservas(dados);
+        const filtrados = dados.filter((item: Reserva) => item.usuarioId === usuarioId);
+        setReservas(filtrados);
       } catch (error) {
         console.error("Erro ao buscar reservas:", error);
       }
@@ -60,12 +58,9 @@ export default function MinhaPagina() {
 
   async function excluirEmprestimo(id: number) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`, {
+        method: "DELETE",
+      });
 
       if (response.ok) {
         setEmprestimos((emprestimos) =>
@@ -83,12 +78,9 @@ export default function MinhaPagina() {
 
   async function excluirReserva(id: number) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/reservas/${id}`, {
+        method: "DELETE",
+      });
 
       if (response.ok) {
         setReservas((reservas) =>
@@ -152,27 +144,22 @@ export default function MinhaPagina() {
               <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
               <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
               <p className="text-lg">
-                📅 Retirada:{" "}
-                {formataData(
-                  emprestimo.datadaReserva.split("T")[0]
-                )}
+                📅 Retirada: {formataData(emprestimo.datadaReserva.split("T")[0])}
               </p>
               <p className="text-lg">
-                📅 Entrega:{" "}
-                {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}
+                📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}
               </p>
 
               <div className="mt-4 flex justify-end gap-4">
                 <button
-                  disabled={!isToday(
-                    new Date(emprestimo.datadaEntrega)
-                  )}
-                  onClick={() =>
-                    renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)
-                  }
+                  disabled={!isToday(new Date(emprestimo.datadaEntrega))}
+                  onClick={() => renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)}
                   data-tooltip-hidden={isToday(emprestimo.datadaEntrega)}
-                  data-tooltip-id="renovacao-emprestimo" data-tooltip-content="Não disponivel. Somente na data de entrega"
-                  className={`${!isToday(emprestimo.datadaEntrega) ? 'bg-gray-300' : 'bg-red-500 hover:bg-vermelho'} text-white px-4 py-2 rounded`}
+                  data-tooltip-id="renovacao-emprestimo"
+                  data-tooltip-content="Não disponivel. Somente na data de entrega"
+                  className={`${!isToday(emprestimo.datadaEntrega)
+                    ? 'bg-gray-300'
+                    : 'bg-red-500 hover:bg-vermelho'} text-white px-4 py-2 rounded`}
                 >
                   Renovar Empréstimo
                 </button>
@@ -207,14 +194,7 @@ export default function MinhaPagina() {
               <p className="text-lg font-semibold">📖 {reserva.titulo}</p>
               <p className="text-lg">🆔 Livro ID: {reserva.livroId}</p>
               <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
-              <p
-                className="text-lg"
-                data-date={
-                  formataData(reserva.datadaReserva)
-                }
-              >
-                📅 Reserva: {formataData(reserva.datadaReserva)}
-              </p>
+              <p className="text-lg">📅 Reserva: {formataData(reserva.datadaReserva)}</p>
 
               <div className="mt-4 flex justify-end">
                 <button
