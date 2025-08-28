@@ -12,8 +12,8 @@ export function ItemLivros({ data }: { data: LivroI }) {
 
   // configura quantos caracteres mostrar antes de “Ver Mais”
   const charLimit = 100;
-  const isLongSinopse = data.sinopse.length > charLimit;
-  const previewSinopse = data.sinopse.slice(0, charLimit) + "...";
+  const isLongSinopse = data.sinopse?.length > charLimit;
+  const previewSinopse = data.sinopse?.slice(0, charLimit) + "...";
 
   return (
     <div className="mt-10 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
