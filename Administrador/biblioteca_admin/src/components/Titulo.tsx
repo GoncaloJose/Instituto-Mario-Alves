@@ -23,7 +23,7 @@ export function Titulo() {
           </span>
         </Link>
       </div>
-      <div className="flex me-4 items-center font-bold">
+      <div className="flex me-4 items-center font-bold text-white">
         <IoPersonSharp className="mr-2" />
         {adminNome}
       </div>
