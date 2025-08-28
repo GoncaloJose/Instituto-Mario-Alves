@@ -54,14 +54,6 @@ export function MenuLateral() {
             </Link>
           </li>
           <li>
-          <Link href="/principal/cadastros" className="flex items-center p-2 text-white">
-              <span className="h-5 text-white text-2xl">
-              <FaBook />
-              </span>
-              <span className="ms-2 mt-1">Cadastrar de Usuários</span>
-            </Link>
-          </li>
-          <li>
           <Link href="/principal/emprestimos" className="flex items-center p-2  text-white">
               <span className="h-5 text-white text-2xl">
               <FaAddressBook />
