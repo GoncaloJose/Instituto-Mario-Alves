@@ -50,7 +50,7 @@ function CadUsuarios() {
                 E-mail
               </th>
               <th scope="col" className="px-6 py-3">
-                Destacar
+                Admin?
               </th>
               <th scope="col" className="px-6 py-3">
                 Ações
