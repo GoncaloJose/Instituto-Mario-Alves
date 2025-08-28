@@ -4,6 +4,8 @@ export interface UsuarioI {
     nome: string
     email: string
     telefone: string
+    escolaridade: string
+    instituicao: string
     senha: string
     admin: boolean
 

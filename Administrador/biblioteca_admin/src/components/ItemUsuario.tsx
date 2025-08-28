@@ -46,7 +46,7 @@ function ItemUsuario({ usuario, usuarios, setUsuarios }: listaUsuarioProps) {
       </td>
       <td className={`px-6 py-4`}>
         {usuario.telefone}
-      </td>
+        </td>
       <td className={`px-6 py-4`}>
         {usuario.admin ? "Sim" : "Não"}
       </td>
