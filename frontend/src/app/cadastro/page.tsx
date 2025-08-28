@@ -27,7 +27,7 @@ export default function Cadastrar() {
     data.senha = data.senha;
     data.confirmaSenha = data.confirmaSenha;
     data.nome = data.nome;
-    data.escolaridade = data.escolaridade.toLowerCase();
+    data.escolaridade = data.escolaridade;
     data.telefone = data.telefone.toLowerCase();
     data.instituicao = data.instituicao;
 
@@ -162,10 +162,12 @@ export default function Cadastrar() {
                       {...register('escolaridade')}
                     >
                       <option >Escolaridade</option>
-                      <option >Ensino Médio</option>
-                      <option >Superior Incompleto</option>
-                      <option >Superior Completo</option>
-                      <option >Mestrado/Doutorado</option>
+                      <option value={'ENSINO_MEDIO'}>Ensino Médio</option>
+                      <option value={'ENSINO_SUPERIOR'}>Superior Incompleto</option>
+                      <option value={'POS_GRADUACAO'}>Pós Graduação</option>
+                      <option value={'MESTRADO'}>Mestrado</option>
+                      <option value={'DOUTORADO'}>Doutorado</option>
+                      <option value={'OUTRO'}>Outros</option>
                     </select>
                   </div>
 
