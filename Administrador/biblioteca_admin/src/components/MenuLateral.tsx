@@ -61,8 +61,16 @@ export function MenuLateral() {
               <span className="ms-2 mt-1">Emprestimos</span>
             </Link>
           </li>
-          
 
+                    <li>
+          <Link href="/principal/pagamentos" className="flex items-center p-2  text-white">
+              <span className="h-5 text-white text-2xl">
+              <FaAddressBook />
+              </span>
+              <span className="ms-2 mt-1">Pagamentos</span>
+            </Link>
+          </li>
+          
           <li>
             <span className="flex items-center p-2 cursor-pointer  text-white">
               <span className="h-5 text-white text-2xl">

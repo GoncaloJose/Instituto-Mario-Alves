@@ -6,13 +6,12 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const pagamentos = await prisma.pagamento.findMany();
+    const pagamentos = await prisma.pagamento.findMany({include: {usuario: true}});
     res.status(200).json(pagamentos);
   } catch (error) {
     res.status(400).json(error);
   }
 });
-
 
 router.post("/", async (req, res) => {
   const { usuarioId, dataPagamento, valor, formaPagamento } = req.body;
