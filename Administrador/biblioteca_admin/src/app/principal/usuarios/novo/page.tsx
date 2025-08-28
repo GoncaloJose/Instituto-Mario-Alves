@@ -120,6 +120,7 @@ function NovoUsuario() {
             <input
               type="telefone"
               id="telefone"
+              maxLength={15}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
               required
               {...register("telefone")}
@@ -137,7 +138,7 @@ function NovoUsuario() {
                     >
                       <option >Escolaridade</option>
                       <option value={'ENSINO_MEDIO'}>Ensino Médio</option>
-                      <option value={'ENSINO_SUPERIOR'}>Superior Incompleto</option>
+                      <option value={'ENSINO_SUPERIOR'}>Superior Completo</option>
                       <option value={'POS_GRADUACAO'}>Pós Graduação</option>
                       <option value={'MESTRADO'}>Mestrado</option>
                       <option value={'DOUTORADO'}>Doutorado</option>
