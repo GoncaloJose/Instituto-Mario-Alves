@@ -118,6 +118,7 @@ model Usuario {
   telefone      String     @db.VarChar(15) // telefone deve ser varchar(15)
   escolaridade   Escolaridade   @default(OUTRO) // Alterado para enum Instituicao com default OUTRO
   instituicao  String     @db.VarChar(60)
+  diaPagamento  Int        @default(02) // diaPagamento deve ser Int com default 2
   senha         String     @db.VarChar(60) // senha deve ser varchar(60)
   admin         Boolean    @default(false)
    // Alterado para Boolean com default false
@@ -132,6 +133,7 @@ model Usuario {
   autores       Autor[]
   generos       Genero[]
   editoras      Editora[]
+  pagamentos    Pagamento[]
 
   @@map("usuarios")
 }
@@ -143,6 +145,28 @@ enum  Escolaridade {
   MESTRADO
   DOUTORADO
   OUTRO
+}
+
+model Pagamento {
+  id             Int       @id @default(autoincrement())
+  dataPagamento DateTime  @db.Date // dever se somente Date
+  valor          Decimal  @db.Decimal(10, 2) // valor deve ser decimal(10,2)
+  formaPagamento String  @db.VarChar(20) // formaPagamento deve ser varchar(20)
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  usuario        Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId      Int 
+
+  @@map("pagamentos")
+}
+
+enum MetodoPagamento {
+  DINHEIRO
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
 }
 
 model Reserva {

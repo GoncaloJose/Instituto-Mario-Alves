@@ -11,6 +11,7 @@ import renovacoesRoutes from './routes/renovacoes'
 import autoresRoutes from './routes/autores'
 import generosRoutes from './routes/generos'
 import editorasRoutes from './routes/editoras'
+import pagamentosRoutes from './routes/pagamentos'
 
 
 const app = express()
@@ -31,6 +32,7 @@ app.use("/renovacoes", renovacoesRoutes)
 app.use("/autores", autoresRoutes)
 app.use("/generos", generosRoutes)
 app.use("/editoras", editorasRoutes)
+app.use("/pagamentos", pagamentosRoutes)
 
 app.get('/', (req, res) => {
   res.send('API: Biblioteca IMA')
