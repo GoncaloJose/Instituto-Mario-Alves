@@ -10,6 +10,7 @@ type Entradas = {
   nome: string;
   email: string;
   senha: string;
+  admin: boolean;
 
 };
 
@@ -38,7 +39,7 @@ function NovoUsuario() {
       nome: dados . nome,
       email: dados . email,
       senha: dados . senha,
-
+      admin: true,
     };
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios`, {

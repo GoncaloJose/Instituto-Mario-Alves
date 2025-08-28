@@ -52,6 +52,9 @@ function CadUsuarios() {
               <th scope="col" className="px-6 py-3">
                 Destacar
               </th>
+              <th scope="col" className="px-6 py-3">
+                Ações
+              </th>
             </tr>
           </thead>
           <tbody>
