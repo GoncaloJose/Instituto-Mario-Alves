@@ -53,10 +53,10 @@ function validaSenha(senha: string) {
 }
 
 router.post("/", async (req, res) => {
-  const { nome, email, senha, admin } = req.body;
+  const { nome, email, telefone, instituicao, escolaridade, senha, admin } = req.body;
 
-  if (!nome || !email || !senha ) {
-    res.status(400).json({ erro: "Informe nome, email e senha" });
+  if (!nome || !email || !telefone || !instituicao || !senha ) {
+    res.status(400).json({ erro: "Informe dados obrigatório!" });
     return;
   }
 
@@ -74,7 +74,7 @@ router.post("/", async (req, res) => {
   // para o campo senha, atribui o hash gerado
   try {
     const usuario = await prisma.usuario.create({
-      data: { nome, email, admin, senha: hash },
+      data: { nome, email, telefone, instituicao, escolaridade, admin, senha: hash },
     });
     res.status(201).json(usuario);
   } catch (error) {

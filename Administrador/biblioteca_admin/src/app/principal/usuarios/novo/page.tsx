@@ -10,6 +10,10 @@ type Entradas = {
   nome: string;
   email: string;
   senha: string;
+  telefone: string;
+  escolaridade: string; 
+  instituicao: string;
+  admin: boolean;
 
 };
 
@@ -38,7 +42,10 @@ function NovoUsuario() {
       nome: dados . nome,
       email: dados . email,
       senha: dados . senha,
-
+      telefone: dados . telefone,
+      escolaridade: dados . escolaridade,   
+      instituicao: dados . instituicao,
+      admin: true,
     };
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuarios`, {
@@ -105,6 +112,52 @@ function NovoUsuario() {
             />
           </div>
         </div>
+
+                  <div className="mb-3">
+            <label htmlFor="telefone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Telefone
+            </label>
+            <input
+              type="telefone"
+              id="telefone"
+              maxLength={15}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+              required
+              {...register("telefone")}
+            />
+          </div>
+
+                    <div className="mb-3">
+            <label htmlFor="escolaridade" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Escolaridade
+            </label>
+            <select
+                      id="escolaridade"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      {...register('escolaridade')}
+                    >
+                      <option >Escolaridade</option>
+                      <option value={'ENSINO_MEDIO'}>Ensino Médio</option>
+                      <option value={'ENSINO_SUPERIOR'}>Superior Completo</option>
+                      <option value={'POS_GRADUACAO'}>Pós Graduação</option>
+                      <option value={'MESTRADO'}>Mestrado</option>
+                      <option value={'DOUTORADO'}>Doutorado</option>
+                      <option value={'OUTRO'}>Outros</option>
+                    </select>
+          </div>
+
+                    <div className="mb-3">
+            <label htmlFor="instituicao" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Instituição
+            </label>
+            <input
+              type="instituicao"
+              id="instituicao"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+              required
+              {...register("instituicao")}
+            />
+          </div>
           
         <button
           type="submit"

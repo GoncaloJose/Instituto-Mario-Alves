@@ -1,9 +1,12 @@
 export interface UsuarioI {
-    destaque: any
 
     id: number
     nome: string
     email: string
+    telefone: string
+    escolaridade: string
+    instituicao: string
     senha: string
+    admin: boolean
 
 }

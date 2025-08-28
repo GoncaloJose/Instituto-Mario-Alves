@@ -90,20 +90,12 @@ router.delete("/:id", async (req, res) => {
     await prisma.reserva.deleteMany({
       where: { livroId: Number(id) },
     });
-
-    await prisma.autor.deleteMany({
-      where: { id: Number(id) },
-    });
-
-    await prisma.genero.deleteMany({
-      where: { id: Number(id) },
-    });
-
-    await prisma.editora.deleteMany({
-      where: { id: Number(id) },
-    });
     
     await prisma.comentario.deleteMany({
+      where: { livroId: Number(id) },
+    });
+
+    await prisma.emprestimo.deleteMany({
       where: { livroId: Number(id) },
     });
     
