@@ -50,6 +50,9 @@ function CadUsuarios() {
                 E-mail
               </th>
               <th scope="col" className="px-6 py-3">
+                Telefone
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Admin?
               </th>
               <th scope="col" className="px-6 py-3">
