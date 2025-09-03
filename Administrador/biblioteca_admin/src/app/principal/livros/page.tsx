@@ -56,28 +56,48 @@ function CadLivros() {
 
   return (
     <div className="m-4 mt-24">
-      <div className="flex flex-wrap gap-4 justify-start items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+      <div className="flex justify-between">
+        <h1 className="mb-4 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
           Lista de Livros
         </h1>
-        <Link href="livros/novo" className="btn-vermelho">Novo Livro</Link>
-        <Link href="autores/novo" className="btn-vermelho">Novo Autor</Link>
-        <Link href="editoras/novo" className="btn-vermelho">Nova Editora</Link>
-        <Link href="generos/novo" className="btn-vermelho">Novo Gênero</Link>
+        <Link
+          href="livros/novo"
+          className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Novo Livro
+        </Link>
+        <Link
+          href="autores/novo"
+          className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Novo Autor
+        </Link>
+        <Link
+          href="editoras/novo"
+          className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Nova Editora
+        </Link>
+        <Link
+          href="generos/novo"
+          className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Novo Gênero
+        </Link>
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th className="px-6 py-3">Foto</th>
-              <th className="px-6 py-3">Título</th>
-              <th className="px-6 py-3">Autores</th>
-              <th className="px-6 py-3">Editora</th>
-              <th className="px-6 py-3">Gêneros</th>
-              <th className="px-6 py-3">Sinopse</th>
-              <th className="px-6 py-3">Editar / Excluir</th>
-              <th className="px-6 py-3">
+              <th scope="col" className="px-6 py-3">Livro</th>
+              <th scope="col" className="px-6 py-3">Nome do Livro</th>
+              <th scope="col" className="px-6 py-3">Autor</th>
+              <th scope="col" className="px-6 py-3">Editora</th>
+              <th scope="col" className="px-6 py-3">Gênero</th>
+              <th scope="col" className="px-6 py-3">Sinopse</th>
+              <th scope="col" className="px-6 py-3">Destacar & Excluir</th>
+              <th scope="col" className="px-6 py-3">
                 <button
                   onClick={exportarCSV}
                   className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
