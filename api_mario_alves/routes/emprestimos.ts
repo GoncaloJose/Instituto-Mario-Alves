@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
         datadaReserva: hoje,
         datadaEntrega: dataEntrega,
         status: "Locado",
-        usuarioId: parseInt(usuarioId),
+        usuarioId: parseInt(usuarioId)
       },
     });
 
