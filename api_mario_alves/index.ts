@@ -4,7 +4,7 @@ import cors from 'cors'
 import livrosRoutes from './routes/livros'
 import usuariosRoutes from './routes/usuarios'
 import reservasRoutes from './routes/reservas'
-import comentariosRoutes from './routes/comentarios'
+
 import emprestimosRoutes   from './routes/emprestimos'
 import dashboardRoutes from './routes/dashboard'
 import renovacoesRoutes from './routes/renovacoes'
@@ -24,7 +24,7 @@ app.use(cors())
 app.use("/livros", livrosRoutes)
 app.use("/usuarios", usuariosRoutes)
 app.use("/reservas", reservasRoutes)
-app.use("/comentarios", comentariosRoutes)
+
 app.use("/emprestimos", emprestimosRoutes)
 app.use("/dashboard", dashboardRoutes)
 app.use("/renovacoes", renovacoesRoutes)

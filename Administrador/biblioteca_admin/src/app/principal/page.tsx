@@ -12,7 +12,7 @@ interface geralDadosI {
   usuarios: number;
   livros: number;
   reservas: number;
-  comentarios: number;
+  emprestimos: number;
 }
 
 type DataRow = [string, number, string];
@@ -60,11 +60,11 @@ export default function Principal() {
   data.push(["Livros", dados.livros, cores[0]]);
   data.push(["Usuarios", dados.usuarios, cores[1]]);
   data.push(["Reservas", dados.reservas, cores[2]]);
-  data.push(["Comentários", dados.comentarios, cores[3]]);
+  data.push(["emprestimos", dados.emprestimos, cores[3]]);
 
   const options = {
     is3D: true, // Ativando o modo 3D
-    title: "Controle de Livros, Usuarios, Reservas e Comentários",
+    title: "Controle de Livros, Usuarios, Reservas e Emprestmos",
     chartArea: { width: "80%", height: "70%" },
     legend: {
       position: "bottom", // Colocando os nomes embaixo do gráfico
@@ -86,38 +86,29 @@ export default function Principal() {
           <span className="bg-blue-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-blue-300">
             {dados.usuarios}
           </span>
-          <p className="font-bold mt-2 text-center">Nº de Usuários</p>
+          <p className="font-bold mt-2 text-center">Usuários</p>
         </div>
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-red-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-red-300">
             {dados.livros}
           </span>
-          <p className="font-bold mt-2 text-center">Nº de Livros</p>
+          <p className="font-bold mt-2 text-center">Livros</p>
         </div>
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-red-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-red-300">
             {dados.reservas}
           </span>
-          <p className="font-bold mt-2 text-center">Nº de Reservas</p>
+          <p className="font-bold mt-2 text-center">Reservas</p>
         </div>
         <div className="border-green-600 border rounded p-6 w-1/3">
           <span className="bg-green-100 text-green-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-green-900 dark:text-green-300">
-            {dados.comentarios}
+            {dados.emprestimos}
           </span>
-          <p className="font-bold mt-2 text-center">Nº de Comentários</p>
+          <p className="font-bold mt-2 text-center">Empréstimo</p>
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold mt-4">
-        Gráfico: Controle de Livros, Usuários, Reservas e Comentários
-      </h2>
-      <Chart
-        chartType="ColumnChart"
-        width="95%"
-        height="380px"
-        data={data}
-        options={options}
-      />
+      
     </div>
   );
 }
