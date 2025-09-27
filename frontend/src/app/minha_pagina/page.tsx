@@ -129,89 +129,97 @@ export default function MinhaPagina() {
   }
 
   return (
-    <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen flex gap-6">
-      <div className="w-1/2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Empréstimos
-        </h1>
-        {emprestimos.length > 0 ? (
-          emprestimos.map((emprestimo) => (
-            <div
-              key={emprestimo.id}
-              className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
-            >
-              <p className="text-lg font-semibold">📖 {emprestimo.titulo}</p>
-              <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
-              <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
-              <p className="text-lg">
-                📅 Retirada: {formataData(emprestimo.datadaReserva.split("T")[0])}
-              </p>
-              <p className="text-lg">
-                📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}
-              </p>
-
-              <div className="mt-4 flex justify-end gap-4">
-                <button
-                  disabled={!isToday(new Date(emprestimo.datadaEntrega))}
-                  onClick={() => renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)}
-                  data-tooltip-hidden={isToday(emprestimo.datadaEntrega)}
-                  data-tooltip-id="renovacao-emprestimo"
-                  data-tooltip-content="Não disponivel. Somente na data de entrega"
-                  className={`${!isToday(emprestimo.datadaEntrega)
-                    ? 'bg-gray-300'
-                    : 'bg-red-500 hover:bg-vermelho'} text-white px-4 py-2 rounded`}
-                >
-                  Renovar Empréstimo
-                </button>
-                <Tooltip id="renovacao-emprestimo" />
-
-                <button
-                  onClick={() => excluirEmprestimo(emprestimo.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
-                >
-                  Excluir Empréstimo
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-lg font-semibold text-gray-700">
-            Nenhum empréstimo encontrado.
-          </p>
-        )}
+    <section className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col gap-6">
+      <div className="w-full text-right">
+      <a href="/pagamentos">
+        Meus Pagamentos
+      </a>
       </div>
+      <div className="flex gap-6">
+        <div className="w-1/2">
+        
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Empréstimos
+          </h1>
+          {emprestimos.length > 0 ? (
+            emprestimos.map((emprestimo) => (
+              <div
+                key={emprestimo.id}
+                className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
+              >
+                <p className="text-lg font-semibold">📖 {emprestimo.titulo}</p>
+                <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
+                <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
+                <p className="text-lg">
+                  📅 Retirada: {formataData(emprestimo.datadaReserva.split("T")[0])}
+                </p>
+                <p className="text-lg">
+                  📅 Entrega: {new Date(emprestimo.datadaEntrega).toLocaleDateString("pt-BR")}
+                </p>
 
-      <div className="w-1/2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Reservas
-        </h1>
-        {reservas.length > 0 ? (
-          reservas.map((reserva) => (
-            <div
-              key={reserva.id}
-              className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
-            >
-              <p className="text-lg font-semibold">📖 {reserva.titulo}</p>
-              <p className="text-lg">🆔 Livro ID: {reserva.livroId}</p>
-              <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
-              <p className="text-lg">📅 Reserva: {formataData(reserva.datadaReserva)}</p>
+                <div className="mt-4 flex justify-end gap-4">
+                  <button
+                    disabled={!isToday(new Date(emprestimo.datadaEntrega))}
+                    onClick={() => renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)}
+                    data-tooltip-hidden={isToday(emprestimo.datadaEntrega)}
+                    data-tooltip-id="renovacao-emprestimo"
+                    data-tooltip-content="Não disponivel. Somente na data de entrega"
+                    className={`${!isToday(emprestimo.datadaEntrega)
+                      ? 'bg-gray-300'
+                      : 'bg-red-500 hover:bg-vermelho'} text-white px-4 py-2 rounded`}
+                  >
+                    Renovar Empréstimo
+                  </button>
+                  <Tooltip id="renovacao-emprestimo" />
 
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={() => excluirReserva(reserva.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800"
-                >
-                  Excluir Reserva
-                </button>
+                  <button
+                    onClick={() => excluirEmprestimo(emprestimo.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
+                  >
+                    Excluir Empréstimo
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-lg font-semibold text-gray-700">
-            Nenhuma reserva encontrada.
-          </p>
-        )}
-      </div>
-    </section>
+            ))
+          ) : (
+            <p className="text-lg font-semibold text-gray-700">
+              Nenhum empréstimo encontrado.
+            </p>
+          )}
+        </div>
+
+        <div className="w-1/2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Reservas
+          </h1>
+          {reservas.length > 0 ? (
+            reservas.map((reserva) => (
+              <div
+                key={reserva.id}
+                className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
+              >
+                <p className="text-lg font-semibold">📖 {reserva.titulo}</p>
+                <p className="text-lg">🆔 Livro ID: {reserva.livroId}</p>
+                <p className="text-lg">👤 Usuário ID: {reserva.usuarioId}</p>
+                <p className="text-lg">📅 Reserva: {formataData(reserva.datadaReserva)}</p>
+
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => excluirReserva(reserva.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800"
+                  >
+                    Excluir Reserva
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-lg font-semibold text-gray-700">
+              Nenhuma reserva encontrada.
+            </p>
+          )}
+        </div>
+    </div>
+    </section> 
   );
 }
