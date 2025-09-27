@@ -40,4 +40,38 @@ router.post("/", async (req, res) => {
 
 });
 
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const parsedId = parseInt(id, 10); // Convertendo o id para número
+
+  if (isNaN(parsedId)) {
+    return res.status(400).json({ erro: "ID inválido" });
+  }
+
+  try {
+    const pagamentos = await prisma.pagamento.findMany({
+      where: { usuarioId: parsedId }, // Usando parsedId
+      include: { usuario: true },
+      orderBy: { dataPagamento: 'desc' }
+    });
+
+    if (pagamentos == null) {
+      res.status(400).json({ erro: "Não cadastrado" });
+      return;
+    } else {
+      res.status(200).json(pagamentos.map(pagamento => ({
+
+        id: pagamento.id,
+        nome: pagamento.usuario.nome,
+        email: pagamento.usuario.email,
+        dataPagamento: pagamento.dataPagamento,
+        valor: pagamento.valor,
+        formaPagamento: pagamento.formaPagamento
+      })));
+    }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 export default router;
