@@ -18,7 +18,7 @@ function ItemPagamento({ pagamento, pagamentos, setPagamentos }: listaPagamentoP
         {pagamento.usuario.nome}
       </td>
       <td className={`px-6 py-4`}>
-        {pagamento.dataPagamento.toString()}
+        {new Date(pagamento.dataPagamento).toLocaleDateString('pt-BR')}
       </td>
       <td className={`px-6 py-4`}>
         {pagamento.valor}
