@@ -56,6 +56,9 @@ function CadUsuarios() {
                 Admin?
               </th>
               <th scope="col" className="px-6 py-3">
+                Pago?
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Ações
               </th>
             </tr>
