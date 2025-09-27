@@ -3,7 +3,7 @@ import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
 import { IoExitOutline } from "react-icons/io5"
 import { BiSolidDashboard } from "react-icons/bi"
-import { FaCarSide, FaUsers } from "react-icons/fa6"
+import { FaCarSide, FaRegMoneyBill1, FaUsers } from "react-icons/fa6"
 import { BsCashCoin } from "react-icons/bs"
 import Link from "next/link"
 import { MdAdminPanelSettings } from "react-icons/md"
@@ -12,6 +12,7 @@ import { FaBook } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { ImExit } from "react-icons/im";
 import { FaAddressBook } from "react-icons/fa";
+import { GiMoneyStack } from "react-icons/gi"
 
 export function MenuLateral() {
   const router = useRouter()
@@ -63,9 +64,9 @@ export function MenuLateral() {
           </li>
 
                     <li>
-          <Link href="/principal/pagamentos" className="flex items-center p-2  text-white">
-              <span className="h-5 text-white text-2xl">
-              <FaAddressBook />
+          <Link href="/principal/pagamentos" className="flex items-center p-2  text-black">
+              <span className="h-5 text-black text-2xl">
+              <GiMoneyStack />
               </span>
               <span className="ms-2 mt-1">Pagamentos</span>
             </Link>
