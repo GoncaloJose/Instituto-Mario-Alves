@@ -133,6 +133,7 @@ export default function MinhaPagina() {
       <div className="w-full text-right">
       <a href="/pagamentos">
         Meus Pagamentos
+        
       </a>
       </div>
       <div className="flex gap-6">
