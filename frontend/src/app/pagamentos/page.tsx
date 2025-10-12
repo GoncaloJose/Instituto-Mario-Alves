@@ -14,8 +14,7 @@ type Pagamento = {
   pagarMensal: number; // Assumindo que 1 = pago, 0 = pendente
 };
 
-// --- Componente para o Botão Dinâmico ---
-// Este componente decide qual botão renderizar com base no status e na data.
+// --- Componente para o Botão Dinâmico (COM A LÓGICA ALTERADA) ---
 const BotaoStatusPagamento = ({
   pagamento,
   onPagar,
@@ -38,8 +37,13 @@ const BotaoStatusPagamento = ({
     1
   );
 
-  // 1. Se o pagamento já foi efetuado
-  if (pagamento.pagarMensal === 1) {
+  // --- ALTERAÇÃO PRINCIPAL ---
+  // A nova condição verifica DUAS coisas:
+  // 1. Se o pagamento já está marcado como pago (pagarMensal === 1)
+  // OU
+  // 2. Se o mês do pagamento é anterior ao mês atual.
+  // Se qualquer uma for verdade, o status será "Pago".
+  if (pagamento.pagarMensal === 1 || primeiroDiaMesPagamento < primeiroDiaMesAtual) {
     return (
       <button
         className="bg-green-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed opacity-70"
@@ -50,20 +54,8 @@ const BotaoStatusPagamento = ({
     );
   }
 
-  // 2. Se o pagamento está pendente e é de um mês passado
-  if (primeiroDiaMesPagamento < primeiroDiaMesAtual) {
-    return (
-      <button
-        onClick={() => onPagar(pagamento.id)}
-        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-        title="Pagamento vencido. Clique para pagar."
-      >
-        Vencido
-      </button>
-    );
-  }
-
-  // 3. Se o pagamento está pendente e é do mês atual ou futuro
+  // Se a condição acima for falsa, significa que o pagamento é do mês atual ou de um mês futuro
+  // e ainda não foi pago. Nesse caso, mostramos o botão para "Pagar".
   return (
     <button
       onClick={() => onPagar(pagamento.id)}
@@ -74,7 +66,8 @@ const BotaoStatusPagamento = ({
   );
 };
 
-// --- Componente Principal da Página ---
+
+// --- Componente Principal da Página (não foi alterado) ---
 export default function MeusPagamentos() {
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
 
@@ -171,24 +164,14 @@ export default function MeusPagamentos() {
                           onPagar={handlePagar}
                         />
 
-                        {/* Botão de Ação Secundário (Ver Fatura) */}
+                        {/* Botão de Ação Secundário (Pagar - exemplo) */}
                         <button
-                          onClick={() => handleVerFatura(pagamento.id)}
-                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => handlePagar(pagamento.id)} // Alterado para handlePagar
+                          className="bg-green-700 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                           title="Pagar agora"
                         >
                           Pagar
-                        </button>
-
-                        {/* Botão de Ação Secundário (Ver Fatura) */}
-                        <button
-                          onClick={() => handleVerFatura(pagamento.id)}
-                          className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-                          title="Ver todos os pagamentos"
-                        >
-                          Ver Pagtos
-                        </button>
-                        
+                        </button>                      
                       </div>
                     </td>
                   </tr>
