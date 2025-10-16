@@ -47,6 +47,38 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/disponivel/:id", async (req, res) => {
+  const { id } = req.params;
+  const { data } = req.query; 
+  try {
+    const reserva = await prisma.reserva.findFirst({
+      where: { 
+        livroId: Number(id),
+        datadaReserva: { gte: new Date(data as string)},
+        
+      },
+    });
+
+    if (reserva) {
+      return res.status(200).json({ disponivel: false });
+    } else {
+      const emprestimo = await prisma.emprestimo.findFirst({
+        where: { 
+          livroId: Number(id),
+          datadaEntrega: { gte: new Date(data as string) },
+        },
+      });
+      if (emprestimo) {
+        return res.status(200).json({ disponivel: false });
+      } else {
+        return res.status(200).json({ disponivel: true });
+      }
+    }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 router.post("/", async (req, res) => {
   const { titulo, foto, sinopse, generoId, editoraId, autorId } = req.body;
 
