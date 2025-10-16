@@ -4,6 +4,9 @@ import { TiDeleteOutline } from "react-icons/ti"
 import { FaRegStar } from "react-icons/fa"
 import Cookies from "js-cookie"
 import { LivroI } from "@/utils/types/livros"
+import { useRouter } from 'next/navigation';
+
+
 
 interface listaLivroProps {
   livro: LivroI,
@@ -12,6 +15,7 @@ interface listaLivroProps {
 }
 
 function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
+const router = useRouter();
 
   async function excluirLivro() {
 
@@ -53,11 +57,21 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
         if (x.id == livro.id) {
           return { ...x, destaque: !x.destaque }
         }
+
         return x
       })
+
+    
+
+
       setLivros(livros2)
     }
   }
+
+  async function editarLivro() {
+        router.push(`/principal/livros/´${livro.id}`)
+      
+      }
 
   return (
     <tr key={livro.id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -88,6 +102,8 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
           onClick={excluirLivro} />&nbsp;
         <FaRegStar className="text-3xl text-yellow-600 inline-block cursor-pointer" title="Destacar"
           onClick={alterarDestaque} />
+        <FaRegStar className="text-3xl text-yellow-600 inline-block cursor-pointer" title="Editar"
+          onClick={editarLivro} />
       </td>
     </tr>
   )
