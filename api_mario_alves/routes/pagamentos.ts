@@ -4,74 +4,101 @@ import { Router } from "express";
 const prisma = new PrismaClient();
 const router = Router();
 
+// Rota para listar todos os pagamentos (sem alterações)
 router.get("/", async (req, res) => {
   try {
-    const pagamentos = await prisma.pagamento.findMany({include: {usuario: true}});
+    const pagamentos = await prisma.pagamento.findMany({ include: { usuario: true } });
     res.status(200).json(pagamentos);
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
-router.post("/", async (req, res) => {
-  const { usuarioId, dataPagamento, valor, formaPagamento } = req.body;
 
-
-  if (!usuarioId || !dataPagamento || !valor || !formaPagamento) {
-    res.status(400).json({ erro: "Informe dados obrigatório!" });
-    return;
-  }
-
-  try {
-    const pagamento = await prisma.pagamento.create({
-      data: { usuarioId, dataPagamento, valor, formaPagamento },
-    });
-
-    if (pagamento == null) {
-      console.log("Erro ao cadastrar pagamento!");
-      res.status(400).json({ erro: "Erro ao cadastrar pagamento!" });
-      return;
-    }
-      res.status(201).json(pagamento);
-  } catch (error) { 
-    console.log(error);
-    res.status(400).json(error);
-  }
-
-});
-
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const parsedId = parseInt(id, 10); // Convertendo o id para número
+// --- ALTERADO: Rota para buscar pagamentos por ID do USUÁRIO ---
+// O endpoint foi renomeado de "/:id" para "/usuario/:usuarioId" para ser mais claro sobre sua função.
+router.get("/usuario/:usuarioId", async (req, res) => {
+  // O nome do parâmetro foi atualizado para 'usuarioId'
+  const { usuarioId } = req.params; 
+  const parsedId = parseInt(usuarioId, 10);
 
   if (isNaN(parsedId)) {
-    return res.status(400).json({ erro: "ID inválido" });
+    return res.status(400).json({ erro: "ID de usuário inválido" });
   }
 
   try {
     const pagamentos = await prisma.pagamento.findMany({
-      where: { usuarioId: parsedId }, // Usando parsedId
+      where: { usuarioId: parsedId },
       include: { usuario: true },
       orderBy: { dataPagamento: 'desc' }
     });
 
-    if (pagamentos == null) {
-      res.status(400).json({ erro: "Não cadastrado" });
+    // --- ALTERADO: Corrigida a verificação para array vazio ---
+    // findMany retorna um array [], e não null, se nada for encontrado.
+    if (pagamentos.length === 0) {
+      // Retorna um array vazio com status 200, que é o correto quando não há dados.
+      res.status(200).json([]);
       return;
     } else {
       res.status(200).json(pagamentos.map(pagamento => ({
-
         id: pagamento.id,
-        nome: pagamento.usuario.nome,
-        email: pagamento.usuario.email,
+        // Os dados do usuário não são mais necessários aqui, pois já temos o ID
         dataPagamento: pagamento.dataPagamento,
         valor: pagamento.valor,
-        formaPagamento: pagamento.formaPagamento
+        formaPagamento: pagamento.formaPagamento,
+        // --- ALTERADO: Adicionado o campo 'pago' na resposta, crucial para o front-end ---
+        pago: pagamento.pago
       })));
     }
   } catch (error) {
     res.status(400).json(error);
   }
 });
+
+
+// Rota para criar um novo pagamento (sem alterações na lógica principal)
+router.post("/", async (req, res) => {
+  const { usuarioId, dataPagamento, valor, formaPagamento, pago } = req.body;
+
+  if (!usuarioId || !dataPagamento || !valor || !formaPagamento) {
+    res.status(400).json({ erro: "Informe todos os dados obrigatórios!" });
+    return;
+  }
+
+  try {
+    const pagamento = await prisma.pagamento.create({
+      data: { usuarioId: Number(usuarioId), dataPagamento, valor, formaPagamento, pago }, // o campo 'pago' será 'false' por padrão (definido no schema.prisma)
+    });
+
+    res.status(201).json(pagamento);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json(error);
+  }
+});
+
+
+// --- NOVO: Rota para marcar um pagamento como 'pago' ---
+// Utiliza o método PATCH, que é o ideal para atualizações parciais.
+router.patch("/:id/pagar", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Encontra e atualiza o pagamento com o ID fornecido, mudando 'pago' para 'true'
+    const pagamentoAtualizado = await prisma.pagamento.update({
+      where: { id: Number(id) },
+      data: { pago: true },
+    });
+
+    res.status(200).json(pagamentoAtualizado); // Retorna o pagamento com o novo status
+
+  } catch (error) {
+    // O Prisma lança um erro P2025 se o registro a ser atualizado não for encontrado.
+    // Isso já serve como uma verificação de "pagamento não existe".
+    console.error(error);
+    res.status(400).json({ erro: "Erro ao tentar processar o pagamento." });
+  }
+});
+
 
 export default router;

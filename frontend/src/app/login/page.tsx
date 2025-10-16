@@ -55,7 +55,8 @@ export default function Login() {
 
         // Verificamos se é o erro de pagamento vencido
         if (errorData.codigo === 'PAGAMENTO_VENCIDO') {
-          router.push('/bloqueado'); // Redireciona para a tela de bloqueio
+          //router.push('/bloqueado');
+          setLoginError(errorData.mensagem); // Redireciona para a tela de bloqueio
         } else {
           // Para outros erros (senha errada, etc.), exibimos a mensagem
           setLoginError(errorData.erro || "Login ou senha incorretos.");
@@ -174,7 +175,7 @@ export default function Login() {
         <hr className="my-3 border-gray-200 sm:mx-auto dark:border-black-700" />
         <span className="block text-semibold text-white sm:text-center dark:text-black-400 mb-2">
           <a href="/" className="hover:underline text-xl me-5">
-            Instituto Mário Alves™ © 2024. Todos os Direitos Reservados.
+            Instituto Mário Alves™ © 2025. Todos os Direitos Reservados.
           </a>
         </span>
       </footer>
