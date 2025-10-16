@@ -62,20 +62,6 @@ export default function Principal() {
   data.push(["Reservas", dados.reservas, cores[2]]);
   data.push(["emprestimos", dados.emprestimos, cores[3]]);
 
-  const options = {
-    is3D: true, // Ativando o modo 3D
-    title: "Controle de Livros, Usuarios, Reservas e Emprestmos",
-    chartArea: { width: "80%", height: "70%" },
-    legend: {
-      position: "bottom", // Colocando os nomes embaixo do gráfico
-    },
-    hAxis: {
-      title: "Categoria",
-    },
-    vAxis: {
-      title: "Quantidade",
-    },
-  };
 
   return (
     <div className="container mt-24">
@@ -88,18 +74,21 @@ export default function Principal() {
           </span>
           <p className="font-bold mt-2 text-center">Usuários</p>
         </div>
+
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-red-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-red-300">
             {dados.livros}
           </span>
           <p className="font-bold mt-2 text-center">Livros</p>
         </div>
+
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">
           <span className="bg-red-100 text-red-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-red-900 dark:text-red-300">
             {dados.reservas}
           </span>
           <p className="font-bold mt-2 text-center">Reservas</p>
         </div>
+
         <div className="border-green-600 border rounded p-6 w-1/3">
           <span className="bg-green-100 text-green-800 text-xl text-center font-bold mx-auto block px-2.5 py-5 rounded dark:bg-green-900 dark:text-green-300">
             {dados.emprestimos}
