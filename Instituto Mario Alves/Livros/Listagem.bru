@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:3004/livros
+  url: http://localhost:3004/livros/disponivel/9?data=2025-10-24
   body: none
   auth: none
+}
+
+query {
+  data: 2025-10-24
 }

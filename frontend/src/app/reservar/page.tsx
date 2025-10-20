@@ -81,6 +81,7 @@ export default function Reservar() {
 
   useEffect(() => {
     setValue("datadaReserva", new Date().toISOString().split("T")[0]);
+    //escrever aqui código que busca aqui na api disponibilidade
   }, [setValue]);
 
   return (
