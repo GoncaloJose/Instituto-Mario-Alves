@@ -40,7 +40,7 @@ function ItemUsuario({ usuario, usuarios, setUsuarios }: listaUsuarioProps) {
     async function listaPagamento() {
 
     
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/pagamentos/${usuario.id}`,
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/pagamentos/usuario/${usuario.id}`,
         {         
           headers: {
             "Content-type": "application/json",
@@ -54,7 +54,7 @@ function ItemUsuario({ usuario, usuarios, setUsuarios }: listaUsuarioProps) {
         setPagamentos(dadosPagamentos)
         
       } else {
-        alert("Erro... Usuário não foi excluído")
+        alert("Pagamento não encontrado!!")
       }
   }
     listaPagamento()

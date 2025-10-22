@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { subDays } from "date-fns";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -55,7 +56,7 @@ function validaSenha(senha: string) {
 router.post("/", async (req, res) => {
   const { nome, email, telefone, instituicao, escolaridade, senha, admin } = req.body;
 
-  if (!nome || !email || !telefone || !instituicao || !senha ) {
+  if (!nome || !email || !telefone || !instituicao || !senha) {
     res.status(400).json({ erro: "Informe dados obrigatório!" });
     return;
   }
@@ -66,28 +67,26 @@ router.post("/", async (req, res) => {
     return;
   }
 
-  // 12 é o número de voltas (repetições) que o algoritmo faz para gerar o salt (sal/tempero)
   const salt = bcrypt.genSaltSync(12);
-  // gera o hash da senha acrescida do salt
   const hash = bcrypt.hashSync(senha, salt);
 
-  // para o campo senha, atribui o hash gerado
   try {
     const usuario = await prisma.usuario.create({
       data: { nome, email, telefone, instituicao, escolaridade, admin, senha: hash },
     });
     res.status(201).json(usuario);
   } catch (error) {
-    res.status(400).json( error);
-      console.log( (error as Error).message);
+    res.status(400).json(error);
+    console.log((error as Error).message);
   }
 });
 
+// ===================================================================
+// ROTA DE LOGIN COM VERIFICAÇÃO DE PAGAMENTO
+// ===================================================================
 router.post("/login", async (req, res) => {
   const { email, senha } = req.body;
 
-  // em termos de segurança, o recomendado é exibir uma mensagem padrão
-  // a fim de evitar de dar "dicas" sobre o processo de login para hackers
   const mensaPadrao = "Login ou senha incorretos";
 
   if (!email || !senha) {
@@ -105,22 +104,57 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    // se o e-mail existe, faz-se a comparação dos hashs
     if (bcrypt.compareSync(senha, usuario.senha)) {
-      // se confere, gera e retorna o token
-      const token = jwt.sign({
-        admin_logado_id: usuario.id,
-        admin_logado_nome: usuario.nome
-      },
-      process.env.JWT_KEY as string,
-      { expiresIn: "1h"})
+      // --- INÍCIO DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
+      const dataAtual = new Date();
+      // Usa a data de pagamento do usuário como referência para calcular 30 dias atrás
+      const dataPagamento = usuario.diaPagamento;
+      // Se a data de pagamento for nula ou inválida, consideramos que não há pagamentos vencidos
+      // Usa date-nfs para setar o dia do mês atual com o dia de pagamento do usuário
+      // e subtrai 30 dias para verificar se há pagamentos vencidos
+      //  
+      const dataReferencia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataPagamento);
+      const maisDeTrintaDiasAtras = subDays(dataReferencia, 30);
+
+      // Buscamos por pagamentos que pertencem a este usuário, que não estão pagos (pagarMensal: 0)
+      // e cuja data de pagamento já passou. Como temos a data de pagamento fixa (dia do mês),
+      // comparamos com a data de referência calculada acima.
+      const foiPago = await prisma.pagamento.findMany({
+        where: {
+          usuarioId: usuario.id,
+          pago: true,
+          dataPagamento: {
+            gte: maisDeTrintaDiasAtras, // lte = less than or equal (menor ou igual)
+          },
+        },
+      });
+      console.log("Pagamentos encontrados:", foiPago, maisDeTrintaDiasAtras, dataReferencia);
+      // Se a busca retornar 1 ou mais pagamentos, o acesso é bloqueado.
+      if (!foiPago.length) {
+        res.status(403).json({
+          codigo: "PAGAMENTO_VENCIDO",
+          mensagem: "Acesso bloqueado. Entre em contato com a Biblioteca IMA para regularizar seu pagamento.",
+        });
+        return; // Encerra a execução aqui, impedindo a geração do token.
+      }
+      // --- FIM DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
+
+      // Se não houver pagamentos vencidos, o login prossegue normalmente.
+      const token = jwt.sign(
+        {
+          admin_logado_id: usuario.id,
+          admin_logado_nome: usuario.nome,
+        },
+        process.env.JWT_KEY as string,
+        { expiresIn: "1h" }
+      );
 
       res.status(200).json({
         id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
-        admin: usuario.admin, 
-        token
+        admin: usuario.admin,
+        token,
       });
     } else {
       res.status(400).json({ erro: mensaPadrao });
@@ -208,6 +242,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ erro: "Erro ao deletar usuário." });
   }
 });
-
 
 export default router;

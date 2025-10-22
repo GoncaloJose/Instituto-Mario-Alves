@@ -148,16 +148,18 @@ enum  Escolaridade {
 }
 
 model Pagamento {
-  id             Int       @id @default(autoincrement())
-  dataPagamento DateTime  @db.Date // dever se somente Date
-  valor          Decimal  @db.Decimal(10, 2) // valor deve ser decimal(10,2)
-  formaPagamento String  @db.VarChar(20) // formaPagamento deve ser varchar(20)
+  id              Int      @id @default(autoincrement())
+  dataPagamento   DateTime @db.Date // dever se somente Date
+  valor           Decimal  @db.Decimal(10, 2) // valor deve ser decimal(10,2)
+  formaPagamento  String   @db.VarChar(20) // formaPagamento deve ser varchar(20)
+  
+  pago            Boolean  @default(false) // <-- CAMPO ADICIONADO PARA CONTROLAR O STATUS
 
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  usuario        Usuario   @relation(fields: [usuarioId], references: [id])
-  usuarioId      Int 
+  usuario         Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId       Int
 
   @@map("pagamentos")
 }
