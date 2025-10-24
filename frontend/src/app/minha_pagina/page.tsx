@@ -172,12 +172,7 @@ export default function MinhaPagina() {
                   </button>
                   <Tooltip id="renovacao-emprestimo" />
 
-                  <button
-                    onClick={() => excluirEmprestimo(emprestimo.id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-vermelho"
-                  >
-                    Excluir Empréstimo
-                  </button>
+                
                 </div>
               </div>
             ))
