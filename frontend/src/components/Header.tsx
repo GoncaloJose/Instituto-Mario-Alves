@@ -39,7 +39,7 @@ export function Header() {
               {/* Link para Minha Página */}
               <Link
                 href="/minha_pagina"
-                className="text-sm font-inter text-white bg-vermelho hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="text-sm font-inter text-white bg-vermelho hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-600 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Minha&nbsp;Página
               </Link>
@@ -49,7 +49,7 @@ export function Header() {
                 href="http://localhost:3000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-inter text-white bg-vermelho hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="text-sm font-inter text-white bg-vermelho hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-red-600 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Login ADM
               </a>
