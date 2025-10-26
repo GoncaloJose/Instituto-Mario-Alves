@@ -29,8 +29,7 @@ router.get("/usuario/:usuarioId", async (req, res) => {
   try {
     const pagamentos = await prisma.pagamento.findMany({
       where: { usuarioId: parsedId },
-      include: { usuario: true },
-      orderBy: { dataPagamento: 'desc' }
+      orderBy: { dataPagamento: 'desc' },
     });
 
     // --- ALTERADO: Corrigida a verificação para array vazio ---
