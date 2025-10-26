@@ -105,39 +105,41 @@ router.post("/login", async (req, res) => {
     }
 
     if (bcrypt.compareSync(senha, usuario.senha)) {
-      // --- INÍCIO DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
-      const dataAtual = new Date();
-      // Usa a data de pagamento do usuário como referência para calcular 30 dias atrás
-      const dataPagamento = usuario.diaPagamento;
-      // Se a data de pagamento for nula ou inválida, consideramos que não há pagamentos vencidos
-      // Usa date-nfs para setar o dia do mês atual com o dia de pagamento do usuário
-      // e subtrai 30 dias para verificar se há pagamentos vencidos
-      //  
-      const dataReferencia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataPagamento);
-      const maisDeTrintaDiasAtras = subDays(dataReferencia, 30);
+      if (!usuario.admin) {
+        // --- INÍCIO DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
+        const dataAtual = new Date();
+        // Usa a data de pagamento do usuário como referência para calcular 30 dias atrás
+        const dataPagamento = usuario.diaPagamento;
+        // Se a data de pagamento for nula ou inválida, consideramos que não há pagamentos vencidos
+        // Usa date-nfs para setar o dia do mês atual com o dia de pagamento do usuário
+        // e subtrai 30 dias para verificar se há pagamentos vencidos
+        //  
+        const dataReferencia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataPagamento);
+        const maisDeTrintaDiasAtras = subDays(dataReferencia, 30);
 
-      // Buscamos por pagamentos que pertencem a este usuário, que não estão pagos (pagarMensal: 0)
-      // e cuja data de pagamento já passou. Como temos a data de pagamento fixa (dia do mês),
-      // comparamos com a data de referência calculada acima.
-      const foiPago = await prisma.pagamento.findMany({
-        where: {
-          usuarioId: usuario.id,
-          pago: true,
-          dataPagamento: {
-            gte: maisDeTrintaDiasAtras, // lte = less than or equal (menor ou igual)
+        // Buscamos por pagamentos que pertencem a este usuário, que não estão pagos (pagarMensal: 0)
+        // e cuja data de pagamento já passou. Como temos a data de pagamento fixa (dia do mês),
+        // comparamos com a data de referência calculada acima.
+        const foiPago = await prisma.pagamento.findMany({
+          where: {
+            usuarioId: usuario.id,
+            pago: true,
+            dataPagamento: {
+              gte: maisDeTrintaDiasAtras, // lte = less than or equal (menor ou igual)
+            },
           },
-        },
-      });
-      console.log("Pagamentos encontrados:", foiPago, maisDeTrintaDiasAtras, dataReferencia);
-      // Se a busca retornar 1 ou mais pagamentos, o acesso é bloqueado.
-      if (!foiPago.length) {
-        res.status(403).json({
-          codigo: "PAGAMENTO_VENCIDO",
-          mensagem: "Acesso bloqueado. Entre em contato com a Biblioteca IMA para regularizar seu pagamento.",
         });
-        return; // Encerra a execução aqui, impedindo a geração do token.
-      }
+        console.log("Pagamentos encontrados:", foiPago, maisDeTrintaDiasAtras, dataReferencia);
+        // Se a busca retornar 1 ou mais pagamentos, o acesso é bloqueado.
+        if (!foiPago.length) {
+          res.status(403).json({
+            codigo: "PAGAMENTO_VENCIDO",
+            mensagem: "Acesso bloqueado. Entre em contato com a Biblioteca IMA para regularizar seu pagamento.",
+          });
+          return; // Encerra a execução aqui, impedindo a geração do token.
+        }
       // --- FIM DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
+      }
 
       // Se não houver pagamentos vencidos, o login prossegue normalmente.
       const token = jwt.sign(
