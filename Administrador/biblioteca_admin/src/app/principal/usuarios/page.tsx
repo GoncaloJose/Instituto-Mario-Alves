@@ -34,7 +34,7 @@ function CadUsuarios() {
           Controle de Usuários
         </h1>
         <Link href="usuarios/novo" 
-          className="text-white bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+          className="text-white bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
           Novo Usuário
         </Link>
       </div>

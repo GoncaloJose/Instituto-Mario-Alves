@@ -58,7 +58,7 @@ function CadLivros() {
     <div className="m-4 mt-24">
       <div className="flex justify-between">
         <h1 className="mb-4 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
-          Lista de Livros
+          Lista de Livros:
         </h1>
         <Link
           href="livros/novo"
@@ -91,8 +91,8 @@ function CadLivros() {
           <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">Livro</th>
-              <th scope="col" className="px-6 py-3">Nome do Livro</th>
-              <th scope="col" className="px-6 py-3">Autor</th>
+              <th scope="col" className="px-6 py-3">Título</th>
+              <th scope="col" className="px-6 py-3">Autor(a)</th>
               <th scope="col" className="px-6 py-3">Editora</th>
               <th scope="col" className="px-6 py-3">Gênero</th>
               <th scope="col" className="px-6 py-3">Sinopse</th>
