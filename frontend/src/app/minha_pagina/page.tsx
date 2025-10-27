@@ -64,28 +64,6 @@ export default function MinhaPagina() {
     getReservas();
   }, []);
 
-  async function excluirEmprestimo(id: number) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (response.ok) {
-        setEmprestimos((emprestimos) =>
-          emprestimos.filter((emprestimo) => emprestimo.id !== id)
-        );
-        alert("Empréstimo excluído com sucesso!");
-      } else {
-        alert("Erro ao excluir o empréstimo.");
-      }
-    } catch (error) {
-      console.error("Erro ao excluir empréstimo:", error);
-      alert("Erro ao excluir empréstimo.");
-    }
-  }
 
   async function excluirReserva(id: number) {
     try {
