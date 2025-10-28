@@ -6,6 +6,7 @@ import { FaRegStar } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { LivroI } from "@/utils/types/livros";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface listaLivroProps {
   livro: LivroI;
@@ -70,81 +71,64 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
     }
   }
 
-
-
   return (
-    <div className="w-full">
-      <th className="overflow-x-auto">
-           {" "}
+    <div className="px-3 py-2">
+      <th className="px-3 py-2">
         <tr
           key={livro.id}
-          className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-        >
-               {" "}
-          <th
-            scope="row"
-            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-          >
-                   {" "}
-            <img src={livro.foto} alt="Capa do Livro" style={{ width: 200 }} /> 
-               {" "}
+          className="px-3 py-2 odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+          <th scope="row"
+            className="px-3 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <img src={livro.foto} alt="Capa do Livro" style={{ width: 1600 }} /> 
           </th>
-          {/* ... (restante da <tr> sem mudanças) ... */}     {" "}
-          <td className={`px-6 py-4 ${livro.destaque ? "font-extrabold" : ""}`}>
-                    {livro.titulo}     {" "}
+          <td className={`px-3 py-2 ${livro.destaque ? "font-extrabold" : ""}`}>
+                    {livro.titulo}     
           </td>
-               {" "}
-          <td className="px-6 py-4">
-                   {" "}
+          <td className="px-3 py-2">
             {livro.autores.map((autor) => (
               <span key={autor.id} className="block">
                 {autor.nome}
               </span>
             ))}
-                 {" "}
           </td>
-               {" "}
-          <td className="px-6 py-4">
-                   {" "}
+          <td className="px-3 py-2">
             {
               <span key={livro.editoras.id} className="block">
                 {livro.editoras.nome}
               </span>
             }
-                 {" "}
           </td>
-               {" "}
-          <td className="px-6 py-4">
-                   {" "}
+          <td className="px-3 py-2">
             {livro.generos.map((genero) => (
               <span key={genero.id} className="block">
                 {genero.tipo}
               </span>
             ))}
-                 {" "}
           </td>
-                <td className="px-3 py-2">        {livro.sinopse}      </td>   
-           {" "}
-          <td className="px-6 py-4">
-                   {" "}
+          <td className="px-3 py-2">        
+            {livro.sinopse}      
+            </td>   
+          <td className="px-3 py-2">
             <TiDeleteOutline
               className="text-2xl text-red-600 inline-block cursor-pointer"
               title="Excluir"
               onClick={excluirLivro}
             />
-            &nbsp;        {" "}
+            &nbsp;        
             <FaRegStar
               className="text-2xl text-yellow-600 inline-block cursor-pointer"
               title="Destacar"
-              onClick={alterarDestaque}
+              onClick={alterarDestaque}              
             />
-                 {" "}
-          </td>
-          {/* 4. CÉLULA (TD) DIMINUÍDA (de px-6 py-4 para px-3 py-2) */}     {" "}
-          
-             {" "}
-        </tr>
+          </td>                 
+        </tr> 
       </th>
+      <Link
+                href="/principal/livros/novo"
+                className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+              >
+                Editar Livro
+              </Link>
     </div>
   );
 }
