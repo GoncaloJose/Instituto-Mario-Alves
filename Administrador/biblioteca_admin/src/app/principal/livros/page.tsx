@@ -96,7 +96,7 @@ function CadLivros() {
               <th scope="col" className="px-6 py-3">Editora</th>
               <th scope="col" className="px-6 py-3">Gênero</th>
               <th scope="col" className="px-6 py-3">Sinopse</th>
-              <th scope="col" className="px-6 py-3">Destacar & Excluir</th>
+              <th scope="col" className="px-6 py-3">Editar & Excluir</th>
               <th scope="col" className="px-6 py-3">
                 <button
                   onClick={exportarCSV}
