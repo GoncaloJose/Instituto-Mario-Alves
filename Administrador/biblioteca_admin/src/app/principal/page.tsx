@@ -79,7 +79,7 @@ export default function Principal() {
 
   return (
     <div className="container mt-24">
-      <h2 className="text-3xl mb-4 font-bold">Atividades do Sistema</h2>
+      <h2 className="text-3xl mb-4 font-bold">Gerenciamento das Atividades:</h2>
 
       <div className="w-2/3 flex justify-between mx-auto mb-5">
         <div className="border-red-600 border rounded p-6 w-1/3 me-3">

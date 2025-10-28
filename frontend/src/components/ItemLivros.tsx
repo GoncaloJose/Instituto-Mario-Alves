@@ -45,7 +45,7 @@ export function ItemLivros({ data }: { data: LivroI }) {
         <div className="flex justify-center gap-3 mt-4">
           <Link
             href={`/detalhes/${data.id}`}
-            className="px-3 py-1.5 text-sm font-inter text-white bg-vermelho rounded-md hover:bg-yellow-500 focus:ring-2 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
+            className="px-3 py-1.5 text-sm font-inter text-white bg-vermelho rounded-md hover:bg-red-500 focus:ring-2 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
           >
             Sinopse
           </Link>
@@ -54,7 +54,7 @@ export function ItemLivros({ data }: { data: LivroI }) {
              href={`/reservar?livroId=${data.id}&titulo=${
                     data.titulo ? encodeURIComponent(data.titulo) : ""
                   }`}
-            className="px-3 py-1.5 text-sm font-inter text-white bg-vermelho rounded-md hover:bg-yellow-500 focus:ring-2 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
+            className="px-3 py-1.5 text-sm font-inter text-white bg-vermelho rounded-md hover:bg-red-500 focus:ring-2 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
           >
             Reservar
           </Link>

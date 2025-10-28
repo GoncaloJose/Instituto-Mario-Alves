@@ -108,11 +108,7 @@ function Emprestimos() {
     <div className="mb-4 mt-24">
       <div className='flex justify-between'>
         <h6 className="mb-4 mt-5 text-3xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-2xl dark:text-white">
-      <h1>Cadastro de Empréstimos:</h1>
-      <Link href="emprestimos/lista"  
-          className="text-black bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md px-5 py-2.5 me-8 mb-6 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
-          Lista de Empréstimos
-        </Link>
+      <h1>Cadastrar Empréstimos:</h1>
 
       <form onSubmit={handleSubmit(realizarEmprestimo)} className="max-w-xl mx-auto">
         <div className="mb-5">
@@ -157,7 +153,7 @@ function Emprestimos() {
           <input type="date" id="dataEntrega" className="block border border-gray-500 rounded-md p-2" {...register("dataEntrega")} readOnly />
         </div>
 
-        <button type="submit" className="bg-vermelho hover:bg-red-700 text-back font-bold py-2 px-4 rounded">
+        <button type="submit" className="bg-vermelho hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
           Realizar Empréstimo
         </button>
       </form>

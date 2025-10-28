@@ -77,14 +77,14 @@ export function Header() {
               {/* Links para cadastro e login */}
               <Link
                 href="/cadastro"
-                className="cursor-pointer text-extrabold text-xl font-inter text-black-500 dark:text-black hover:underline"
+                className="cursor-pointer text-extrabold text-xl text-black-500 dark:text-black hover:text-red-600 font-medium transition-colors duration-200"
               >
                 Cadastre-se
               </Link>
 
               <Link
                 href="/login"
-                className="text-extrabold font-inter text-xl text-black-900 dark:text-black-900 hover:underline"
+                className="text-extrabold text-xl text-black-900 dark:text-black-900 hover:text-red-600 font-medium transition-colors duration-200"
               >
                 Entrar
               </Link>
