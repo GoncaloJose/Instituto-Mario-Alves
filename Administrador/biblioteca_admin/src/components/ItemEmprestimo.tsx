@@ -3,20 +3,21 @@ import { useState } from "react";
 
 type EmprestimoI = {
   id: string | number;
-  livro?: string;
-  usuario?: string;
-  dataEmprestimo?: string; // Mapeado para "Data da Reserva"
-  dataDevolucao?: string | null; // Mapeado para "Data da Entrega"
+  livroId?: string;
+  usuarioId?: string;
+  datadaReserva?: string; // Mapeado para "Data da Reserva"
+  datadaEntrega?: string | null; // Mapeado para "Data da Entrega"
+  status?: string;
 };
 
 // ==================================================================
 // 1. NOVO COMPONENTE CRIADO PARA CADA ITEM DO EMPRÉSTIMO
 // ==================================================================
 // Isso isola o estado "isEntregue" para cada item da lista.
-function EmprestimoItem({ emprestimo }: { emprestimo: EmprestimoI }) {
+function ItemEmprestimo({ emprestimo }: { emprestimo: EmprestimoI }) {
   // ✅ O HOOK AGORA ESTÁ AQUI DENTRO
   // Ele usa a 'dataDevolucao' para definir o estado inicial
-  const [isEntregue, setIsEntregue] = useState(!!emprestimo.dataDevolucao);
+  const [isEntregue, setIsEntregue] = useState(!!emprestimo.datadaEntrega);
 
   // Esta função agora afeta APENAS este item
   async function handleToggleEntrega() {
@@ -32,23 +33,23 @@ function EmprestimoItem({ emprestimo }: { emprestimo: EmprestimoI }) {
       className="border p-4 mb-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
     >  
       <p className="text-gray-900 dark:text-white">
-        <strong>Usuário:</strong> {emprestimo.usuario ?? "Não informado"}
+        <strong>Usuário:</strong> {emprestimo.usuarioId ?? "Não informado"}
       </p>
       <p className="text-gray-900 dark:text-white">
-        <strong>Livro:</strong> {emprestimo.livro ?? "Não informado"}
+        <strong>Livro:</strong> {emprestimo.livroId ?? "Não informado"}
       </p>
       <p className="text-gray-900 dark:text-white">
         <strong>Data da Reserva:</strong>{" "}
-        {emprestimo.dataEmprestimo ?? "Não informada"}
+        {emprestimo.datadaReserva ?? "Não informada"}
       </p>
       <p className="text-gray-900 dark:text-white">
         <strong>Data da Entrega:</strong>{" "}
-        {emprestimo.dataEmprestimo ?? "Não informada"}
+        {emprestimo.datadaEntrega ?? "Não informada"}
       </p>
       <p className="text-gray-900 dark:text-white">
         <strong>Status:</strong>{" "}
         {/* Lógica melhorada: mostra 'Pendente' ou a data original */}
-        {isEntregue ? emprestimo.dataDevolucao ?? "Entregue" : "Pendente"}
+        {isEntregue ? emprestimo.status ?? "Entregue" : "Pendente"}
       </p>
 
       {/* Correção de HTML: <td> (célula de tabela) não deve ser usado
@@ -104,7 +105,7 @@ function CadEmprestimos() {
   // 3. O MAP FOI SIMPLIFICADO
   // Agora ele apenas chama o novo componente 'EmprestimoItem'
   const listaEmprestimos = emprestimos.map((emprestimo) => (
-    <EmprestimoItem key={emprestimo.id} emprestimo={emprestimo} />
+    <ItemEmprestimo key={emprestimo.id} emprestimo={emprestimo} />
   )); // 4. A FUNÇÃO 'editarLivro' FOI REMOVIDA DAQUI
 
   // (A lógica dela agora está dentro de 'EmprestimoItem')

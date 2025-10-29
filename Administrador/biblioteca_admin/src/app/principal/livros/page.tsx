@@ -92,46 +92,15 @@ function CadLivros() {
           Novo Gênero
         </Link>
       </div>
-
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="px-2 py-2 text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
-            <>
-              <th scope="col" className="px-3 py-2">
-                Livro
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Título
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Autor(a)
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Editora
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Gênero
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Sinopse
-              </th>
-              <th scope="col" className="px-3 py-2">
-                Editar & Excluir
-              </th>
-              <th scope="col" className="px-3 py-2">
+              
                 <button
                   onClick={exportarCSV}
                   className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
                 >
                   Exportar CSV
-                </button>
-              </th>
-            </>
-          </thead>
-          <tbody>{listaLivros}</tbody>
-        </table>
-      </div>
-    </div>
+                </button>        
+          <tbody>{listaLivros}</tbody>  
+      </div> 
   );
 }
 
