@@ -43,6 +43,10 @@ function EmprestimoItem({ emprestimo }: { emprestimo: EmprestimoI }) {
       </p>
       <p className="text-gray-900 dark:text-white">
         <strong>Data da Entrega:</strong>{" "}
+        {emprestimo.dataEmprestimo ?? "Não informada"}
+      </p>
+      <p className="text-gray-900 dark:text-white">
+        <strong>Status:</strong>{" "}
         {/* Lógica melhorada: mostra 'Pendente' ou a data original */}
         {isEntregue ? emprestimo.dataDevolucao ?? "Entregue" : "Pendente"}
       </p>

@@ -110,111 +110,165 @@ function EmprestimosForm() {
     }
   }
 
-  return (
-    <div className="m-4 mt-24">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Cadastrar Empréstimos:
-        </h1>
-        <Link
-          href="/principal/emprestimos/lista"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Ver Lista de Empréstimos
-        </Link>
-      </div>
+ return (
+    <div className="m-4 mt-24">
+      {/* --- CABEÇALHO DA PÁGINA --- */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Cadastrar Empréstimos:
+        </h1>
+        <Link
+          href="/principal/emprestimos/lista"
+          className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-500 font-bold
+            rounded-lg text-md px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Ver Lista de Empréstimos
+        </Link>
+      </div>
 
-      <form
-        onSubmit={handleSubmit(realizarEmprestimo)}
-        className="max-w-4xl mx-auto mt-10"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="mb-5">
-            <label htmlFor="usuarioId" /* ... */ >
-              Usuário
-            </label>
-            <select id="usuarioId" {...register("usuarioId")} /* ... */ >
-              <option value="">Selecione um usuário</option>
-              {usuarios.map((usuario) => (
-                <option key={usuario.id} value={usuario.id}>
-                  {usuario.nome}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* --- INÍCIO DO FORMULÁRIO --- */}
+      <form
+        onSubmit={handleSubmit(realizarEmprestimo)}
+        className="max-w-4xl mx-auto mt-10"
+      >
+        {/* MUDANÇA: Adicionado um "card" principal para o formulário 
+          com sombra, bordas arredondadas e espaçamento interno.
+        */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sm:p-8 space-y-8">
+          
+          {/* --- SEÇÃO 1: DADOS DO EMPRÉSTIMO --- */}
+          <section>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Dados do Empréstimo
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Campo Usuário */}
+              <div>
+                <label
+                  htmlFor="usuarioId"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Usuário
+                </label>
+                <select
+                  id="usuarioId"
+                  {...register("usuarioId")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option value="">Selecione um usuário</option>
+                  {usuarios.map((usuario) => (
+                    <option key={usuario.id} value={usuario.id}>
+                      {usuario.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="mb-5">
-            <label htmlFor="livroId" /* ... */ >
-              Livro
-            </label>
-            <select id="livroId" {...register("livroId")} /* ... */ >
-              <option value="">Selecione um livro</option>
-              {livros.map((livro) => (
-                <option key={livro.id} value={livro.id}>
-                  {livro.titulo}
-                </option>
-              ))}
-            </select>
-          </div>
+              {/* Campo Livro */}
+              <div>
+                <label
+                  htmlFor="livroId"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Livro
+                </label>
+                <select
+                  id="livroId"
+                  {...register("livroId")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option value="">Selecione um livro</option>
+                  {livros.map((livro) => (
+                    <option key={livro.id} value={livro.id}>
+                      {livro.titulo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </section>
 
-          <div className="mb-5">
-            <label htmlFor="dataRetirada" /* ... */ >
-              Data da Retirada
-            </label>
-            {/* 7. REMOVIDO o 'readOnly' para permitir a seleção */}
-            <input
-              type="date"
-              id="dataRetirada"
-              className="block w-full border border-gray-500 rounded-md p-2 text-black"
-              {...register("dataRetirada")}
-            />
-          </div>
+          {/* --- SEÇÃO 2: PERÍODO --- */}
+          <section>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Período
+            </h3>
 
-          <div className="mb-5">
-            <label htmlFor="dataEntrega" /* ... */ >
-              Data da Entrega (Automática)
-            </label>
-            <input
-              type="date"
-              id="dataEntrega"
-              className="block w-full border border-gray-500 rounded-md p-2 text-black bg-gray-100"
-              {...register("dataEntrega")}
-              readOnly // A data de entrega continua automática
-            />
-          </div>
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Campo Data da Retirada */}
+              <div>
+                <label
+                  htmlFor="dataRetirada"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Data da Retirada
+                </label>
+                <input
+                  type="date"
+                  id="dataRetirada"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  {...register("dataRetirada")}
+                />
+              </div>
 
-        {/* 8. MENSAGEM DE STATUS */}
-        <div className="my-4 h-6">
-          {isLoadingDisponibilidade && (
-            <p className="text-gray-600 dark:text-gray-400">Verificando disponibilidade...</p>
-          )}
-          {!isLoadingDisponibilidade && !isDisponivel && (
-            <p className="text-red-600 font-bold">
-              ❗️ Este livro já está emprestado nesta data.
-            </p>
-          )}
-          {!isLoadingDisponibilidade && isDisponivel && watchedLivroId && (
-            <p className="text-green-600 font-bold">
-              ✓ Livro disponível!
-            </p>
-          )}
+              {/* Campo Data da Entrega */}
+              <div>
+                <label
+                  htmlFor="dataEntrega"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Data da Entrega
+                </label>
+                <input
+                  type="date"
+                  id="dataEntrega"
+                  // MUDANÇA: Estilo de "desabilitado" melhorado
+                  className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed"
+                  {...register("dataEntrega")}
+                  readOnly // A data de entrega continua automática
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* --- SEÇÃO 3: AÇÕES E STATUS --- */}
+          <section>
+            {/* Mensagem de Status */}
+            <div className="my-4 h-6 text-center">
+              {isLoadingDisponibilidade && (
+                <p className="text-gray-600 dark:text-gray-400">Verificando disponibilidade...</p>
+              )}
+              {!isLoadingDisponibilidade && !isDisponivel && (
+                <p className="text-red-600 font-bold">
+                  ❗️ Este livro já está emprestado nesta data.
+                </p>
+              )}
+              {!isLoadingDisponibilidade && isDisponivel && watchedLivroId && (
+                <p className="text-green-600 font-bold">
+                  ✓ Livro disponível!
+                </p>
+              )}
+            </div>
+
+            {/* Botão de Envio */}
+            <div className="flex justify-center mt-6">
+              <button
+                type="submit"
+                disabled={!isDisponivel || isLoadingDisponibilidade}
+                // MUDANÇA: Usei 'bg-red-600' como padrão do Tailwind
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg
+                           disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-150"
+              >
+                {isLoadingDisponibilidade ? "Verificando..." : "Realizar Empréstimo"}
+              </button>
+            </div>
+          </section>
+
         </div>
-
-        <div className="flex justify-center mt-4">
-          <button
-            type="submit"
-            // 9. BOTÃO DESABILITADO se não estiver disponível
-            disabled={!isDisponivel || isLoadingDisponibilidade}
-            className="bg-vermelho hover:bg-red-700 text-white font-bold py-2 px-4 rounded
-                      disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {isLoadingDisponibilidade ? "Verificando..." : "Realizar Empréstimo"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+      </form>
+    </div>
+  );
 }
 
 export default EmprestimosForm;
