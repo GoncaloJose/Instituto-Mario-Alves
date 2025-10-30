@@ -3,4 +3,6 @@ export interface ReservaI {
     livroId: number
     usuarioId: number
     datadaReserva: Date
+    datadaEntrega: Date
+    status: string
 }
