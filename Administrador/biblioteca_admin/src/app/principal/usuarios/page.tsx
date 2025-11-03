@@ -1,8 +1,9 @@
 'use client'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
+import * as XLSX from 'xlsx'
 
-import  ItemUsuario  from '@/components/ItemUsuario'
+import ItemUsuario from '@/components/ItemUsuario'
 import { UsuarioI } from "@/utils/types/usuarios"
 
 function CadUsuarios() {
@@ -17,6 +18,21 @@ function CadUsuarios() {
     getUsuarios()
   }, [])
 
+  function exportarParaExcel() {
+    const dados = usuarios.map(({ nome, email, telefone, admin, }) => ({
+      Nome: nome,
+      Email: email,
+      Telefone: telefone,
+      Admin: admin ? 'Sim' : 'Não',
+    
+    }))
+
+    const worksheet = XLSX.utils.json_to_sheet(dados)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuários')
+    XLSX.writeFile(workbook, 'usuarios.xlsx')
+  }
+
   const listaUsuarios = usuarios.map((usuario: UsuarioI) => (
     <ItemUsuario
       key={usuario.id}
@@ -24,13 +40,12 @@ function CadUsuarios() {
       usuarios={usuarios}
       setUsuarios={setUsuarios}
     />
-  
   ))
 
   return (
     <div className='m-4 mt-24'>
-      <div className='flex justify-between'>
-        <h1 className="mb-4 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
+      <div className='flex justify-between items-center mb-4'>
+        <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
           Controle de Usuários
         </h1>
         <Link href="usuarios/novo" 
@@ -43,24 +58,12 @@ function CadUsuarios() {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Nome
-              </th>
-              <th scope="col" className="px-6 py-3">
-                E-mail
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Telefone
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Admin?
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Pago?
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Ações
-              </th>
+              <th scope="col" className="px-6 py-3">Nome</th>
+              <th scope="col" className="px-6 py-3">E-mail</th>
+              <th scope="col" className="px-6 py-3">Telefone</th>
+              <th scope="col" className="px-6 py-3">Admin?</th>
+              <th scope="col" className="px-6 py-3">Pago?</th>
+              <th scope="col" className="px-6 py-3">Ações</th>
             </tr>
           </thead>
           <tbody>
