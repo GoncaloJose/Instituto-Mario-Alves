@@ -32,7 +32,7 @@ export function Header() {
           {usuario.id ? (
             <div className="flex items-center space-x-3">
               {/* Nome do usuário */}
-              <p className="text-extrabold text-lg font-inter text-black dark:text-white">
+              <p className="text-extra-xl text-lg font-inter text-black dark:text-white">
                 Olá, {usuario.nome}
               </p>
 
@@ -56,7 +56,7 @@ export function Header() {
 
               {/* Botão de Sair */}
               <span
-                className="cursor-pointer text-extrabold font-inter text-black-900 dark:text-black-900 hover:underline"
+                className="cursor-pointer text-xl font-inter text-black-900 dark:text-red-900 hover:text-red-600 transition-colors duration-200"
                 onClick={sairUsuario}
               >
                 Sair
@@ -77,14 +77,14 @@ export function Header() {
               {/* Links para cadastro e login */}
               <Link
                 href="/cadastro"
-                className="cursor-pointer text-extrabold text-xl font-inter text-black-500 dark:text-black hover:underline"
+                className="cursor-pointer text-extrabold text-xl text-black-500 dark:text-black hover:text-red-600 font-medium transition-colors duration-200"
               >
                 Cadastre-se
               </Link>
 
               <Link
                 href="/login"
-                className="text-extrabold font-inter text-xl text-black-900 dark:text-black-900 hover:underline"
+                className="text-extrabold text-xl text-black-900 dark:text-black-900 hover:text-red-600 font-medium transition-colors duration-200"
               >
                 Entrar
               </Link>

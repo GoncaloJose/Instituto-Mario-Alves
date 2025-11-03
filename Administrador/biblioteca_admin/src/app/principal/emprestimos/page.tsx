@@ -1,123 +1,274 @@
 "use client";
+import React from "react";
+// 1. Importe 'useWatch' (ou 'watch' se preferir)
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form"; 
 import axios from "axios";
+import Link from "next/link";
 
 interface Usuario {
-  id: number;
-  nome: string;
+  id: number;
+  nome: string;
 }
-
 interface Livro {
-  id: number;
-  titulo: string;
+  id: number;
+  titulo: string;
 }
-
 type Inputs = {
-  usuarioId: number;
-  livroId: number;
-  dataRetirada: string;
-  dataEntrega: string;
+  usuarioId: number;
+  livroId: number;
+  dataRetirada: string;
+  dataEntrega: string;
 };
 
-function Emprestimos() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [livros, setLivros] = useState<Livro[]>([]);
-  const { register, handleSubmit, setFocus, setValue } = useForm<Inputs>();
-
-  useEffect(() => {
-    async function fetchData(endpoint: string, setData: Function) {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_URL_API}/${endpoint}`);
-        setData(response.data);
-      } catch (error) {
-        console.error(`Erro ao buscar ${endpoint}:`, error);
-      }
-    }
-
-    fetchData("usuarios", setUsuarios);
-    fetchData("livros", setLivros);
-
-    setFocus("usuarioId");
-
+function EmprestimosForm() {
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [livros, setLivros] = useState<Livro[]>([]);
   
-    const hoje = new Date();
-    const retirada = hoje.toISOString().split("T")[0]; 
-    const entrega = new Date(hoje);
-    entrega.setDate(hoje.getDate() + 7); 
+  // 2. NOVOS ESTADOS para controlar a lógica
+  const [isDisponivel, setIsDisponivel] = useState(true);
+  const [isLoadingDisponibilidade, setIsLoadingDisponibilidade] = useState(false);
+
+  // 3. Adicione 'control' para o useWatch
+  const { register, handleSubmit, setFocus, setValue, control } = useForm<Inputs>();
+
+  // 4. "Assista" aos campos do formulário
+  const watchedLivroId = useWatch({ control, name: "livroId" });
+  const watchedDataRetirada = useWatch({ control, name: "dataRetirada" });
+
+  useEffect(() => {
+    async function fetchData(endpoint: string, setData: Function) {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_URL_API}/${endpoint}`
+        );
+        setData(response.data);
+      } catch (error) {
+        console.error(`Erro ao buscar ${endpoint}:`, error);
+      }
+    }
+    fetchData("usuarios", setUsuarios);
+    fetchData("livros", setLivros);
+    setFocus("usuarioId");
+
+    // Define a data de retirada padrão como HOJE (mas o usuário pode mudar)
+    const hoje = new Date().toISOString().split("T")[0];
+    setValue("dataRetirada", hoje);
+  }, [setFocus, setValue]);
+
+  // 5. NOVO useEffect - Roda a lógica de verificação
+  useEffect(() => {
+    // Calcula a data de entrega baseada na retirada
+    const dataRetirada = new Date(watchedDataRetirada || new Date());
+    const entrega = new Date(dataRetirada);
+    entrega.setDate(entrega.getDate() + 7); // Adiciona 7 dias
     const entregaFormatada = entrega.toISOString().split("T")[0];
-
-    setValue("dataRetirada", retirada);
     setValue("dataEntrega", entregaFormatada);
-  }, []);
 
-  async function realizarEmprestimo(data: Inputs) {
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_API}/emprestimos`, data);
-      if (response.status === 201) {
-        alert("Empréstimo realizado com sucesso!");
-      } else {
-        alert("Erro ao realizar empréstimo...");
-      }
-    } catch (error) {
-      console.error("Erro ao realizar empréstimo:", error);
-      alert("Erro ao realizar empréstimo!");
+    // Se o usuário ainda não selecionou um livro ou data, não faça nada
+    if (!watchedLivroId || !watchedDataRetirada) {
+      setIsDisponivel(true); // Reseta para o padrão
+      return;
     }
-  }
 
-  return (
-    <div className="mb-4 mt-24">
-      <h1>Cadastro de Empréstimos</h1>
+    setIsLoadingDisponibilidade(true);
+    // Chama a API que criamos no Passo 1
+    fetch(`/api/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setIsDisponivel(data.isDisponivel);
+        setIsLoadingDisponibilidade(false);
+      })
+      .catch((err) => {
+        console.error("Erro ao checar API:", err);
+        setIsDisponivel(false); // Por segurança, bloqueia se a API falhar
+        setIsLoadingDisponibilidade(false);
+      });
+      
+  }, [watchedLivroId, watchedDataRetirada, setValue]); // Roda sempre que o livro ou a data mudam
 
-      <form onSubmit={handleSubmit(realizarEmprestimo)} className="max-w-xl mx-auto">
-        <div className="mb-3">
-          <label htmlFor="usuarioId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Usuário
-          </label>
-          <select id="usuarioId" className="block border border-gray-500 rounded-md p-2" {...register("usuarioId")}>
-            <option value="">Selecione um usuário</option>
-            {usuarios.map((usuario) => (
-              <option key={usuario.id} value={usuario.id}>
-                {usuario.nome}
-              </option>
-            ))}
-          </select>
+  async function realizarEmprestimo(data: Inputs) {
+    // 6. Checagem final no momento do submit (redundância de segurança)
+    if (!isDisponivel) {
+      alert("Este livro não está disponível para esta data!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`,
+        data
+      );
+      if (response.status === 201) {
+        alert("Empréstimo realizado com sucesso!");
+      } else {
+        alert("Erro ao realizar empréstimo...");
+      }
+    } catch (error) {
+      console.error("Erro ao realizar empréstimo:", error);
+      alert("Erro ao realizar empréstimo!");
+    }
+  }
+
+ return (
+    <div className="m-4 mt-24">
+      {/* --- CABEÇALHO DA PÁGINA --- */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Cadastrar Empréstimos:
+        </h1>
+        <Link
+          href="/principal/emprestimos/lista"
+          className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-500 font-bold
+            rounded-lg text-md px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          Ver Lista de Empréstimos
+        </Link>
+      </div>
+
+      {/* --- INÍCIO DO FORMULÁRIO --- */}
+      <form
+        onSubmit={handleSubmit(realizarEmprestimo)}
+        className="max-w-4xl mx-auto mt-10"
+      >
+        {/* MUDANÇA: Adicionado um "card" principal para o formulário 
+          com sombra, bordas arredondadas e espaçamento interno.
+        */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sm:p-8 space-y-8">
+          
+          {/* --- SEÇÃO 1: DADOS DO EMPRÉSTIMO --- */}
+          <section>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Dados do Empréstimo
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Campo Usuário */}
+              <div>
+                <label
+                  htmlFor="usuarioId"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Usuário
+                </label>
+                <select
+                  id="usuarioId"
+                  {...register("usuarioId")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option value="">Selecione um usuário</option>
+                  {usuarios.map((usuario) => (
+                    <option key={usuario.id} value={usuario.id}>
+                      {usuario.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Campo Livro */}
+              <div>
+                <label
+                  htmlFor="livroId"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Livro
+                </label>
+                <select
+                  id="livroId"
+                  {...register("livroId")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option value="">Selecione um livro</option>
+                  {livros.map((livro) => (
+                    <option key={livro.id} value={livro.id}>
+                      {livro.titulo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </section>
+
+          {/* --- SEÇÃO 2: PERÍODO --- */}
+          <section>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Período
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Campo Data da Retirada */}
+              <div>
+                <label
+                  htmlFor="dataRetirada"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Data da Retirada
+                </label>
+                <input
+                  type="date"
+                  id="dataRetirada"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  {...register("dataRetirada")}
+                />
+              </div>
+
+              {/* Campo Data da Entrega */}
+              <div>
+                <label
+                  htmlFor="dataEntrega"
+                  className="block mb-2 text-sm font-medium text-red-900 dark:text-white"
+                >
+                  Data da Entrega
+                </label>
+                <input
+                  type="date"
+                  id="dataEntrega"
+                  // MUDANÇA: Estilo de "desabilitado" melhorado
+                  className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed"
+                  {...register("dataEntrega")}
+                  readOnly // A data de entrega continua automática
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* --- SEÇÃO 3: AÇÕES E STATUS --- */}
+          <section>
+            {/* Mensagem de Status */}
+            <div className="my-4 h-6 text-center">
+              {isLoadingDisponibilidade && (
+                <p className="text-gray-600 dark:text-gray-400">Verificando disponibilidade...</p>
+              )}
+              {!isLoadingDisponibilidade && !isDisponivel && (
+                <p className="text-red-600 font-bold">
+                  ❗️ Este livro já está emprestado nesta data.
+                </p>
+              )}
+              {!isLoadingDisponibilidade && isDisponivel && watchedLivroId && (
+                <p className="text-green-600 font-bold">
+                  ✓ Livro disponível!
+                </p>
+              )}
+            </div>
+
+            {/* Botão de Envio */}
+            <div className="flex justify-center mt-6">
+              <button
+                type="submit"
+                disabled={!isDisponivel || isLoadingDisponibilidade}
+                // MUDANÇA: Usei 'bg-red-600' como padrão do Tailwind
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg
+                           disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-150"
+              >
+                {isLoadingDisponibilidade ? "Verificando..." : "Realizar Empréstimo"}
+              </button>
+            </div>
+          </section>
+
         </div>
-
-        <div className="mb-3">
-          <label htmlFor="livroId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Livro
-          </label>
-          <select id="livroId" className="block border border-gray-500 rounded-md p-2 text-black" {...register("livroId")}>
-            <option value="">Selecione um livro</option>
-            {livros.map((livro) => (
-              <option key={livro.id} value={livro.id}>
-                {livro.titulo}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="dataRetirada" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Data da Retirada
-          </label>
-          <input type="date" id="dataRetirada" className="block border border-gray-500 rounded-md p-2" {...register("dataRetirada")} readOnly />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="dataEntrega" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Data da Entrega
-          </label>
-          <input type="date" id="dataEntrega" className="block border border-gray-500 rounded-md p-2" {...register("dataEntrega")} readOnly />
-        </div>
-
-        <button type="submit" className="bg-vermelho hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Realizar Empréstimo
-        </button>
       </form>
     </div>
   );
 }
 
-export default Emprestimos;
+export default EmprestimosForm;

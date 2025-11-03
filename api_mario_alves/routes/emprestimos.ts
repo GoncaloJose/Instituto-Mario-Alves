@@ -55,6 +55,22 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const emprestimo = await prisma.emprestimo.findUnique({
+      where: { id: Number(id) },
+    });
+    if (emprestimo) {
+      res.status(200).json(emprestimo);
+    } else {
+      res.status(404).json({ erro: "Empréstimo não encontrado." });
+    }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 // Rota: excluir empréstimo
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;

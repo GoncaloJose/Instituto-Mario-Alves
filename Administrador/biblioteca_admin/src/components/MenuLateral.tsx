@@ -35,7 +35,7 @@ export function MenuLateral() {
               <span className="h-5 text-dark text-2xl">
               <MdAdminPanelSettings />
               </span>
-              <span className="ms-2 mt-1">Histórico do Sistema</span>
+              <span className="ms-2 mt-1">Gestão do Sistema</span>
             </Link>
           </li>
           <li>

@@ -48,19 +48,10 @@ function CadUsuarios() {
         <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
           Controle de Usuários
         </h1>
-        <div className="flex gap-2">
-          <button
-            onClick={exportarParaExcel}
-            className="text-white bg-green-600 hover:bg-green-700 font-bold rounded-lg text-md px-5 py-2.5"
-          >
-            Exportar Lista
-          </button>
-          <Link href="usuarios/novo"
-            className="text-white bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
-          >
-            Novo Usuário
-          </Link>
-        </div>
+        <Link href="usuarios/novo" 
+          className="text-white bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+          Novo Usuário
+        </Link>
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
