@@ -21,7 +21,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
-
 app.use("/livros", livrosRoutes)
 app.use("/usuarios", usuariosRoutes)
 app.use("/reservas", reservasRoutes)

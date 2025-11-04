@@ -105,6 +105,8 @@ router.post("/login", async (req, res) => {
     }
 
     if (bcrypt.compareSync(senha, usuario.senha)) {
+      let inadimplente = false;
+
       if (!usuario.admin) {
         // --- INÍCIO DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
         const dataAtual = new Date();
@@ -129,16 +131,13 @@ router.post("/login", async (req, res) => {
             },
           },
         });
+
         console.log("Pagamentos encontrados:", foiPago, maisDeTrintaDiasAtras, dataReferencia);
-        // Se a busca retornar 1 ou mais pagamentos, o acesso é bloqueado.
+
+        // Se a busca retornar 1 ou mais pagamentos
         if (!foiPago.length) {
-          res.status(403).json({
-            codigo: "PAGAMENTO_VENCIDO",
-            mensagem: "Acesso bloqueado. Entre em contato com a Biblioteca IMA para regularizar seu pagamento.",
-          });
-          return; // Encerra a execução aqui, impedindo a geração do token.
+          inadimplente = true;
         }
-      // --- FIM DA VERIFICAÇÃO DE PAGAMENTO VENCIDO ---
       }
 
       // Se não houver pagamentos vencidos, o login prossegue normalmente.
@@ -156,6 +155,9 @@ router.post("/login", async (req, res) => {
         nome: usuario.nome,
         email: usuario.email,
         admin: usuario.admin,
+        createdAt: usuario.createdAt,
+        updatedAt: usuario.updatedAt,
+        inadimplente,
         token,
       });
     } else {

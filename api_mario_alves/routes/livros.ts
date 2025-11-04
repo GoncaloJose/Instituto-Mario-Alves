@@ -253,6 +253,10 @@ router.get("/:id", async (req, res) => {
   try {
     const livro = await prisma.livro.findUnique({
       where: { id: Number(id) },
+      include: {
+        autores: true,
+        generos: true
+      }
     });
     res.status(200).json(livro);
   } catch (error) {
