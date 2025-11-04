@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import { parse } from "path";
+import { startOfDay, endOfDay, parse as parseDate } from "date-fns";
 
 const prisma = new PrismaClient({
   log: [
@@ -50,26 +51,28 @@ router.get("/", async (req, res) => {
 // [CORREÇÃO 1: Nome da rota e lógica de data]
 // O nome da rota deve ser "/:id/disponibilidade" para bater com o frontend
 router.get("/:id/disponibilidade", async (req, res) => {
-  const { id } = req.query;
-  const { datadaReserva } = req.query;
-  const { datadaEntrega } = req.query;
+  const { id } = req.params;
+  const { data } = req.query;
 
-  if (!datadaEntrega || typeof datadaEntrega !== 'string' || !datadaReserva || typeof datadaReserva !== 'string') {
-    return res.status(400).json({ erro: "Formato de data inválido ou ausente." });
+  if (!data || typeof data !== 'string') {
+    return res.status(400).json({
+      erro: "Formato de data inválido ou ausente."
+    });
   }
 
   try {
-    // Converte a data "YYYY-MM-DD" para um intervalo de 24h em UTC
-    const dataInicio = new Date(datadaReserva + "T00:00:00.000Z"); // Início do dia
-    const dataFim = new Date(datadaEntrega + "T23:59:59.999Z");     // Fim do dia
+    const dataFormatada = parseDate(data, "yyyy-MM-dd", new Date())
+
+    const inicioDoDia = startOfDay(dataFormatada);
+    const finalDoDia = endOfDay(dataFormatada);
 
     // 1. O livro está indisponível SE já existir uma RESERVA para ele NAQUELE DIA
     const reserva = await prisma.reserva.findFirst({
       where: { 
         livroId: Number(id),
         datadaReserva: { // A data da reserva deve estar DENTRO do dia solicitado
-          gte: dataInicio,
-          lte: dataFim,
+          gte: inicioDoDia,
+          lte: finalDoDia,
         },
       },
     });
@@ -84,18 +87,22 @@ router.get("/:id/disponibilidade", async (req, res) => {
     const emprestimo = await prisma.emprestimo.findFirst({
       where: {
         livroId: Number(id),
-        datadaReserva: { gte: dataInicio }, // A reserva foi FEITA ANTES (ou no dia)
-        datadaEntrega: { lte: dataFim },    // E a devolução é SÓ DEPOIS (ou hoje)
+        datadaReserva: {
+          lte: finalDoDia,
+        },
+        datadaEntrega: {
+          gte: inicioDoDia,
+        },
       },
     });
 
     if (emprestimo) {
       // Se achou um empréstimo ativo, está indisponível.
-      return res.status(200).json({ disponivel: true });
+      return res.status(200).json({ disponivel: false});
     }
 
     // 3. Se não achou nem reserva, nem empréstimo, o livro está disponível!
-    return res.status(200).json({ disponivel: false });
+    return res.status(200).json({ disponivel: true });
 
   } catch (error) {
     console.error("Erro ao verificar disponibilidade:", error);
