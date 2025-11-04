@@ -169,38 +169,6 @@ export default function Reservar() {
           <form className="mt-5" onSubmit={handleSubmit(verificaReserva)}>
             <div className="mb-5">
               <label
-                htmlFor="clienteId"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                ID do Cliente
-              </label>
-              <input
-                type="number"
-                id="clienteId"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                placeholder="Id do Cliente"
-                {...register("usuarioId")}
-                disabled
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="livroId"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                ID do Livro
-              </label>
-              <input
-                type="number"
-                id="livroId"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                placeholder="Digite o ID do livro"
-                {...register("livroId")}
-                disabled 
-              />
-            </div>
-            <div className="mb-5">
-              <label
                 htmlFor="titulo"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
