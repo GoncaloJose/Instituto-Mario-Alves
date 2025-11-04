@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { formataData } from "@/utils/formataData";
 import { isToday } from "date-fns";
 import { Tooltip } from "react-tooltip";
+import { useUsuarioStore } from "@/context/usuario";
 
 type Emprestimo = {
   id: number;
@@ -26,10 +27,9 @@ type Reserva = {
 export default function MinhaPagina() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
   const [reservas, setReservas] = useState<Reserva[]>([]);
+  const { usuario } = useUsuarioStore();
 
   useEffect(() => {
-    const usuarioId = Number(localStorage.getItem("client_key")); // 👈 ID do usuário logado
-
     async function getEmprestimos() {
       try {
         const response = await fetch(
@@ -37,7 +37,7 @@ export default function MinhaPagina() {
         );
         const dados = await response.json();
         const filtrados = dados.filter(
-          (item: Emprestimo) => item.usuarioId === usuarioId
+          (item: Emprestimo) => item.usuarioId === usuario.id
         );
         setEmprestimos(filtrados);
       } catch (error) {
@@ -52,7 +52,7 @@ export default function MinhaPagina() {
         );
         const dados = await response.json();
         const filtrados = dados.filter(
-          (item: Reserva) => item.usuarioId === usuarioId
+          (item: Reserva) => item.usuarioId === usuario.id
         );
         setReservas(filtrados);
       } catch (error) {

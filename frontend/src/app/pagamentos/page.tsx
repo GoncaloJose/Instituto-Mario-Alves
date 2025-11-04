@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 // As duas importações abaixo não estão sendo usadas, mas mantive caso precise delas.
 import { formataData } from "@/utils/formataData";
-import { isToday } from "date-fns";
+import { isToday, differenceInDays } from "date-fns";
 import { Tooltip } from "react-tooltip";
+import { toast } from "sonner";
+
+import { useUsuarioStore } from "@/context/usuario";
 
 // Tipos (sem alterações)
 type Pagamento = {
@@ -74,18 +77,20 @@ const gerarMesesDoAno = (): PagamentoFuturo[] => {
 export default function MeusPagamentos() {
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
   const [pagamentosFuturos, setPagamentosFuturos] = useState<PagamentoFuturo[]>([]);
+  const { usuario, atualizaUsuario } = useUsuarioStore();
 
   useEffect(() => {
-    const usuarioId = Number(localStorage.getItem("client_key"));
     async function getPagamentos() {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/pagamentos/usuario/${usuarioId}`
+          `${process.env.NEXT_PUBLIC_URL_API}/pagamentos/usuario/${usuario.id}`
         );
+
         if (!response.ok) {
           setPagamentos([]);
           return;
         }
+
         const dados = await response.json();
         setPagamentos(dados);
       } catch (error) {
@@ -93,7 +98,7 @@ export default function MeusPagamentos() {
         setPagamentos([]);
       }
     }
-    if (usuarioId) {
+    if (usuario.id) {
       getPagamentos();
     }
 
@@ -112,7 +117,7 @@ export default function MeusPagamentos() {
       );
 
       if (!response.ok) {
-        alert("Erro ao tentar realizar o pagamento.");
+        toast.error("Erro ao tentar realizar o pagamento.");
         return;
       }
 
@@ -125,17 +130,32 @@ export default function MeusPagamentos() {
         })
       );
 
-      alert(`Pagamento ID: ${pagamentoId} realizado com sucesso!`);
+	  // Se o pagamento for dentro dos ultimos 30 dias, a gente atualiza o usuario para nao inadimplente
+	  if (usuario.inadimplente) {
+		  const pagamento = pagamentos.find(p => p.id === pagamentoId);
+		  if (pagamento) {
+			  const dataPagamento = new Date(pagamento.dataPagamento);
+			  const hoje = new Date();
+			  // usa o date-fns
+			  const diffEmDias = differenceInDays(hoje, dataPagamento);
+			  if (diffEmDias <= 30) {
+				  usuario.inadimplente = false;
+				  atualizaUsuario(usuario);
+			  }
+		  }
+	  }
+
+	  toast.success("Pagamento realizado com sucesso!");
     } catch (error) {
       console.error("Erro de conexão ao pagar:", error);
-      alert("Erro de conexão. Não foi possível realizar o pagamento.");
+
+	  toast.error("Erro de conexão. Não foi possível realizar o pagamento.");
     }
   };
 
   const handleGerarPagamentoFuturo = async (pagamento: PagamentoFuturo, event: React.MouseEvent<HTMLButtonElement>) => {
-    const usuarioId = localStorage.getItem("client_key");
-    if (!usuarioId) {
-      alert("Erro: ID do usuário não encontrado. Faça login novamente.");
+    if (!usuario.id) {
+      toast.error("Erro: ID do usuário não encontrado. Faça login novamente.");
       return;
     }
 
@@ -143,7 +163,7 @@ export default function MeusPagamentos() {
     const mesNumero = nomesDosMeses.indexOf(pagamento.mes);
 
     if (mesNumero === -1) {
-      alert("Erro interno: Mês inválido.");
+      toast.error("Erro interno: Mês inválido.");
       return;
     }
     
@@ -156,25 +176,32 @@ export default function MeusPagamentos() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          dataPagamento: new Date(pagamento.ano, mesNumero, 10),
+          dataPagamento: new Date(pagamento.ano, mesNumero, new Date().getDate()),
           valor: 150.00,
           formaPagamento: "Boleto",
-          usuarioId: Number(usuarioId),
+          usuarioId: Number(usuario.id),
         }),
       });
 
       const novoPagamento = await response.json();
 
       if (response.ok) {
-        alert(`Fatura para ${pagamento.mes}/${pagamento.ano} gerada com sucesso!`);
-        setPagamentos(pagamentosAtuais => [...pagamentosAtuais, novoPagamento].sort((a, b) => new Date(b.dataPagamento).getTime() - new Date(a.dataPagamento).getTime()));
+        toast.success(`Fatura para ${pagamento.mes}/${pagamento.ano} gerada com sucesso!`);
+
+        setPagamentos(
+			pagamentosAtuais => [
+				...pagamentosAtuais,
+				novoPagamento
+			].sort((a, b) => new Date(b.dataPagamento).getTime() - new Date(a.dataPagamento).getTime()));
       } else {
-        alert(`Erro: ${novoPagamento.erro}`);
+        toast.error(`Erro: ${novoPagamento.erro}`);
+
         botao.innerText = "Gerar Fatura";
         botao.disabled = false;
       }
     } catch (error) {
-      alert("Erro de conexão. Não foi possível gerar a fatura.");
+      toast.error("Erro de conexão. Não foi possível gerar a fatura.");
+
       botao.innerText = "Gerar Fatura";
       botao.disabled = false;
     }
@@ -232,9 +259,6 @@ export default function MeusPagamentos() {
             </table>
           </div>
         </div>
-        
-        {/* --- ALTERAÇÃO: Bloco do Histórico de Faturas foi removido daqui --- */}
-
       </div>
     </section>
   );

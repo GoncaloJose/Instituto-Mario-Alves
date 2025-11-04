@@ -43,11 +43,7 @@ export default function Login() {
       if (response.ok) {
         const dados = await response.json();
         logaUsuario(dados);
-        if (data.continuar) {
-          localStorage.setItem("client_key", dados.id);
-        } else {
-          localStorage.removeItem("client_key");
-        }
+
         router.push("/");
       } else {
         // Se a resposta não for 'ok', lemos o corpo do erro

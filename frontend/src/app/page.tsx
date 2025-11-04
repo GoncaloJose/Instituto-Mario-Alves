@@ -12,28 +12,15 @@ export default function Home() {
   const { usuario, logaUsuario } = useUsuarioStore();
 
   useEffect(() => {
-    async function buscaUsuario(idUsuario: string) {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/usuarios/${idUsuario}`
-      );
-      if (response.status == 200) {
-        const dados = await response.json();
-        logaUsuario(dados);
-      }
-    }
-    if (localStorage.getItem("client_key")) {
-      const usuarioSalvo = localStorage.getItem("client_key") as string;
-      buscaUsuario(usuarioSalvo);
-    }
-
-    async function buscaDados() {
+    async function buscarSugestoes() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`);
       const dados = await response.json();
-      console.log(dados);
+
       setLivros(dados);
     }
-    buscaDados();
-  }, [logaUsuario]);
+
+    buscarSugestoes();
+  }, [usuario]);
 
   const listaLivros = livros.map((livro) => (
     <ItemLivros data={livro} key={livro.id} />

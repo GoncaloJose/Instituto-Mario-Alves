@@ -29,36 +29,12 @@ export default function Detalhes() {
     buscaDados();
   }, [params.livro_id]);
 
-  async function enviaComentario(data: Inputs) {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_API}/comentarios`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          usuarioId: usuario.id,
-          livroId: Number(params.livro_id),
-          descricao: data.descricao,
-        }),
-      }
-    );
-    if (response.status === 201) {
-      toast.success("Obrigado. Seu comentário foi enviado. Aguarde retorno");
-      reset();
-    } else {
-      toast.error("Erro... Não foi possível enviar seu comentário");
-    }
-  }
-
   return (
     <section>
       <h1 className="ms-48 mt-10 mb-5 text-2xl font-inter tracking-tight text-gray-900 dark:text-white flex items-center text-center">
-        <strong>Sugestões de Leitura:&nbsp;</strong>
         <span className="decoration-none decoration-red-600">
           {" "}
-          {livro?.titulo} {livro?.autor}{" "}
+			{livro?.titulo} por {livro?.autores.map((autor) => autor.nome).join(", ")}{" "}
         </span>
       </h1>
       <div className="mt-10 mb-10 mx-auto flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-5xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -82,20 +58,18 @@ export default function Detalhes() {
           </a>
 
           {usuario.id ? (
+			(!usuario.inadimplente && (
             <>
-
               <div className="ms-5 mt-5">
                 <Link
-                  href={`/reservar?livroId=${livro?.id}&titulo=${
-                    livro?.titulo ? encodeURIComponent(livro.titulo) : ""
-                  }`}
+                  href={`/reservar?livroId=${livro?.id}`}
                   className="ms-5 mt-5 px-5 py-2 text-sm font-inter text-center text-white bg-vermelho rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                 >
                   Reservar
                 </Link>
               </div>
             </>
-          ) : (
+			))) : (
             <>
               <h3 className="text-xl font-inter tracking-tight text-orange-700 dark:text-white">
                 Faça login ou cadastro para reservar o livro!!

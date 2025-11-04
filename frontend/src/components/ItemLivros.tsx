@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { LivroI } from "@/utils/types/livros";
 import Link from "next/link";
+import { useUsuarioStore } from "@/context/usuario";
 
 export function ItemLivros({ data }: { data: LivroI }) {
   const [expanded, setExpanded] = useState(false);
+  const { usuario } = useUsuarioStore();
 
   const charLimit = 100;
   const isLongSinopse = data.sinopse?.length > charLimit;
@@ -50,14 +52,15 @@ export function ItemLivros({ data }: { data: LivroI }) {
             Sinopse
           </Link>
 
-          <Link
-             href={`/reservar?livroId=${data.id}&titulo=${
-                    data.titulo ? encodeURIComponent(data.titulo) : ""
-                  }`}
-            className="px-3 py-1.5 text-sm font-inter text-white bg-vermelho rounded-md hover:bg-red-500 focus:ring-2 focus:outline-none focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
-          >
-            Reservar
-          </Link>
+		  {(usuario && !usuario.inadimplente) && (
+			  <Link
+				 href={`/reservar?livroId=${data.id}`}
+				 disabled={(usuario && !usuario.inadimplente)}
+				 className="px-3 py-1.5 text-sm font-inter rounded-md text-white bg-vermelho hover:bg-red-500 focus:ring-red-500 focus:ring-2 focus:outline-none dark:bg-red-500 dark:hover:bg-red-500 dark:focus:ring-red-500"
+			  >
+				Reservar
+			  </Link>
+		  )}
         </div>
       </div>
     </div>
