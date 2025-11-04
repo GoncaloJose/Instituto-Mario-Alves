@@ -11,6 +11,7 @@ function CadLivros() {
     async function getLivros() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros`);
       const dados = await response.json();
+
       setLivros(dados);
     }
     getLivros();
@@ -56,8 +57,6 @@ function CadLivros() {
     <ItemLivro
       key={livro.id}
       livro={livro}
-      livros={livros}
-      setLivros={setLivros}
     />
   ));
 
@@ -65,7 +64,7 @@ function CadLivros() {
     <div className="m-4 mt-24">
       <div className="flex justify-between">
         <h1 className="mb-4 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
-          Lista de Livros:
+          Livros
         </h1>
         <Link
           href="livros/novo"
@@ -93,13 +92,16 @@ function CadLivros() {
         </Link>
       </div>
               
-                <button
-                  onClick={exportarCSV}
-                  className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
-                >
-                  Exportar CSV
-                </button>        
-          <tbody>{listaLivros}</tbody>  
+		<button
+			onClick={exportarCSV}
+			className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
+		>
+			Exportar CSV
+		</button>
+
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+			{listaLivros}
+		</div>
       </div> 
   );
 }

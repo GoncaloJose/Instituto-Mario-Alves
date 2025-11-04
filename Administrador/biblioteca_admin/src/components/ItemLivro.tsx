@@ -8,19 +8,16 @@ import { useRouter } from "next/navigation";
 import Link from "next/link"; // Link não é mais usado para editar, mas pode ser usado em outro lugar
 
 interface listaLivroProps {
-  livro: LivroI; // Esta prop 'livro' não parece estar sendo usada, o map usa 'livros'
-  livros: LivroI[];
-  setLivros: Dispatch<SetStateAction<LivroI[]>>;
+  livro: LivroI;
 }
 
-function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
-  const router = useRouter(); // O router já estava importado e inicializado
+function ItemLivro({ livro }: listaLivroProps) {
+  const router = useRouter();
 
   async function excluirLivro(id: number) {
-    // ... (função original sem mudanças) ...
     if (confirm(`Confirma a exclusão`)) {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/livros/${id}`, // Usei o 'id' do argumento
+        `${process.env.NEXT_PUBLIC_URL_API}/livros/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -42,7 +39,6 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
   }
 
   async function alterarDestaque(id: number) {
-    // ... (função original sem mudanças) ...
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/livros/destacar/${id}`, // Usei o 'id' do argumento
       {
@@ -67,19 +63,15 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
   }
 
   return (
-    <div className="flex overflow-x-auto gap-3 px-4 py-2">
-      {livros.map((livro) => ( // O 'livro' aqui é a variável do map
         <div
           key={livro.id}
-          className="min-w-[300px] max-w-[200px] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden flex-shrink-0"
+          className="block group bg-white dark:bg-gray-800 min-h-[750px]"
         >
-          <section className="flex flex-col h-full">
-            {/* Imagem do livro */}
-            <div className="w-full h-34">
+            <div className="aspect-[2/3] bg-gray-100 rounded-md overflow-hidden mb-2">
               <img
                 src={livro.foto}
                 alt={`Capa do Livro: ${livro.titulo}`}
-                className="object-cover w-full h-full"
+				className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
             </div>
 
@@ -169,10 +161,7 @@ function ItemLivro({ livro, livros, setLivros }: listaLivroProps) {
                 {/* --- FIM DA MUDANÇA --- */}
               </div>
             </div>
-          </section>
         </div>
-      ))}
-    </div>
   );
 }
 
