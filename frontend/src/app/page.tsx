@@ -4,12 +4,10 @@ import { InputPesquisa } from "@/components/InputPesquisa";
 import { ItemLivros } from "@/components/ItemLivros";
 import { LivroI } from "@/utils/types/livros";
 import { useEffect, useState } from "react";
-import { useUsuarioStore } from "@/context/usuario";
 import Link from "next/link";
 
 export default function Home() {
   const [livros, setLivros] = useState<LivroI[]>([]);
-  const { usuario, logaUsuario } = useUsuarioStore();
 
   useEffect(() => {
     async function buscarSugestoes() {
@@ -20,7 +18,7 @@ export default function Home() {
     }
 
     buscarSugestoes();
-  }, [usuario]);
+  }, []);
 
   const listaLivros = livros.map((livro) => (
     <ItemLivros data={livro} key={livro.id} />
