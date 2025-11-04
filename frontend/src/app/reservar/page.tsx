@@ -5,13 +5,13 @@ import { useForm, useWatch } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUsuarioStore } from "@/context/usuario";
 import { useState, useEffect } from "react";
+import { parse, addDays, format } from "date-fns";
 import Link from "next/link";
 
 type Inputs = {
   livroId: number;
   usuarioId: number;
   datadaReserva: string;
-  datadaEntrega: string; // Adicionei esta data que estava faltando no seu type
   titulo: string;
 };
 
@@ -31,7 +31,7 @@ export default function Reservar() {
   // 4. "Assista" aos campos para re-verificar em tempo real
   const watchedLivroId = useWatch({ control, name: "livroId" });
   const watchedDatadaReserva = useWatch({ control, name: "datadaReserva" });
-  
+  const [previsaoDeEntrega, setPrevisaoDeEntrega] = useState<string>("");
 
   useEffect(() => {
     // (Este useEffect permanece o mesmo)
@@ -71,7 +71,6 @@ export default function Reservar() {
     // Converte as datas para o formato UTC
     // (Certifique-se de que seu backend está esperando UTC!)
     data.datadaReserva = new Date(data.datadaReserva + "T00:00:00.000Z").toUTCString();
-    data.datadaEntrega = new Date(data.datadaEntrega + "T00:00:00.000Z").toUTCString();
 
     try {
       const response = await fetch(
@@ -87,13 +86,12 @@ export default function Reservar() {
         setMensagemSucesso("Reserva realizada com sucesso!");
         setTimeout(() => {
           setMensagemSucesso(null);
-          // Removi datadaEntrega do push, já que não temos o campo
           router.push(
             `/minha_pagina?livroId=${data.livroId}&titulo=${encodeURIComponent(
               data.titulo
             )}}&usuarioId=${data.usuarioId}&datadaReserva=${
               data.datadaReserva
-            }&datadaEntrega=${data.datadaEntrega}`
+            }`
           );
         }, 2000);
       } else {
@@ -110,28 +108,18 @@ export default function Reservar() {
 
     // 1. Define a data de reserva como hoje
     setValue("datadaReserva", todayString);
-
-    // 2. Calcula e define a data de entrega padrão (Hoje + 7 dias)
-    const sevenDaysFromNow = new Date(today);
-    sevenDaysFromNow.setDate(today.getDate() + 7);
-    const entregaString = sevenDaysFromNow.toISOString().split("T")[0];
-
-    setValue("datadaEntrega", entregaString);
   }, [setValue]);
 
   useEffect(() => {
-    // Não executa se os dados básicos ainda não carregaram
     if (!watchedLivroId || !watchedDatadaReserva) {
-      setIsDisponivel(true); // Deixa o botão habilitado por padrão
+      setIsDisponivel(true);
       return;
     }
 
     async function verificaDisponibilidadeAPI() {
       setIsLoadingDisponibilidade(true);
+
       try {
-        // [CORREÇÃO 1: A URL ESTAVA ERRADA]
-        // Esta é a URL correta, que usa as variáveis do formulário
-        // e bate com a rota da API que corrigimos (livros/:id/disponibilidade)
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDatadaReserva}`
         );
@@ -141,20 +129,27 @@ export default function Reservar() {
         }
 
         const data = await response.json();
-        
-        // Salva a resposta (true ou false) no estado
-        // A API responde com 'disponivel', não 'isDisponivel' (conforme API que corrigimos)
         setIsDisponivel(data.disponivel); 
 
       } catch (error) {
         console.error("Erro ao verificar disponibilidade:", error);
-        setIsDisponivel(false); // Por segurança, bloqueia se a API falhar
+        setIsDisponivel(false);
       }
       setIsLoadingDisponibilidade(false);
     }
 
-    // Roda esta verificação sempre que o livro ou a data mudarem
+	verificaDisponibilidadeAPI();
+	calculaPrevisaoDeEntrega(watchedDatadaReserva);
   }, [watchedLivroId, watchedDatadaReserva]);
+
+  const calculaPrevisaoDeEntrega = (dataReserva: string) => {
+	const dataConvertida = parse(dataReserva, "yyyy-MM-dd", new Date());
+
+	const previsao = addDays(dataConvertida, 7);
+	const previsaoFormatada = format(previsao, "dd/MM/yyyy");
+
+	setPrevisaoDeEntrega(previsaoFormatada);
+  }
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
@@ -234,7 +229,6 @@ export default function Reservar() {
                 placeholder="Data da Reserva"
                 {...register("datadaReserva")}
                 required
-                disabled
               />
             </div>           
              <div className="mb-5">
@@ -242,17 +236,16 @@ export default function Reservar() {
                 htmlFor="datadaEntrega"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Data da Entrega
+				  Data que deve ser retornado <br />
+				  <span className="text-small text-gray-400">
+					  (se for retirado nessa data)
+				  </span>
               </label>
-              <input
-                type="date"
+              <div
                 id="datadaEntrega"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                placeholder="Data da Entrega"
-                {...register("datadaEntrega")}
-                required
-                disabled
-              />
+                className="text-gray-900 text-sm rounded-lg block w-full">
+				 {previsaoDeEntrega}
+			 </div>
             </div> 
 
             {/* 8. ADICIONADO Bloco de Status da Disponibilidade */}

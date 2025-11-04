@@ -73,10 +73,10 @@ function EmprestimosForm() {
 
     setIsLoadingDisponibilidade(true);
     // Chama a API que criamos no Passo 1
-    fetch(`/api/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
+    fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
       .then((res) => res.json())
       .then((data) => {
-        setIsDisponivel(data.isDisponivel);
+        setIsDisponivel(data.disponivel);
         setIsLoadingDisponibilidade(false);
       })
       .catch((err) => {
