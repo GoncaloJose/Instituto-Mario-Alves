@@ -1,6 +1,5 @@
 "use client";
 
-// 1. Importe 'useWatch' e 'control'
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUsuarioStore } from "@/context/usuario";
@@ -16,25 +15,21 @@ type Inputs = {
 };
 
 export default function Reservar() {
-  // 2. Adicione 'control' ao useForm
   const { register, handleSubmit, setValue, control } = useForm<Inputs>();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { usuario } = useUsuarioStore();
   const [mensagemSucesso, setMensagemSucesso] = useState<string | null>(null);
 
-  // 3. Adicione os novos estados para o bloqueio
   const [isDisponivel, setIsDisponivel] = useState(true);
   const [isLoadingDisponibilidade, setIsLoadingDisponibilidade] =
     useState(false);
 
-  // 4. "Assista" aos campos para re-verificar em tempo real
   const watchedLivroId = useWatch({ control, name: "livroId" });
   const watchedDatadaReserva = useWatch({ control, name: "datadaReserva" });
   const [previsaoDeEntrega, setPrevisaoDeEntrega] = useState<string>("");
 
   useEffect(() => {
-    // (Este useEffect permanece o mesmo)
     const livroId = searchParams?.get("livroId");
 
     if (livroId) {
@@ -60,7 +55,6 @@ export default function Reservar() {
   }, [usuario, searchParams, setValue]);
 
   async function verificaReserva(data: Inputs) {
-    // 5. Adicionada uma verificação de segurança antes de enviar
     if (!isDisponivel) {
       alert("Este livro não está disponível para esta data.");
       return;
@@ -69,7 +63,6 @@ export default function Reservar() {
     data.usuarioId = usuario?.id || 0;
     
     // Converte as datas para o formato UTC
-    // (Certifique-se de que seu backend está esperando UTC!)
     data.datadaReserva = new Date(data.datadaReserva + "T00:00:00.000Z").toUTCString();
 
     try {
