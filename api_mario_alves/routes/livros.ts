@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import { parse } from "path";
-import { startOfDay, endOfDay, parse as parseDate } from "date-fns";
+import { startOfDay, endOfDay, addDays, parse as parseDate } from "date-fns";
 
 const prisma = new PrismaClient({
   log: [
@@ -61,52 +61,80 @@ router.get("/:id/disponibilidade", async (req, res) => {
   }
 
   try {
-    const dataFormatada = parseDate(data, "yyyy-MM-dd", new Date())
+    const dataConsulta = new Date(data + "T00:00:00.000");
+    const hoje = startOfDay(new Date());
 
-    const inicioDoDia = startOfDay(dataFormatada);
-    const finalDoDia = endOfDay(dataFormatada);
-
-    // 1. O livro está indisponível SE já existir uma RESERVA para ele NAQUELE DIA
-    const reserva = await prisma.reserva.findFirst({
-      where: { 
-        livroId: Number(id),
-        datadaReserva: { // A data da reserva deve estar DENTRO do dia solicitado
-          gte: inicioDoDia,
-          lte: finalDoDia,
-        },
-      },
+    // Puxa o ultimo empréstimo (ativo ou recente)
+    const ultimoEmprestimo = await prisma.emprestimo.findFirst({
+      where: { livroId: Number(id) },
+      orderBy: { datadaEntrega: "desc" },
     });
 
-    if (reserva) {
-      // Se achou reserva, está indisponível. Não precisa checar mais nada.
-      return res.status(200).json({ disponivel: false  });
-    }
-
-    // 2. Se não achou reserva, O livro está indisponível SE existir um EMPRÉSTIMO
-    //    onde a data solicitada está DENTRO do período do empréstimo.
-    const emprestimo = await prisma.emprestimo.findFirst({
-      where: {
-        livroId: Number(id),
-        datadaReserva: {
-          lte: finalDoDia,
-        },
-        datadaEntrega: {
-          gte: inicioDoDia,
-        },
-      },
+    // Todas as reservas futuras (ordenadas)
+    const reservasFuturas = await prisma.reserva.findMany({
+      where: { livroId: Number(id), datadaReserva: { gte: hoje } },
+      orderBy: { datadaReserva: "asc" },
     });
 
-    if (emprestimo) {
-      // Se achou um empréstimo ativo, está indisponível.
-      return res.status(200).json({ disponivel: false});
+    // Cata o intervalo total de bloqueio
+    let inicioBloqueio: Date | null = null;
+    let fimBloqueio: Date | null = null;
+
+    // Se existe um empréstimo, começa nele
+    if (ultimoEmprestimo) {
+      inicioBloqueio = new Date(
+        startOfDay(ultimoEmprestimo.datadaReserva)
+      );
+
+      fimBloqueio = new Date(
+        endOfDay(ultimoEmprestimo.datadaEntrega)
+      );
     }
 
-    // 3. Se não achou nem reserva, nem empréstimo, o livro está disponível!
+
+    // Caso existam reservas
+    if (reservasFuturas.length > 0) {
+      // Se o livro ainda não foi emprestado ou já voltou, o bloqueio começa
+      // agora (pois já está reservado)
+      if (!inicioBloqueio || fimBloqueio! < hoje) {
+        inicioBloqueio = hoje;
+      }
+
+      // Percorre todas as reservas e vai estendendo o bloqueio
+      for (const reserva of reservasFuturas) {
+        const dataReserva = new Date(
+          startOfDay(reserva.datadaReserva)
+        );
+
+        // Soma mais um dia pq a reserva dura 24h
+        const fimReserva = addDays(new Date(dataReserva), 1);
+
+        // Se ainda não há fim definido, ou a reserva é mais longe, estende
+        if (!fimBloqueio || fimReserva > fimBloqueio) {
+          fimBloqueio = fimReserva;
+        }
+      }
+    }
+
+    console.log("Reservas futuras: ", reservasFuturas);
+    console.log("inicio, fim, data consultada", inicioBloqueio, fimBloqueio, dataConsulta)
+
+    // Se a data consultada cai dentro do bloqueio
+    if (inicioBloqueio && fimBloqueio && dataConsulta >= inicioBloqueio && dataConsulta <= fimBloqueio) {
+      return res.status(200).json({
+        disponivel: false,
+        motivo: reservasFuturas.length > 0 ? "reservado" : "emprestado",
+        periodoBloqueado: { inicio: inicioBloqueio, fim: fimBloqueio },
+      });
+    }
+
+    // Caso contrário, tá disponível
     return res.status(200).json({ disponivel: true });
-
   } catch (error) {
     console.error("Erro ao verificar disponibilidade:", error);
-    res.status(400).json(error);
+
+    return res.status(500)
+      .json({ erro: "Erro interno ao verificar disponibilidade." });
   }
 });
 
