@@ -6,4 +6,5 @@ export interface UsuarioI {
     id: number
     nome: string
     email: string
+    inadimplente: boolean
 }

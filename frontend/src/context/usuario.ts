@@ -9,7 +9,7 @@ type UsuarioStore = {
     deslogaUsuario: () => void;
 };
 
-export const useUsuarioStore = create<UsuarioStore>(
+export const useUsuarioStore = create<UsuarioStore>()(
     persist((set, get) => ({
         usuario: {} as UsuarioI,
         logaUsuario: (usuarioLogado) => set({ usuario: usuarioLogado }),
