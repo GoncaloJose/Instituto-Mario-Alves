@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LivroI } from "@/utils/types/livros";
+import { toast } from 'sonner';
 import ItemLivro from "@/components/ItemLivro";
 
 function CadLivros() {
@@ -56,6 +57,15 @@ function CadLivros() {
   const listaLivros = livros.map((livro) => (
     <ItemLivro
       key={livro.id}
+      onDestacar={(id: number) => {
+        toast.success("Livro destacado com sucesso!!")
+      }}
+
+      onDelete={(id: number) => {
+        // Atualiza a lista de livros removendo o livro com o ID fornecido
+        setLivros(livros.filter((x) => x.id !== id));
+        toast.success("Livro removido com sucesso!!")
+      }}
       livro={livro}
     />
   ));
@@ -99,7 +109,7 @@ function CadLivros() {
 			Exportar CSV
 		</button>
 
-		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+		<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 			{listaLivros}
 		</div>
       </div> 

@@ -9,9 +9,11 @@ import Link from "next/link"; // Link não é mais usado para editar, mas pode s
 
 interface listaLivroProps {
   livro: LivroI;
+  onDelete: any;
+  onDestacar: any;
 }
 
-function ItemLivro({ livro }: listaLivroProps) {
+function ItemLivro({ livro, onDelete, onDestacar }: listaLivroProps) {
   const router = useRouter();
 
   async function excluirLivro(id: number) {
@@ -28,10 +30,8 @@ function ItemLivro({ livro }: listaLivroProps) {
         }
       );
 
-      if (response.status == 200) {
-        const livros2 = livros.filter((x) => x.id != id); // Usei o 'id' do argumento
-        setLivros(livros2);
-        alert("Livro excluído com sucesso");
+      if (response.ok) {
+        onDelete(id); // Chama a função passada via props para atualizar a lista
       } else {
         alert("Erro... Livro não foi excluído");
       }
@@ -51,15 +51,21 @@ function ItemLivro({ livro }: listaLivroProps) {
       }
     );
 
-    if (response.status == 200) {
-      const livros2 = livros.map((x) => {
-        if (x.id == id) { // Usei o 'id' do argumento
-          return { ...x, destaque: !x.destaque };
-        }
-        return x;
-      });
-      setLivros(livros2);
+    if (response.ok) {
+      onDestacar(id);
+    } else {
+      // ???
     }
+
+    // if (response.status == 200) {
+    //   const livros2 = livros.map((x) => {
+    //     if (x.id == id) { // Usei o 'id' do argumento
+    //       return { ...x, destaque: !x.destaque };
+    //     }
+    //     return x;
+    //   });
+    //   setLivros(livros2);
+    // }
   }
 
   return (
@@ -145,19 +151,13 @@ function ItemLivro({ livro }: listaLivroProps) {
                 {/* --- MUDANÇA FEITA AQUI --- */}
                 {/* 1. Trocado <Link> por <button> */}
                 {/* 2. Adicionado onClick com a função solicitada */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    // Salva o objeto 'livro' (deste item do map) no sessionStorage
-                    sessionStorage.setItem('livroParaEditar', JSON.stringify(livro));
-                    // Navega para a página de 'novo'
-                    router.push('/principal/livros/novo');
-                  }}
+                <Link
+                  href={`/principal/livros/${livro.id}`}
                   className="flex items-center gap-1.5 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-500 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800 transition-colors"
                 >
                   <FaPencilAlt />
                   Editar
-                </button>
+                </Link>
                 {/* --- FIM DA MUDANÇA --- */}
               </div>
             </div>
