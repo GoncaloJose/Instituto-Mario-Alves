@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
 // O nome da rota deve ser "/:id/disponibilidade" para bater com o frontend
 router.get("/:id/disponibilidade", async (req, res) => {
   const { id } = req.params;
-  const { data } = req.query;
+  const { data, usuarioId } = req.query;
 
   if (!data || typeof data !== 'string') {
     return res.status(400).json({
@@ -75,6 +75,11 @@ router.get("/:id/disponibilidade", async (req, res) => {
     const reservasFuturas = await prisma.reserva.findMany({
       where: {
         livroId: Number(id),
+        NOT: {
+          usuarioId: {
+            equals: usuarioId ? Number(usuarioId) : undefined
+          }
+        },
         datadaReserva: { gte: hojeComOffset } // Ajuste de fuso horário
       },
       orderBy: { datadaReserva: "asc" },

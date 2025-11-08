@@ -37,6 +37,7 @@ function EmprestimosForm() {
   // 4. "Assista" aos campos do formulário
   const watchedLivroId = useWatch({ control, name: "livroId" });
   const watchedDataRetirada = useWatch({ control, name: "dataRetirada" });
+  const watchedUsuarioId = useWatch({ control, name: "usuarioId" });
 
   useEffect(() => {
     async function fetchData(endpoint: string, setData: Function) {
@@ -67,15 +68,14 @@ function EmprestimosForm() {
     setValue("dataEntrega", entregaFormatada);
 
     // Se o usuário ainda não selecionou um livro ou data, não faça nada
-    if (!watchedLivroId || !watchedDataRetirada) {
-      setIsDisponivel(true); // Reseta para o padrão
+    if (!watchedLivroId || !watchedDataRetirada || !watchedUsuarioId) {
+      //setIsDisponivel(true); // Reseta para o padrão
       return;
     }
 
     setIsLoadingDisponibilidade(true);
     // Chama a API que criamos no Passo 1
-    console.log(watchedDataRetirada);
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
+    fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}&usuarioId=${watchedUsuarioId}`)
       .then((res) => res.json())
       .then((data) => {
         setIsDisponivel(data.disponivel);
@@ -87,7 +87,7 @@ function EmprestimosForm() {
         setIsLoadingDisponibilidade(false);
       });
       
-  }, [watchedLivroId, watchedDataRetirada, setValue]); // Roda sempre que o livro ou a data mudam
+  }, [watchedLivroId, watchedDataRetirada, watchedUsuarioId, setValue]); // Roda sempre que o livro ou a data mudam
 
   async function realizarEmprestimo(data: Inputs) {
     // 6. Checagem final no momento do submit (redundância de segurança)
@@ -250,7 +250,7 @@ function EmprestimosForm() {
               )}
               {!isLoadingDisponibilidade && !isDisponivel && (
                 <p className="text-red-600 font-bold">
-                  ❗️ Este livro já está emprestado nesta data.
+                  ❗️ Este livro está indisponivel nesta data.
                 </p>
               )}
               {!isLoadingDisponibilidade && isDisponivel && watchedLivroId && (
