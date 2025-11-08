@@ -7,7 +7,16 @@ const router = Router();
 // Rota: listar todos os empréstimos
 router.get("/", async (req, res) => {
   try {
-    const emprestimos = await prisma.emprestimo.findMany();
+    const emprestimos = await prisma.emprestimo.findMany({
+      include: {
+        usuario: true,
+        livro: {
+          include: {
+            autores: true
+          }
+        }
+      }
+    });
     res.status(200).json(emprestimos);
   } catch (error) {
     console.error("Erro ao buscar empréstimos:", error);
@@ -43,7 +52,7 @@ router.post("/", async (req, res) => {
         titulo: livro.titulo,
         datadaReserva: hoje,
         datadaEntrega: dataEntrega,
-        status: "Locado",
+        status: "LOCADO",
         usuarioId: parseInt(usuarioId)
       },
     });
@@ -111,6 +120,35 @@ router.put("/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao renovar empréstimo:", error);
+    res.status(500).json({ erro: "Erro ao renovar empréstimo." });
+  }
+});
+
+// Rota: renovar empréstimo (adiciona +7 dias à entrega atual)
+router.get("/:id/retorno", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const emprestimoExistente = await prisma.emprestimo.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!emprestimoExistente) {
+      return res.status(404)
+        .json({ erro: "Empréstimo não encontrado ou data inválida." });
+    }
+
+    const emprestimoAtualizado = await prisma.emprestimo.update({
+      where: { id: Number(id) },
+      data: { datadaEntrega: new Date(), status: 'RETORNADO' },
+    });
+
+    res.status(200).json({
+      mensagem: "Empréstimo entregue com sucesso!",
+      emprestimo: emprestimoAtualizado,
+    });
+  } catch (error) {
+    console.error("Erro ao marcar empréstimo como retornado:", error);
     res.status(500).json({ erro: "Erro ao renovar empréstimo." });
   }
 });

@@ -1,10 +1,8 @@
 'use client'
 import { useEffect, useState } from "react"
 import Link from 'next/link'
-import * as XLSX from 'xlsx'
-
-import ItemUsuario from '@/components/ItemUsuario'
 import { UsuarioI } from "@/utils/types/usuarios"
+import ItemUsuario from '@/components/ItemUsuario'
 
 function CadUsuarios() {
   const [usuarios, setUsuarios] = useState<UsuarioI[]>([])
@@ -18,19 +16,32 @@ function CadUsuarios() {
     getUsuarios()
   }, [])
 
-  function exportarParaExcel() {
-    const dados = usuarios.map(({ nome, email, telefone, admin, }) => ({
-      Nome: nome,
-      Email: email,
-      Telefone: telefone,
-      Admin: admin ? 'Sim' : 'Não',
-    
-    }))
+  function exportarCSV() {
+    const cabecalho = ["ID", "Nome", "Email", "Telefone", "Admin", "Criado em"]
 
-    const worksheet = XLSX.utils.json_to_sheet(dados)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuários')
-    XLSX.writeFile(workbook, 'usuarios.xlsx')
+    const linhas = usuarios.map((usuario) => [
+      usuario.id,
+      usuario.nome?.replace(/[\n\r]/g, " ") || "",
+      usuario.email || "",
+      usuario.telefone || "",
+      usuario.admin ? "Sim" : "Não",
+    ])
+
+    const conteudo = [cabecalho, ...linhas]
+      .map((linha) => linha.map((campo) => `"${campo}"`).join(";"))
+      .join("\n")
+
+    const blob = new Blob([`\uFEFF${conteudo}`], {
+      type: "text/csv;charset=utf-8;",
+    })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement("a")
+    link.href = url
+    link.setAttribute("download", "usuarios.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const listaUsuarios = usuarios.map((usuario: UsuarioI) => (

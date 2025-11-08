@@ -2,7 +2,9 @@
 import React from "react";
 // 1. Importe 'useWatch' (ou 'watch' se preferir)
 import { useState, useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form"; 
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from 'sonner'; 
+import { addDays, startOfDay } from 'date-fns';
 import axios from "axios";
 import Link from "next/link";
 
@@ -30,11 +32,12 @@ function EmprestimosForm() {
   const [isLoadingDisponibilidade, setIsLoadingDisponibilidade] = useState(false);
 
   // 3. Adicione 'control' para o useWatch
-  const { register, handleSubmit, setFocus, setValue, control } = useForm<Inputs>();
+  const { register, handleSubmit, setFocus, setValue, control, reset } = useForm<Inputs>();
 
   // 4. "Assista" aos campos do formulário
   const watchedLivroId = useWatch({ control, name: "livroId" });
   const watchedDataRetirada = useWatch({ control, name: "dataRetirada" });
+  const watchedUsuarioId = useWatch({ control, name: "usuarioId" });
 
   useEffect(() => {
     async function fetchData(endpoint: string, setData: Function) {
@@ -51,7 +54,6 @@ function EmprestimosForm() {
     fetchData("livros", setLivros);
     setFocus("usuarioId");
 
-    // Define a data de retirada padrão como HOJE (mas o usuário pode mudar)
     const hoje = new Date().toISOString().split("T")[0];
     setValue("dataRetirada", hoje);
   }, [setFocus, setValue]);
@@ -60,20 +62,20 @@ function EmprestimosForm() {
   useEffect(() => {
     // Calcula a data de entrega baseada na retirada
     const dataRetirada = new Date(watchedDataRetirada || new Date());
-    const entrega = new Date(dataRetirada);
-    entrega.setDate(entrega.getDate() + 7); // Adiciona 7 dias
+    const entrega = addDays(new Date(dataRetirada), 7);
+
     const entregaFormatada = entrega.toISOString().split("T")[0];
     setValue("dataEntrega", entregaFormatada);
 
     // Se o usuário ainda não selecionou um livro ou data, não faça nada
-    if (!watchedLivroId || !watchedDataRetirada) {
-      setIsDisponivel(true); // Reseta para o padrão
+    if (!watchedLivroId || !watchedDataRetirada || !watchedUsuarioId) {
+      //setIsDisponivel(true); // Reseta para o padrão
       return;
     }
 
     setIsLoadingDisponibilidade(true);
     // Chama a API que criamos no Passo 1
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
+    fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}&usuarioId=${watchedUsuarioId}`)
       .then((res) => res.json())
       .then((data) => {
         setIsDisponivel(data.disponivel);
@@ -85,12 +87,12 @@ function EmprestimosForm() {
         setIsLoadingDisponibilidade(false);
       });
       
-  }, [watchedLivroId, watchedDataRetirada, setValue]); // Roda sempre que o livro ou a data mudam
+  }, [watchedLivroId, watchedDataRetirada, watchedUsuarioId, setValue]); // Roda sempre que o livro ou a data mudam
 
   async function realizarEmprestimo(data: Inputs) {
     // 6. Checagem final no momento do submit (redundância de segurança)
     if (!isDisponivel) {
-      alert("Este livro não está disponível para esta data!");
+      toast.error("Este livro não está disponível para esta data!");
       return;
     }
 
@@ -99,14 +101,20 @@ function EmprestimosForm() {
         `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`,
         data
       );
+
       if (response.status === 201) {
-        alert("Empréstimo realizado com sucesso!");
+        toast.success("Empréstimo realizado com sucesso!");
+
+        setIsDisponivel(false);
+        reset();
+        const hoje = new Date().toISOString().split("T")[0];
+        setValue("dataRetirada", hoje);
       } else {
-        alert("Erro ao realizar empréstimo...");
+        toast.error("Erro ao realizar empréstimo...");
       }
     } catch (error) {
       console.error("Erro ao realizar empréstimo:", error);
-      alert("Erro ao realizar empréstimo!");
+      toast.error("Erro ao realizar empréstimo!");
     }
   }
 
@@ -207,7 +215,8 @@ function EmprestimosForm() {
                 <input
                   type="date"
                   id="dataRetirada"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  readOnly
+                  className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed"
                   {...register("dataRetirada")}
                 />
               </div>
@@ -241,7 +250,7 @@ function EmprestimosForm() {
               )}
               {!isLoadingDisponibilidade && !isDisponivel && (
                 <p className="text-red-600 font-bold">
-                  ❗️ Este livro já está emprestado nesta data.
+                  ❗️ Este livro está indisponivel nesta data.
                 </p>
               )}
               {!isLoadingDisponibilidade && isDisponivel && watchedLivroId && (
