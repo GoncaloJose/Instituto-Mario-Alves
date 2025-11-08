@@ -70,9 +70,13 @@ router.get("/:id/disponibilidade", async (req, res) => {
       orderBy: { datadaEntrega: "desc" },
     });
 
+    const hojeComOffset = new Date(hoje.getTime() - hoje.getTimezoneOffset() * 60000);
     // Todas as reservas futuras (ordenadas)
     const reservasFuturas = await prisma.reserva.findMany({
-      where: { livroId: Number(id), datadaReserva: { gte: hoje } },
+      where: {
+        livroId: Number(id),
+        datadaReserva: { gte: hojeComOffset } // Ajuste de fuso horário
+      },
       orderBy: { datadaReserva: "asc" },
     });
 
