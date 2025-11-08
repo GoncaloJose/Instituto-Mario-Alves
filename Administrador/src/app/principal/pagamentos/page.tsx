@@ -41,7 +41,7 @@ function CadPagamentos() {
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xl text-white uppercase bg-red-500 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xl text-white uppercase bg-vermelho dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
                 Nome do Usuário
