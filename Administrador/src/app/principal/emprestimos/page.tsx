@@ -53,7 +53,6 @@ function EmprestimosForm() {
     fetchData("livros", setLivros);
     setFocus("usuarioId");
 
-    // Define a data de retirada padrão como HOJE (mas o usuário pode mudar)
     const hoje = new Date().toISOString().split("T")[0];
     setValue("dataRetirada", hoje);
   }, [setFocus, setValue]);
@@ -108,6 +107,8 @@ function EmprestimosForm() {
 
         setIsDisponivel(false);
         reset();
+        const hoje = new Date().toISOString().split("T")[0];
+        setValue("dataRetirada", hoje);
       } else {
         toast.error("Erro ao realizar empréstimo...");
       }
@@ -214,7 +215,8 @@ function EmprestimosForm() {
                 <input
                   type="date"
                   id="dataRetirada"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  readOnly
+                  className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed"
                   {...register("dataRetirada")}
                 />
               </div>
