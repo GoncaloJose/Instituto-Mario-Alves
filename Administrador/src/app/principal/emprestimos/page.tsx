@@ -2,7 +2,9 @@
 import React from "react";
 // 1. Importe 'useWatch' (ou 'watch' se preferir)
 import { useState, useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form"; 
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from 'sonner'; 
+import { addDays, startOfDay } from 'date-fns';
 import axios from "axios";
 import Link from "next/link";
 
@@ -30,7 +32,7 @@ function EmprestimosForm() {
   const [isLoadingDisponibilidade, setIsLoadingDisponibilidade] = useState(false);
 
   // 3. Adicione 'control' para o useWatch
-  const { register, handleSubmit, setFocus, setValue, control } = useForm<Inputs>();
+  const { register, handleSubmit, setFocus, setValue, control, reset } = useForm<Inputs>();
 
   // 4. "Assista" aos campos do formulário
   const watchedLivroId = useWatch({ control, name: "livroId" });
@@ -60,8 +62,8 @@ function EmprestimosForm() {
   useEffect(() => {
     // Calcula a data de entrega baseada na retirada
     const dataRetirada = new Date(watchedDataRetirada || new Date());
-    const entrega = new Date(dataRetirada);
-    entrega.setDate(entrega.getDate() + 7); // Adiciona 7 dias
+    const entrega = addDays(new Date(dataRetirada), 7);
+
     const entregaFormatada = entrega.toISOString().split("T")[0];
     setValue("dataEntrega", entregaFormatada);
 
@@ -73,6 +75,7 @@ function EmprestimosForm() {
 
     setIsLoadingDisponibilidade(true);
     // Chama a API que criamos no Passo 1
+    console.log(watchedDataRetirada);
     fetch(`${process.env.NEXT_PUBLIC_URL_API}/livros/${watchedLivroId}/disponibilidade?data=${watchedDataRetirada}`)
       .then((res) => res.json())
       .then((data) => {
@@ -90,7 +93,7 @@ function EmprestimosForm() {
   async function realizarEmprestimo(data: Inputs) {
     // 6. Checagem final no momento do submit (redundância de segurança)
     if (!isDisponivel) {
-      alert("Este livro não está disponível para esta data!");
+      toast.error("Este livro não está disponível para esta data!");
       return;
     }
 
@@ -99,14 +102,18 @@ function EmprestimosForm() {
         `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`,
         data
       );
+
       if (response.status === 201) {
-        alert("Empréstimo realizado com sucesso!");
+        toast.success("Empréstimo realizado com sucesso!");
+
+        setIsDisponivel(false);
+        reset();
       } else {
-        alert("Erro ao realizar empréstimo...");
+        toast.error("Erro ao realizar empréstimo...");
       }
     } catch (error) {
       console.error("Erro ao realizar empréstimo:", error);
-      alert("Erro ao realizar empréstimo!");
+      toast.error("Erro ao realizar empréstimo!");
     }
   }
 
