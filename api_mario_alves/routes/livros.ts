@@ -66,7 +66,7 @@ router.get("/:id/disponibilidade", async (req, res) => {
 
     // Puxa o ultimo empréstimo (ativo ou recente)
     const ultimoEmprestimo = await prisma.emprestimo.findFirst({
-      where: { livroId: Number(id) },
+      where: { livroId: Number(id), status: 'LOCADO' },
       orderBy: { datadaEntrega: "desc" },
     });
 
