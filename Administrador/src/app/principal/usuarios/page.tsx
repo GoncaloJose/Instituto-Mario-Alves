@@ -45,9 +45,9 @@ function CadUsuarios() {
   return (
     <div className='m-4 mt-24'>
       <div className='flex justify-between items-center mb-4'>
-        <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
+        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
           Controle de Usuários
-        </h1>
+        </h3>
         <Link href="usuarios/novo" 
           className="text-white bg-vermelho hover:bg-vermelho focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
           Novo Usuário

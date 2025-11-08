@@ -114,9 +114,9 @@ function EmprestimosForm() {
     <div className="m-4 mt-24">
       {/* --- CABEÇALHO DA PÁGINA --- */}
       <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
           Cadastrar Empréstimos:
-        </h1>
+        </h3>
         <Link
           href="/principal/emprestimos/lista"
           className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-500 font-bold

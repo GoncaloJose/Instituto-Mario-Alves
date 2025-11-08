@@ -63,9 +63,10 @@ function CadLivros() {
   return (
     <div className="m-4 mt-24">
       <div className="flex justify-between">
-        <h1 className="mb-4 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
+        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
           Livros
-        </h1>
+        </h3>
+      
         <Link
           href="livros/novo"
           className="text-white bg-vermelho hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
@@ -90,16 +91,15 @@ function CadLivros() {
         >
           Novo Gênero
         </Link>
-      </div>
-              
-		<button
-			onClick={exportarCSV}
-			className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-4 py-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
-		>
-			Exportar CSV
-		</button>
+         <button
+		     	onClick={exportarCSV}
+			    className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
+		       >
+		      	Exportar CSV
+		    </button>
+      </div>      
 
-		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+		<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 			{listaLivros}
 		</div>
       </div> 
