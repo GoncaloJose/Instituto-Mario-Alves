@@ -81,7 +81,7 @@ export default function Principal() {
   return (
     <div className="container mt-24 mx-auto p-4">
   
-  <h2 className="text-3xl mb-4 font-bold">Atividades:</h2>
+  <h3 className="text-3xl mb-4 font-bold">Atividades:</h3>
 
   <div className="mt-16">
     <div className="w-2/3 flex justify-between mx-auto mb-5">
