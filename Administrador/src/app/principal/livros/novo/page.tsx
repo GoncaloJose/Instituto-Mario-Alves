@@ -7,6 +7,7 @@ import { LivroI } from "@/utils/types/livros" // Usado para tipar o 'livro' do s
 import { AutorI } from "@/utils/types/autores"
 import { GeneroI } from "@/utils/types/generos" 
 import { EditoraI } from "@/utils/types/editoras"
+import Link from "next/link"
 
 type Inputs = {
   // --- MUDANÇA --- 
@@ -136,8 +137,17 @@ function NovoLivro() {
 
   return (
     <>
+      <div className="flex flex-col mt-24 mb-4">
+        <Link
+        href="/principal/usuarios"
+        className="text-gray-400 hover:text-red-700 focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          ← Voltar a Lista de Livros        
+        </Link>
+      </div>
+
       {/* --- MUDANÇA --- Título dinâmico */}
-      <h1 className="mb-4 mt-24 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
+      <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white">
         {isEditing ? `Editando Livro: ${livroId}` : "Cadastro de Livros"}
       </h1>
 

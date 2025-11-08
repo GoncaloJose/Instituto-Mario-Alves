@@ -1,9 +1,15 @@
 export interface EmprestimoI {
     id: number
-    usuarioId: number
-    livroId: number
+    usuarioId: string
+    livroId: string
     datadaReserva: Date
-    datadaEntrega: Date | null
+    datadaEntrega: Date
     status: string
-    
+    usuario: {
+        nome: string;
+    }
+    livro: {
+        titulo: string;
+        autores: Array<{ id: number, nome: string }>
+    }
 }

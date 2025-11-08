@@ -6,11 +6,11 @@ import { isAfter } from 'date-fns';
 
 type EmprestimoI = {
   id: string | number;
-  livroId?: string;
-  usuarioId?: string;
-  datadaReserva?: string; // Mapeado para "Data da Reserva"
-  datadaEntrega?: string | null; // Mapeado para "Data da Entrega"
-  status?: string;
+  livroId: string;
+  usuarioId: string;
+  datadaReserva: Date; // Mapeado para "Data da Reserva"
+  datadaEntrega: Date; // Mapeado para "Data da Entrega"
+  status: string;
   usuario: {
     nome: string;
   }

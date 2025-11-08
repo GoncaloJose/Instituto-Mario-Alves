@@ -53,7 +53,14 @@ function NovoEditora() {
      
     return (
          <>
-           <h1 className="mb-4 mt-24 text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white me-56">
+          <div className="flex flex-col mt-24 mb-4 w-full">
+           <Link
+             href="/principal/livros"
+             className="text-gray-400 hover:text-red-700 focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+             ← Voltar a Lista de Livros        
+           </Link>
+
+           <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white me-56">
              Cadastro da Editora
            </h1>
      
@@ -70,6 +77,7 @@ function NovoEditora() {
              <button type="submit" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                Incluir</button>
            </form>
+           </div>
          </>
        )
     

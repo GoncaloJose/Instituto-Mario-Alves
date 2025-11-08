@@ -30,7 +30,7 @@ function ListaDeEmprestimos() {
     getEmprestimos();
   }, []);
 
-  const onEntregar = async (id) => {
+  const onEntregar = async (id: number) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}/retorno`
