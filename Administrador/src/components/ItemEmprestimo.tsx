@@ -21,24 +21,15 @@ type EmprestimoI = {
 };
 
 const ItemEmprestimo = ({ emprestimo, onEntregue }: { emprestimo: EmprestimoI, onEntregue: any }) => {
-  const [isEntregue, setIsEntregue] = useState(!!emprestimo.datadaEntrega);
-
-  async function handleToggleEntrega() {
-    setIsEntregue(!isEntregue);
-    // TODO: Aqui você pode adicionar a lógica para
-    // salvar essa alteração no banco de dados via API.
-    // Ex: await fetch(`/api/emprestimos/${emprestimo.id}/devolver`, { method: 'PATCH' });
-  }
-
   const marcarComoEntregue = () => {
     onEntregue(emprestimo.id)
   }
 
   const status = () => {
-    if (isAfter(emprestimo.datadaEntrega, new Date())) {
-      return (<span className="text-red-600">Atrasado</span>)
-    } else if (emprestimo.status == 'RETORNADO') {
+    if (emprestimo.status == 'RETORNADO') {
       return (<span className="text-green-600">Retornado</span>)
+    } else if (isAfter(new Date(), emprestimo.datadaEntrega)) {
+      return (<span className="text-red-600">Atrasado</span>)
     } else {
       return (<span className="font-bold text-gray-600">Locado</span>)
     }
