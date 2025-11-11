@@ -74,7 +74,7 @@ export function Header() {
 				<div className="flex items-center space-x-3">
 				  {/* Botão Login ADM visível mesmo sem login */}
 				  <a
-					href="http://localhost:3000"
+					href="http://localhost:3001"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="text-sm font-inter text-white bg-vermelho hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg px-3 py-1 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
