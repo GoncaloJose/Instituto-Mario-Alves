@@ -124,7 +124,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Rota: renovar empréstimo (adiciona +7 dias à entrega atual)
 router.get("/:id/retorno", async (req, res) => {
   const { id } = req.params;
 
