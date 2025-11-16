@@ -78,6 +78,8 @@ function ListaDeEmprestimos() {
                     <th scope="col" className="px-6 py-3">Nome</th>
                     <th scope="col" className="px-6 py-3">Livro</th>
                     <th scope="col" className="px-6 py-3">Autores</th>
+                    <th scope="col" className="px-6 py-3">Saida</th>
+                    <th scope="col" className="px-6 py-3">Retorno</th>
                     <th scope="col" className="px-6 py-3">Status</th>
                     <th scope="col" className="px-6 py-3">Ações</th>
                   </tr>

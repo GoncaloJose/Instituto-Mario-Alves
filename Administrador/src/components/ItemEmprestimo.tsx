@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
 import { MdOutlineArchive } from "react-icons/md";
-import { isAfter } from 'date-fns';
+import { isAfter, endOfDay, lightFormat } from 'date-fns';
 
 
 type EmprestimoI = {
   id: string | number;
   livroId: string;
   usuarioId: string;
-  datadaReserva: Date; // Mapeado para "Data da Reserva"
-  datadaEntrega: Date; // Mapeado para "Data da Entrega"
+  datadaReserva: Date;
+  datadaEntrega: Date;
   status: string;
   usuario: {
     nome: string;
@@ -26,14 +26,18 @@ const ItemEmprestimo = ({ emprestimo, onEntregue }: { emprestimo: EmprestimoI, o
   }
 
   const status = () => {
+	const hojeMeiaNoite = endOfDay(new Date());
+
     if (emprestimo.status == 'RETORNADO') {
       return (<span className="text-green-600">Retornado</span>)
-    } else if (isAfter(new Date(), emprestimo.datadaEntrega)) {
+    } else if (isAfter(hojeMeiaNoite, endOfDay(emprestimo.datadaEntrega))) {
       return (<span className="text-red-600">Atrasado</span>)
     } else {
       return (<span className="font-bold text-gray-600">Locado</span>)
     }
   }
+
+  console.log(emprestimo)
 
   return (
     <tr key={emprestimo.id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -47,6 +51,12 @@ const ItemEmprestimo = ({ emprestimo, onEntregue }: { emprestimo: EmprestimoI, o
         {emprestimo.livro.autores.map((autor) => autor.nome).join(', ')}
       </td>
       <td className={`px-6 py-4`}>
+		{lightFormat(emprestimo.datadaReserva, 'dd/MM/yyyy')}
+      </td>
+      <td className={`px-6 py-4`}>
+		{lightFormat(emprestimo.datadaEntrega, 'dd/MM/yyyy')}
+      </td>
+      <td className={`px-6 py-4`}>
         {status()}
       </td>
       <td className="px-6 py-4">
@@ -55,7 +65,7 @@ const ItemEmprestimo = ({ emprestimo, onEntregue }: { emprestimo: EmprestimoI, o
           disabled={emprestimo.status == 'RETORNADO'}>
           <MdOutlineArchive
             className={`${emprestimo.status == 'RETORNADO' ? 'text-gray-600' : 'text-red-600'}`}
-            title="Excluir"/>
+            title="Marcar como Retornado"/>
         </button>
       </td>
     </tr>
