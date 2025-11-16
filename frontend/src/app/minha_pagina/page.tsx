@@ -5,16 +5,8 @@ import { formataData } from "@/utils/formataData";
 import { isToday } from "date-fns";
 import { Tooltip } from "react-tooltip";
 import { useUsuarioStore } from "@/context/usuario";
-
-type Emprestimo = {
-  id: number;
-  livroId: number;
-  usuarioId: number;
-  titulo: string;
-  datadaReserva: string;
-  datadaEntrega: string;
-  status: string;
-};
+import { EmprestimoI } from "@/types/emprestimo";
+import { toast } from "sonner";
 
 type Reserva = {
   id: number;
@@ -25,7 +17,7 @@ type Reserva = {
 };
 
 export default function MinhaPagina() {
-  const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
+  const [emprestimos, setEmprestimos] = useState<EmprestimoI[]>([]);
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const { usuario } = useUsuarioStore();
 
@@ -35,10 +27,12 @@ export default function MinhaPagina() {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_URL_API}/emprestimos`
         );
+
         const dados = await response.json();
         const filtrados = dados.filter(
-          (item: Emprestimo) => item.usuarioId === usuario.id
-        );
+          (item: EmprestimoI) => item.usuarioId === usuario.id
+        ).sort((a: EmprestimoI, b: EmprestimoI) => new Date(b.datadaReserva).getTime() - new Date(a.datadaReserva).getTime());
+
         setEmprestimos(filtrados);
       } catch (error) {
         console.error("Erro ao buscar empréstimos:", error);
@@ -54,15 +48,18 @@ export default function MinhaPagina() {
         const filtrados = dados.filter(
           (item: Reserva) => item.usuarioId === usuario.id
         );
+
         setReservas(filtrados);
       } catch (error) {
         console.error("Erro ao buscar reservas:", error);
       }
     }
 
+  if (usuario) {
     getEmprestimos();
     getReservas();
-  }, []);
+  }
+  }, [usuario]);
 
   async function excluirEmprestimo(id: number) {
     try {
@@ -100,46 +97,59 @@ export default function MinhaPagina() {
         setReservas((reservas) =>
           reservas.filter((reserva) => reserva.id !== id)
         );
-        alert("Reserva excluída com sucesso!");
+
+        toast.success("Reserva excluída com sucesso!");
       } else {
-        alert("Erro ao excluir a reserva.");
+        toast.error("Erro ao excluir a reserva.");
       }
     } catch (error) {
       console.error("Erro ao excluir reserva:", error);
-      alert("Erro ao excluir reserva.");
+      toast.error("Erro ao excluir reserva.");
     }
   }
 
-  async function renovarEmprestimo(id: number, datadaEntrega: string) {
-    try {
-      const novaData = new Date(datadaEntrega);
-      novaData.setDate(novaData.getDate() + 7);
+  async function renovarEmprestimo(emprestimo: EmprestimoI) {
+    if (emprestimo.status != "RETORNADO") {
+      try {
+        const novaData = new Date(emprestimo.datadaEntrega);
+        novaData.setDate(novaData.getDate() + 7);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ datadaEntrega: novaData.toISOString() }),
-        }
-      );
-
-      if (response.ok) {
-        setEmprestimos((emprestimos) =>
-          emprestimos.map((emprestimo) =>
-            emprestimo.id === id
-              ? { ...emprestimo, datadaEntrega: novaData.toISOString() }
-              : emprestimo
-          )
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/emprestimos/${emprestimo.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              datadaEntrega: novaData.toISOString()
+            }),
+          }
         );
-        alert("Empréstimo renovado com sucesso!");
-      } else {
-        alert("Erro ao renovar o empréstimo.");
+
+        if (response.ok) {
+          setEmprestimos((emprestimos) =>
+            emprestimos.map((e) =>
+              e.id === emprestimo.id
+              ? { ...e, datadaEntrega: novaData.toISOString() }
+              : e
+            )
+          );
+
+          toast.success("Empréstimo renovado com sucesso!");
+        } else {
+          toast.error("Erro ao renovar o empréstimo.");
+        }
+      } catch (error) {
+        console.error("Erro ao renovar empréstimo:", error);
+        toast.error("Erro ao renovar empréstimo.");
       }
-    } catch (error) {
-      console.error("Erro ao renovar empréstimo:", error);
-      alert("Erro ao renovar empréstimo.");
     }
+  }
+
+  const textoTooltip = (emprestimo) => {
+    return {
+      'LOCADO': "Renovação disponível somente na data de entrega.",
+      'RETORNADO': "Empréstimo já foi retornado."
+    }[emprestimo.status];
   }
 
   return (
@@ -164,6 +174,9 @@ export default function MinhaPagina() {
                 className="p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-lg"
               >
                 <p className="text-lg font-semibold">📖 {emprestimo.titulo}</p>
+        {(emprestimo.status === "RETORNADO") && (
+          <p className="text-lg font-semibold text-green-600">✅ Retornado</p>
+        )}
                 <p className="text-lg">🆔 Livro ID: {emprestimo.livroId}</p>
                 <p className="text-lg">👤 Usuário ID: {emprestimo.usuarioId}</p>
                 <p className="text-lg">
@@ -179,17 +192,17 @@ export default function MinhaPagina() {
 
                 <div className="mt-4 flex justify-end gap-4">
                   <button
-                    disabled={!isToday(new Date(emprestimo.datadaEntrega))}
+                    disabled={!isToday(new Date(emprestimo.datadaEntrega)) && emprestimo.status != "RETORNADO"}
                     onClick={() =>
-                      renovarEmprestimo(emprestimo.id, emprestimo.datadaEntrega)
+                      renovarEmprestimo(emprestimo)
                     }
-                    data-tooltip-hidden={isToday(emprestimo.datadaEntrega)}
+                    data-tooltip-hidden={isToday(emprestimo.datadaEntrega) && emprestimo.status != "RETORNADO"}
                     data-tooltip-id="renovacao-emprestimo"
-                    data-tooltip-content="Não disponivel. Somente na data de entrega"
+                    data-tooltip-content={textoTooltip(emprestimo)}
                     className={`${
-                      !isToday(emprestimo.datadaEntrega)
-                        ? "bg-gray-300"
-                        : "bg-red-500 hover:bg-vermelho"
+                      isToday(emprestimo.datadaEntrega) && emprestimo.status != "RETORNADO"
+            ? "bg-red-500 hover:bg-vermelho"
+                        : "bg-gray-300"
                     } text-white px-4 py-2 rounded`}
                   >
                     Renovar Empréstimo
