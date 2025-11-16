@@ -115,7 +115,7 @@ router.post("/login", async (req, res) => {
         // Se a data de pagamento for nula ou inválida, consideramos que não há pagamentos vencidos
         // Usa date-nfs para setar o dia do mês atual com o dia de pagamento do usuário
         // e subtrai 30 dias para verificar se há pagamentos vencidos
-        //  
+        //
         const dataReferencia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataPagamento);
         const maisDeTrintaDiasAtras = subDays(dataReferencia, 30);
 
@@ -196,7 +196,56 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/:id/inadimplente", async (req, res) => {
+  // Rota que consulta se o usuario está inadimplente ainda
+  const { id } = req.params;
 
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ erro: "ID inválido." });
+  }
+
+  try {
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: Number(id) }
+    });
+
+    if (!usuario) {
+      return res.status(404)
+        .json({ erro: "Usuário não encontrado" })
+    }
+
+    if (!usuario.admin) {
+      const dataAtual = new Date();
+      // Usa a data de pagamento do usuário como referência para calcular 30 dias atrás
+      const dataPagamento = usuario.diaPagamento;
+      // Se a data de pagamento for nula ou inválida, consideramos que não há pagamentos vencidos
+      // Usa date-nfs para setar o dia do mês atual com o dia de pagamento do usuário
+      // e subtrai 30 dias para verificar se há pagamentos vencidos
+      //
+      const dataReferencia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataPagamento);
+      const maisDeTrintaDiasAtras = subDays(dataReferencia, 30);
+
+      // Buscamos por pagamentos que pertencem a este usuário, que não estão pagos (pagarMensal: 0)
+      // e cuja data de pagamento já passou. Como temos a data de pagamento fixa (dia do mês),
+      // comparamos com a data de referência calculada acima.
+      const foiPago = await prisma.pagamento.findMany({
+        where: {
+          usuarioId: usuario.id,
+          pago: true,
+          dataPagamento: {
+            gte: maisDeTrintaDiasAtras, // lte = less than or equal (menor ou igual)
+          },
+        },
+      });
+
+      return res.json({ inadimplente: !foiPago.length })
+    } else {
+      return res.json({ inadimplente: false })
+    }
+  } catch (error: any) {
+    res.status(500).json({ erro: "Erro ao verificar usuário." });
+  }
+})
 
 // Rota para deletar um cliente por ID
 router.delete("/:id", async (req, res) => {

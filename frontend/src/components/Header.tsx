@@ -3,9 +3,15 @@
 import Link from "next/link";
 import { useUsuarioStore } from "@/context/usuario";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function Header() {
-  const { usuario, deslogaUsuario } = useUsuarioStore();
+  const {
+    usuario,
+    atualizaUsuario,
+    deslogaUsuario
+  } = useUsuarioStore();
+
   const router = useRouter();
 
   function sairUsuario() {
@@ -13,6 +19,30 @@ export function Header() {
 
     router.push("/login");
   }
+
+  useEffect(() => {
+		const verificaInadimplencia  = async() => {
+			try {
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_URL_API}/usuarios/${usuario.id}/inadimplente`
+				);
+
+        if (response.ok) {
+          const dados = await response.json()
+
+          usuario.inadimplente = dados.inadimplente;
+          atualizaUsuario(usuario);
+        }
+			} catch (error) {
+				console.error(error)
+			}
+		}
+
+    if (usuario.id) {
+      // Atualiza em background esse usuário e guarda na store
+      verificaInadimplencia();
+    }
+  }, [usuario?.id]);
 
   return (
 	  <>

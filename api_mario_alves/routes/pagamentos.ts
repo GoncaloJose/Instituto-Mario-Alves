@@ -14,12 +14,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-// --- ALTERADO: Rota para buscar pagamentos por ID do USUÁRIO ---
-// O endpoint foi renomeado de "/:id" para "/usuario/:usuarioId" para ser mais claro sobre sua função.
 router.get("/usuario/:usuarioId", async (req, res) => {
-  // O nome do parâmetro foi atualizado para 'usuarioId'
-  const { usuarioId } = req.params; 
+  const { usuarioId } = req.params;
   const parsedId = parseInt(usuarioId, 10);
 
   if (isNaN(parsedId)) {
@@ -32,20 +28,15 @@ router.get("/usuario/:usuarioId", async (req, res) => {
       orderBy: { dataPagamento: 'desc' },
     });
 
-    // --- ALTERADO: Corrigida a verificação para array vazio ---
-    // findMany retorna um array [], e não null, se nada for encontrado.
     if (pagamentos.length === 0) {
-      // Retorna um array vazio com status 200, que é o correto quando não há dados.
       res.status(200).json([]);
       return;
     } else {
       res.status(200).json(pagamentos.map(pagamento => ({
         id: pagamento.id,
-        // Os dados do usuário não são mais necessários aqui, pois já temos o ID
         dataPagamento: pagamento.dataPagamento,
         valor: pagamento.valor,
         formaPagamento: pagamento.formaPagamento,
-        // --- ALTERADO: Adicionado o campo 'pago' na resposta, crucial para o front-end ---
         pago: pagamento.pago
       })));
     }
@@ -53,7 +44,6 @@ router.get("/usuario/:usuarioId", async (req, res) => {
     res.status(400).json(error);
   }
 });
-
 
 // Rota para criar um novo pagamento (sem alterações na lógica principal)
 router.post("/", async (req, res) => {

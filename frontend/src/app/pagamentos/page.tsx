@@ -59,8 +59,18 @@ const gerarMesesDoAno = (): PagamentoFuturo[] => {
   const anoAtual = new Date().getFullYear();
 
   const nomesDosMeses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
 
   for (let i = 0; i < 12; i++) {
@@ -76,14 +86,16 @@ const gerarMesesDoAno = (): PagamentoFuturo[] => {
 // --- Componente Principal ---
 export default function MeusPagamentos() {
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
-  const [pagamentosFuturos, setPagamentosFuturos] = useState<PagamentoFuturo[]>([]);
+  const [pagamentosFuturos, setPagamentosFuturos] = useState<PagamentoFuturo[]>(
+    [],
+  );
   const { usuario, atualizaUsuario } = useUsuarioStore();
 
   useEffect(() => {
     async function getPagamentos() {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/pagamentos/usuario/${usuario.id}`
+          `${process.env.NEXT_PUBLIC_URL_API}/pagamentos/usuario/${usuario.id}`,
         );
 
         if (!response.ok) {
@@ -104,8 +116,8 @@ export default function MeusPagamentos() {
 
     const mesesParaGerar = gerarMesesDoAno();
     setPagamentosFuturos(mesesParaGerar);
-  }, []);
-  
+  }, [usuario.id]);
+
   const handlePagar = async (pagamentoId: number) => {
     try {
       const response = await fetch(
@@ -113,7 +125,7 @@ export default function MeusPagamentos() {
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -127,72 +139,99 @@ export default function MeusPagamentos() {
             return { ...pag, pago: true };
           }
           return pag;
-        })
+        }),
       );
 
-	  // Se o pagamento for dentro dos ultimos 30 dias, a gente atualiza o usuario para nao inadimplente
-	  if (usuario.inadimplente) {
-		  const pagamento = pagamentos.find(p => p.id === pagamentoId);
-		  if (pagamento) {
-			  const dataPagamento = new Date(pagamento.dataPagamento);
-			  const hoje = new Date();
-			  // usa o date-fns
-			  const diffEmDias = differenceInDays(hoje, dataPagamento);
-			  if (diffEmDias <= 30) {
-				  usuario.inadimplente = false;
-				  atualizaUsuario(usuario);
-			  }
-		  }
-	  }
+      // Se o pagamento for dentro dos ultimos 30 dias, a gente atualiza o usuario para nao inadimplente
+      if (usuario.inadimplente) {
+        const pagamento = pagamentos.find((p) => p.id === pagamentoId);
+        if (pagamento) {
+          const dataPagamento = new Date(pagamento.dataPagamento);
+          const hoje = new Date();
+          // usa o date-fns
+          const diffEmDias = differenceInDays(hoje, dataPagamento);
+          if (diffEmDias <= 30) {
+            usuario.inadimplente = false;
+            atualizaUsuario(usuario);
+          }
+        }
+      }
 
-	  toast.success("Pagamento realizado com sucesso!");
+      toast.success("Pagamento realizado com sucesso!");
     } catch (error) {
       console.error("Erro de conexão ao pagar:", error);
 
-	  toast.error("Erro de conexão. Não foi possível realizar o pagamento.");
+      toast.error("Erro de conexão. Não foi possível realizar o pagamento.");
     }
   };
 
-  const handleGerarPagamentoFuturo = async (pagamento: PagamentoFuturo, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleGerarPagamentoFuturo = async (
+    pagamento: PagamentoFuturo,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     if (!usuario.id) {
       toast.error("Erro: ID do usuário não encontrado. Faça login novamente.");
       return;
     }
 
-    const nomesDosMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const nomesDosMeses = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
     const mesNumero = nomesDosMeses.indexOf(pagamento.mes);
 
     if (mesNumero === -1) {
       toast.error("Erro interno: Mês inválido.");
       return;
     }
-    
+
     const botao = event.currentTarget;
     botao.innerText = "Gerando...";
     botao.disabled = true;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/pagamentos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dataPagamento: new Date(pagamento.ano, mesNumero, new Date().getDate()),
-          valor: 150.00,
-          formaPagamento: "Boleto",
-          usuarioId: Number(usuario.id),
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/pagamentos`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dataPagamento: new Date(
+              pagamento.ano,
+              mesNumero,
+              new Date().getDate(),
+            ),
+            valor: 150.0,
+            formaPagamento: "Boleto",
+            usuarioId: Number(usuario.id),
+          }),
+        },
+      );
 
       const novoPagamento = await response.json();
 
       if (response.ok) {
-        toast.success(`Fatura para ${pagamento.mes}/${pagamento.ano} gerada com sucesso!`);
+        toast.success(
+          `Fatura para ${pagamento.mes}/${pagamento.ano} gerada com sucesso!`,
+        );
 
-        setPagamentos(
-			pagamentosAtuais => [
-				...pagamentosAtuais,
-				novoPagamento
-			].sort((a, b) => new Date(b.dataPagamento).getTime() - new Date(a.dataPagamento).getTime()));
+        setPagamentos((pagamentosAtuais) =>
+          [...pagamentosAtuais, novoPagamento].sort(
+            (a, b) =>
+              new Date(b.dataPagamento).getTime() -
+              new Date(a.dataPagamento).getTime(),
+          ),
+        );
       } else {
         toast.error(`Erro: ${novoPagamento.erro}`);
 
@@ -218,9 +257,15 @@ export default function MeusPagamentos() {
             <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
               <thead>
                 <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Mês</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Ano</th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-900 dark:text-gray-100">Ação</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Mês
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Ano
+                  </th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Ação
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -228,24 +273,39 @@ export default function MeusPagamentos() {
                   const pagamentoCorrespondente = pagamentos.find(
                     (p) =>
                       new Date(p.dataPagamento).getMonth() === index &&
-                      new Date(p.dataPagamento).getFullYear() === pagamento.ano
+                      new Date(p.dataPagamento).getFullYear() === pagamento.ano,
                   );
-                  
+
                   return (
-                    <tr key={pagamento.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 text-gray-800 dark:text-gray-200">{pagamento.mes}</td>
-                      <td className="px-6 py-4 text-gray-800 dark:text-gray-200">{pagamento.ano}</td>
+                    <tr
+                      key={pagamento.id}
+                      className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      <td className="px-6 py-4 text-gray-800 dark:text-gray-200">
+                        {pagamento.mes}
+                      </td>
+                      <td className="px-6 py-4 text-gray-800 dark:text-gray-200">
+                        {pagamento.ano}
+                      </td>
                       <td className="px-6 py-4 text-center">
                         {pagamentoCorrespondente ? (
                           <div className="flex items-center justify-center gap-4">
-                            <button className="bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
-                              Ver Fatura 
+                            <button
+                              className="bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded cursor-not-allowed"
+                              disabled
+                            >
+                              Ver Fatura
                             </button>
-                            <BotaoStatusPagamento pagamento={pagamentoCorrespondente} onPagar={handlePagar} />
+                            <BotaoStatusPagamento
+                              pagamento={pagamentoCorrespondente}
+                              onPagar={handlePagar}
+                            />
                           </div>
                         ) : (
                           <button
-                            onClick={(e) => handleGerarPagamentoFuturo(pagamento, e)}
+                            onClick={(e) =>
+                              handleGerarPagamentoFuturo(pagamento, e)
+                            }
                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-wait"
                           >
                             Gerar Fatura
