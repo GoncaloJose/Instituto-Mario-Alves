@@ -70,9 +70,9 @@ function NovoUsuario() {
     <>
       <div className="flex flex-col mb-4 mt-24 ">
         <Link
-          href="/principal/pagamentos"
+          href="/principal/usuarios"
           className="text-gray-400 hover:text-red-700 focus:ring-4 focus:ring-red-500 font-bold rounded-lg text-md py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
-          ← Voltar a Lista de Usuários        
+          ← Voltar a Lista de Usuários 
         </Link>
 
         <h1 className="text-2xl font-bold leading-none tracking-tight text-gray-900  md:text-3xl lg:text-4xl dark:text-white me-56">
